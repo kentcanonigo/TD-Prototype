@@ -83,7 +83,7 @@ The goal of this project is to create a maintainable and scalable Tower Defense 
 
 ## Contributing
 
-Feel free to fork this repository, make your changes, and submit a pull request. All contributions are welcome!
+I am currently not looking for any contributions as of the moment. Feel free to explore though.
 
 ## License
 
