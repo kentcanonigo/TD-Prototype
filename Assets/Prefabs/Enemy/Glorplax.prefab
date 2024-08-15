@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2113267460017666046}
-  - component: {fileID: 3353721738059540082}
   - component: {fileID: 1165074457455198392}
+  - component: {fileID: 5334985588830610088}
   - component: {fileID: 64856141658281738}
   m_Layer: 7
   m_Name: Glorplax
@@ -35,19 +35,6 @@ Transform:
   - {fileID: 7558043560886082344}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3353721738059540082
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 511332154934885617}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 161ad7a3d373eac43aea9d06fb645164, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemySO: {fileID: 11400000, guid: 8696eb502a9531c47b2f123289708550, type: 2}
 --- !u!50 &1165074457455198392
 Rigidbody2D:
   serializedVersion: 4
@@ -75,6 +62,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &5334985588830610088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511332154934885617}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 845d4190ea5944148315c35cc32bec31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  centerPoint: {x: 0, y: 0, z: 0}
+  speed: 0.2
+  radius: 3
+  movementPattern: 0
 --- !u!70 &64856141658281738
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -141,7 +144,7 @@ PrefabInstance:
     - target: {fileID: 5029870470625435412, guid: e31379d1fe68c0d4fbe59bead880069a, type: 3}
       propertyPath: enemy
       value: 
-      objectReference: {fileID: 3353721738059540082}
+      objectReference: {fileID: 0}
     - target: {fileID: 7341915203708480250, guid: e31379d1fe68c0d4fbe59bead880069a, type: 3}
       propertyPath: m_LocalScale.x
       value: 1

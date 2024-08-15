@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour {
 
     public void SpawnTestEnemy() {
         Vector3 spawnPosition = GridManager.Instance.GetWorldPosition(GridManager.Instance.GetMainVortexPosition()) + new Vector3(GridManager.Instance.GetCellSize() / 2, GridManager.Instance.GetCellSize() / 2, 0);
-        Enemy glorplax = Instantiate(testEnemySO.enemyPrefab, spawnPosition, Quaternion.identity).GetComponent<Enemy>();
+        EnemyPathfinder currentEnemyPathfinder = Instantiate(testEnemySO.enemyPrefab, spawnPosition, Quaternion.identity).GetComponent<EnemyPathfinder>();
 
         // Get the path from the GridManager
         if (GridManager.Instance.GetMainVortexPosition() is GridMapObject vortexNode) {
@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviour {
                 }
 
                 // Initialize the Glorplax (or any enemy) with the path
-                glorplax.InitializePath(path);
+                currentEnemyPathfinder.InitializePath(path);
             }
         }
     }

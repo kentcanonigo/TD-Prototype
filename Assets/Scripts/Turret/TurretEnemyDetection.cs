@@ -76,7 +76,7 @@ public class TurretEnemyDetection : MonoBehaviour {
         // Ensure we unsubscribe from the event to avoid memory leaks
         if (enemyTransform.TryGetComponent(out IHasHealth enemy)) {
             Debug.Log("Unsubscribing from enemy death event");
-            enemy.OnEnemyDeath -= HandleEnemyDeath; // Unsubscribe from the event
+            enemy.OnDeath -= HandleEnemyDeath; // Unsubscribe from the event
         }
     }
 }
