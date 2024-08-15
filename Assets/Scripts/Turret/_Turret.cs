@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Turret : MonoBehaviour {
+public class _Turret : MonoBehaviour {
     [Header("Turret Stats")]
     [SerializeField] protected TurretSO turretSO;
 
@@ -29,10 +29,10 @@ public abstract class Turret : MonoBehaviour {
         // Assign turret stats from the ScriptableObject
         damage = turretSO.damage;
         range = turretSO.range;
-        isSplashDamage = turretSO.isSplashDamage;
-        splashDamageRadius = turretSO.splashDamageRadius;
-        cost = turretSO.cost;
-        upgradeCosts = turretSO.upgradeCosts;
+        //isSplashDamage = turretSO.isSplashDamage;
+        //splashDamageRadius = turretSO.splashDamageRadius;
+        //cost = turretSO.cost;
+        //upgradeCosts = turretSO.upgradeCosts;
         enemiesInRange = new List<Transform>();
 
         // Add a sphere collider to detect enemies in range

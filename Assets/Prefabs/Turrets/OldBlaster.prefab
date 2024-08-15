@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5112260889187591201}
   - component: {fileID: 3247297407660058429}
   m_Layer: 0
-  m_Name: Blaster
+  m_Name: OldBlaster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51,6 +51,7 @@ MonoBehaviour:
   pivotPoint: {fileID: 5382909962325542222}
   projectilePrefab: {fileID: 3046629601867426023, guid: b085c87b4741c314e8190df67f603a6c, type: 3}
   rotationSpeed: 0
+  damage: 0
   targetingPreference: 0
   rateOfFire: 1
 --- !u!50 &3247297407660058429
