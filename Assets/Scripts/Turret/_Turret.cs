@@ -27,8 +27,8 @@ public class _Turret : MonoBehaviour {
 
     protected virtual void Start() {
         // Assign turret stats from the ScriptableObject
-        damage = turretSO.damage;
-        range = turretSO.range;
+        damage = turretSO.baseDamage;
+        range = turretSO.baseRange;
         //isSplashDamage = turretSO.isSplashDamage;
         //splashDamageRadius = turretSO.splashDamageRadius;
         //cost = turretSO.cost;

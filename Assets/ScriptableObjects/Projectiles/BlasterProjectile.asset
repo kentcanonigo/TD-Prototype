@@ -9,14 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e425dbb11d18514b9f90707ba37da13, type: 3}
-  m_Name: Blaster
+  m_Script: {fileID: 11500000, guid: 71aa738dee484f3a8922b061e817b973, type: 3}
+  m_Name: BlasterProjectile
   m_EditorClassIdentifier: 
-  turretName: Blaster
-  turretDescription: Pew pew
-  turretPrefab: {fileID: 0}
-  baseDamage: 10
-  baseRange: 2
-  baseCost: 10
-  baseFireRate: 1
-  baseRotationSpeed: 1
+  projectilePrefab: {fileID: 3046629601867426023, guid: b085c87b4741c314e8190df67f603a6c, type: 3}
+  damageTypeSO: {fileID: 11400000, guid: 184079cd339a95a4caeef63fb4649c22, type: 2}

@@ -6,6 +6,4 @@ using UnityEngine;
 public class ProjectileSO : ScriptableObject {
     public GameObject projectilePrefab;
     public DamageTypeSO damageTypeSO;
-    public int baseDamage = 1;
-    public float baseSpeed = 10f;
 }

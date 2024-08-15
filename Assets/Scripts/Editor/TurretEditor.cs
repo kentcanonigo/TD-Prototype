@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(Turret), true)] // This allows it to work with derived classes
-public class TurretBaseEditor : Editor {
+public class TurretEditor : Editor {
     public override void OnInspectorGUI() {
         // Get the TurretBase instance
         Turret turret = (Turret)target;
@@ -12,26 +12,26 @@ public class TurretBaseEditor : Editor {
         iterator.NextVisible(true); // Skip the "Script" field
 
         while (iterator.NextVisible(false)) {
-            if (iterator.name == "turretSO") {
+            if (iterator.name == "TurretSO") {
                 // Draw the TurretSO field
                 EditorGUILayout.PropertyField(iterator, new GUIContent("Turret Stats Scriptable Object"));
                 
                 // Get the assigned TurretSO
-                TurretSO turretSO = (TurretSO)iterator.objectReferenceValue;
+                TurretSO TurretSO = (TurretSO)iterator.objectReferenceValue;
 
-                if (turretSO != null) {
+                if (TurretSO != null) {
                     EditorGUILayout.Space();
                     EditorGUILayout.LabelField("Turret Stats (Read-Only)", EditorStyles.boldLabel);
 
                     // Display the fields from the ScriptableObject as read-only
                     EditorGUI.BeginDisabledGroup(true); // Disable editing
-                    EditorGUILayout.TextField("Turret Name", turretSO.turretName);
-                    EditorGUILayout.TextField("Turret Description", turretSO.turretDescription);
-                    EditorGUILayout.IntField("Damage", turretSO.damage);
-                    EditorGUILayout.FloatField("Range", turretSO.range);
-                    EditorGUILayout.IntField("Cost", turretSO.cost);
-                    EditorGUILayout.FloatField("Fire Rate", turretSO.fireRate);
-                    EditorGUILayout.FloatField("Rotation Speed", turretSO.rotationSpeed);
+                    EditorGUILayout.TextField("Turret Name", TurretSO.turretName);
+                    EditorGUILayout.TextField("Turret Description", TurretSO.turretDescription);
+                    EditorGUILayout.IntField("Damage", TurretSO.baseDamage);
+                    EditorGUILayout.FloatField("Range", TurretSO.baseRange);
+                    EditorGUILayout.IntField("Cost", TurretSO.baseCost);
+                    EditorGUILayout.FloatField("Fire Rate", TurretSO.baseFireRate);
+                    EditorGUILayout.FloatField("Rotation Speed", TurretSO.baseRotationSpeed);
                     EditorGUI.EndDisabledGroup(); // Re-enable editing
                 } else {
                     EditorGUILayout.HelpBox("TurretSO is not assigned.", MessageType.Warning);
