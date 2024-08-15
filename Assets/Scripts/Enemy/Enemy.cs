@@ -51,4 +51,29 @@ public class Enemy : MonoBehaviour, IHasHealth {
         OnDeath?.Invoke(transform, EventArgs.Empty);
         Destroy(gameObject); // Destroy the enemy GameObject
     }
+    
+    public void SetHealth(int health) {
+        TotalHealthPoints = health;
+        HealthPoints = health;
+        OnHealthChanged?.Invoke(this, new IHasHealth.OnHealthChangedEventArgs {
+            healthNormalized = (float)HealthPoints / TotalHealthPoints
+        });
+    }
+    
+    public void SetArmor(int armor) {
+        Armor = armor;
+    }
+    
+    public void SetSpeed(float speed) {
+        Speed = speed;
+    }
+    
+    public void SetSizeMultiplier(float sizeMultiplier) {
+        SizeMultiplier = sizeMultiplier;
+        transform.localScale *= SizeMultiplier;
+    }
+    
+    public void SetDamageToCore(int damageToCore) {
+        DamageToCore = damageToCore;
+    }
 }
