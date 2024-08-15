@@ -105,7 +105,7 @@ public class _Turret : MonoBehaviour {
                 GameObject projectileGO = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
                 Projectile projectile = projectileGO.GetComponent<Projectile>();
                 if (projectile != null) {
-                    projectile.SetData(damage, 1);
+                    projectile.SetBaseData(damage, 1);
                     Debug.Log($"Shot fired towards {currentTarget.name} with damage: {damage}");
                 } else {
                     Debug.LogError("Projectile prefab does not have a Projectile component.");

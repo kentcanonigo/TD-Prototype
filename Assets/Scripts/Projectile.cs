@@ -9,7 +9,7 @@ public class Projectile : MonoBehaviour {
     public GameObject impactEffect;
 
     // Set up the projectile's damage
-    public void SetData(int damage, int speed) {
+    public void SetBaseData(int damage, float speed) {
         this.damage = damage;
         this.speed = speed;
     }
