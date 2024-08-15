@@ -3,49 +3,66 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour {
     private int damage;
-
-    public float speed;
-    public float timeToDestroySelf = 20f;
-    public GameObject impactEffect;
+    private float speed;
+    [SerializeField] public ProjectileSO projectileSO;
+    private float timer;
 
     // Set up the projectile's damage
-    public void SetData(int damage, int speed) {
+    public void SetBaseData(int damage, float speed) {
         this.damage = damage;
         this.speed = speed;
     }
 
+    private void Start() {
+        timer = projectileSO.expireTime;
+    }
+
     private void Update() {
-        timeToDestroySelf -= Time.deltaTime;
-        if (timeToDestroySelf < 0) {
+        timer -= Time.deltaTime;
+        if (timer < 0) {
             Destroy(gameObject);
         }
     }
 
-    // FixedUpdate for consistent physics calculations
     void FixedUpdate() {
         // Move the projectile forward based on its speed in the direction it is facing
         transform.Translate(Vector3.right * (speed * Time.fixedDeltaTime));
     }
 
+    bool hasHit = false;
+    
     // Trigger collision detection
     void OnTriggerEnter2D(Collider2D collision) {
         IHasHealth targetHealth = collision.GetComponent<IHasHealth>();
-        if (targetHealth != null) {
-            HitTarget(targetHealth);
-        } else {
-            // Handle cases where the projectile hits something else, like terrain or obstacles
-            Destroy(gameObject);
+        if (!hasHit) {
+            if (targetHealth != null) {
+                SpawnParticles(collision.GetComponent<Transform>().position);
+                HitTarget(targetHealth);
+            } else {
+                // Handle cases where the projectile hits something else, like terrain or obstacles
+                Destroy(gameObject);
+            }
+            hasHit = true;
         }
     }
 
     // Handle hitting the target
     void HitTarget(IHasHealth targetHealth) {
         targetHealth.TakeDamage(damage);
-
-        if (impactEffect != null) {
-            Instantiate(impactEffect, transform.position, transform.rotation);
-        }
-
+        
         Destroy(gameObject); // Destroy the projectile after it hits the target
+    }
+
+    private void SpawnParticles(Vector3 hitPosition) {
+        if (projectileSO.damageTypeSO.damageTypeEffect != null) {
+            // Calculate the direction from the hit position to the projectile's position
+            Vector3 direction = (transform.position - hitPosition).normalized;
+        
+            // Calculate the rotation to face the opposite direction
+            Quaternion spawnRotation = Quaternion.LookRotation(Vector3.forward, direction);
+        
+            // Instantiate the particle effect at the projectile's position with the calculated rotation
+            Instantiate(projectileSO.damageTypeSO.damageTypeEffect, transform.position, spawnRotation);
+        }
     }
 }

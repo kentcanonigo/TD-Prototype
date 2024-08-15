@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   turretName: Blaster
   turretDescription: Pew pew
-  turretPrefab: {fileID: 0}
-  damage: 10
-  range: 5
-  isSplashDamage: 0
-  splashDamageRadius: 2
-  cost: 10
-  upgradeCosts: 14000000280000003c00000050000000
+  turretPrefab: {fileID: 504774227951090818, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
+  baseDamage: 10
+  baseRange: 5
+  baseCost: 10
+  baseFireRate: 1
+  baseFireCooldown: 1
+  baseRotationSpeed: 2
+  baseProjectileSpeed: 5

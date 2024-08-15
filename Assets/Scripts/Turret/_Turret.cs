@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Turret : MonoBehaviour {
+public class _Turret : MonoBehaviour {
     [Header("Turret Stats")]
     [SerializeField] protected TurretSO turretSO;
 
@@ -27,12 +27,12 @@ public abstract class Turret : MonoBehaviour {
 
     protected virtual void Start() {
         // Assign turret stats from the ScriptableObject
-        damage = turretSO.damage;
-        range = turretSO.range;
-        isSplashDamage = turretSO.isSplashDamage;
-        splashDamageRadius = turretSO.splashDamageRadius;
-        cost = turretSO.cost;
-        upgradeCosts = turretSO.upgradeCosts;
+        damage = turretSO.baseDamage;
+        range = turretSO.baseRange;
+        //isSplashDamage = turretSO.isSplashDamage;
+        //splashDamageRadius = turretSO.splashDamageRadius;
+        //cost = turretSO.cost;
+        //upgradeCosts = turretSO.upgradeCosts;
         enemiesInRange = new List<Transform>();
 
         // Add a sphere collider to detect enemies in range
@@ -105,7 +105,7 @@ public abstract class Turret : MonoBehaviour {
                 GameObject projectileGO = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
                 Projectile projectile = projectileGO.GetComponent<Projectile>();
                 if (projectile != null) {
-                    projectile.SetData(damage, 1);
+                    projectile.SetBaseData(damage, 1);
                     Debug.Log($"Shot fired towards {currentTarget.name} with damage: {damage}");
                 } else {
                     Debug.LogError("Projectile prefab does not have a Projectile component.");
