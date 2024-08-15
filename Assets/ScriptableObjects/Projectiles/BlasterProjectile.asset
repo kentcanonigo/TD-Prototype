@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 3046629601867426023, guid: b085c87b4741c314e8190df67f603a6c, type: 3}
   damageTypeSO: {fileID: 11400000, guid: 184079cd339a95a4caeef63fb4649c22, type: 2}
+  expireTime: 20

@@ -55,9 +55,15 @@ public class TurretEnemyDetection : MonoBehaviour {
         rangeCollider.isTrigger = true;
         rangeCollider.radius = turret.BaseRange;
     }
+    
+    private float checkInterval = 0.5f; // seconds
+    private float nextCheckTime = 0f;
 
     private void Update() {
-        CheckEnemiesInRange();
+        if (Time.time >= nextCheckTime) {
+            CheckEnemiesInRange();
+            nextCheckTime = Time.time + checkInterval; // Set next check time
+        }
     }
     
     // Needed for overlap circle
@@ -76,8 +82,18 @@ public class TurretEnemyDetection : MonoBehaviour {
             // Check if the collider has the IEnemy component
             if (overlapResults[i].TryGetComponent(out IHasHealth enemy)) {
                 EnemiesInRange.Add(overlapResults[i].transform);
+                enemy.OnEnemyDeath += HandleEnemyDeath; // Subscribe to the death event
                 //Debug.Log($"Enemy in range: {overlapResults[i].name}");
             }
+        }
+    }
+
+    private void HandleEnemyDeath(Transform enemyTransform, EventArgs args) {
+        EnemiesInRange.Remove(enemyTransform);
+        
+        // Ensure we unsubscribe from the event to avoid memory leaks
+        if (enemyTransform.TryGetComponent(out IHasHealth enemy)) {
+            enemy.OnEnemyDeath -= HandleEnemyDeath; // Unsubscribe from the event
         }
     }
 }

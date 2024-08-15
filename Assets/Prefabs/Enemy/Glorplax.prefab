@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2113267460017666046}
   - component: {fileID: 3353721738059540082}
   - component: {fileID: 1165074457455198392}
-  - component: {fileID: 2047626695878937028}
+  - component: {fileID: 64856141658281738}
   m_Layer: 7
   m_Name: Glorplax
   m_TagString: Enemy
@@ -75,8 +75,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!58 &2047626695878937028
-CircleCollider2D:
+--- !u!70 &64856141658281738
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -107,9 +107,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.5
+  m_Offset: {x: 0.040976584, y: -0.040976465}
+  m_Size: {x: 0.6365887, y: 0.9180471}
+  m_Direction: 0
 --- !u!1001 &936793156137939410
 PrefabInstance:
   m_ObjectHideFlags: 0

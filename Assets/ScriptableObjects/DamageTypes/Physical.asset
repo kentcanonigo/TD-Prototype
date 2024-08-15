@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02ba8cfb66f8430ba156392a0bfdbe21, type: 3}
   m_Name: Physical
   m_EditorClassIdentifier: 
-  damageTypeEffect: {fileID: 0}
+  damageTypeEffect: {fileID: 5315006306170867441, guid: 9321d4b00e5123a4db38253b6443ea0e, type: 3}

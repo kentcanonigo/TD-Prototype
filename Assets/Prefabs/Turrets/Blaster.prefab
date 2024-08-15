@@ -63,7 +63,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pivotPoint: {fileID: 3228933578658570493}
-  <IsAutoAim>k__BackingField: 0
+  aimSmoothing: 2
+  rotationSpeedMultiplier: 2
+  <IsAutoAim>k__BackingField: 1
 --- !u!114 &6473297854900932289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78,8 +80,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firePoint: {fileID: 6622198991674229746}
   projectileSO: {fileID: 11400000, guid: 9a07868536b83144ab1c7accd05e53c3, type: 2}
-  <ShootAlways>k__BackingField: 0
-  angleThreshold: 20
+  shootAlways: 1
+  angleThreshold: 5
 --- !u!114 &8427924058008417009
 MonoBehaviour:
   m_ObjectHideFlags: 0

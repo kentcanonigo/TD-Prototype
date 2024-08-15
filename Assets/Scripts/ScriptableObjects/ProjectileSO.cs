@@ -6,4 +6,5 @@ using UnityEngine;
 public class ProjectileSO : ScriptableObject {
     public GameObject projectilePrefab;
     public DamageTypeSO damageTypeSO;
+    public float expireTime;
 }

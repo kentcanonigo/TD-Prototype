@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class TurretAiming : MonoBehaviour {
     [SerializeField] private Transform pivotPoint; // Where to pivot the gun
@@ -14,8 +15,7 @@ public class TurretAiming : MonoBehaviour {
         Slerp,
         Lerp,
     }
-    
-    
+
     [field: SerializeField] public bool IsAutoAim { get; private set; }
     private Turret turret;
     private TurretTargetSelection turretTargetSelection;
@@ -28,7 +28,13 @@ public class TurretAiming : MonoBehaviour {
     private void Update() {
         if (IsAutoAim) {
             // Aim at the selected target
-            AimAtEnemy(turretTargetSelection.SelectedTarget, turret.BaseRotationSpeed);
+            if (turretTargetSelection.SelectedTarget) {
+                // Turret has a target
+                AimAtEnemy(turretTargetSelection.SelectedTarget, turret.BaseRotationSpeed);
+            } else {
+                // Turret has not target, idle around
+                IdleRotation();
+            }
         } else {
             // Autoaim is disabled, manually aim at the target
         }
@@ -65,11 +71,32 @@ public class TurretAiming : MonoBehaviour {
         }
     }
 
-    public bool IsCloseToTarget(float angleDifference) {
-        angleDifference = Quaternion.Angle(pivotPoint.rotation, targetRotation);
-        if (angleDifference < 20f) { // Adjust the angle threshold as needed
-            return true;
+    public bool IsCloseToTarget(float threshold) {
+        if (!turretTargetSelection.SelectedTarget) return false;
+
+        Vector3 directionToTarget = turretTargetSelection.SelectedTarget.position - pivotPoint.position;
+        float targetAngle = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
+        float angleDifference = Mathf.Abs(Mathf.DeltaAngle(pivotPoint.eulerAngles.z, targetAngle));
+
+        return angleDifference <= threshold;
+    }
+
+    private float idleRotationTimer = 5f;
+    private float idleRotationInterval = 10f; // Change direction every 3 seconds
+    private Quaternion randomRotation;
+
+    protected virtual void IdleRotation() {
+        idleRotationTimer -= Time.deltaTime;
+        if (idleRotationTimer <= 0f) {
+            // Generate a new random rotation on the Z axis
+            float randomAngle = Random.Range(0f, 360f);
+            randomRotation = Quaternion.Euler(0f, 0f, randomAngle);
+
+            idleRotationTimer = idleRotationInterval; // Reset the timer
+            //Debug.Log($"Idle rotation: New random angle = {randomAngle}");
         }
-        return false;
+
+        // Smoothly rotate towards the random direction
+        pivotPoint.rotation = Quaternion.RotateTowards(pivotPoint.rotation, randomRotation, Time.deltaTime * 30f);
     }
 }

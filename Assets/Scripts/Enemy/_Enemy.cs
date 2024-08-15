@@ -16,6 +16,7 @@ public abstract class Enemy : MonoBehaviour, IHasHealth {
     public int HealthPoints => healthPoints; // Implementing the HealthPoints property
     public int Armor => armor; // Implementing the Armor property
     public bool IsDead => healthPoints <= 0; // Implementing IsDead property
+    public event EnemyDeathHandler<Transform> OnEnemyDeath;
 
     protected List<Vector3> path; // List of positions for the enemy to follow
     protected int currentPathIndex; // Index of the current path position
@@ -94,6 +95,7 @@ public abstract class Enemy : MonoBehaviour, IHasHealth {
     public virtual void Kill() {
         // Handle enemy death (e.g., play death animation, destroy the object)
         //Debug.Log($"{gameObject.name} died!");
+        OnEnemyDeath?.Invoke(transform, EventArgs.Empty);
         Destroy(gameObject); // Destroy the enemy GameObject
     }
 

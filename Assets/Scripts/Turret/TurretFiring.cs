@@ -48,10 +48,18 @@ public class TurretFiring : MonoBehaviour, IFireable {
 
     private bool ShouldShoot() {
         if (shootAlways) {
-            return true; // Always shoot if the boolean is true
+            //Debug.Log("Shooting always is enabled.");
+            return true;
         }
-        // If not always shooting, check if the turret is close to the target
-        return turretAiming.IsCloseToTarget(angleThreshold);
+
+        if (turretTargetSelection.SelectedTarget != null) {
+            bool closeToTarget = turretAiming.IsCloseToTarget(angleThreshold);
+            //Debug.Log($"Is close to target: {closeToTarget}");
+            return closeToTarget;
+        }
+
+        //Debug.Log("No target selected.");
+        return false;
     }
 
     public void Fire() {

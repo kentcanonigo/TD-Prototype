@@ -1,11 +1,8 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(TurretEnemyDetection))]
 public class TurretTargetSelection : MonoBehaviour {
-
     private TurretEnemyDetection turretEnemyDetection;
     public Transform SelectedTarget { get; private set; }
 
@@ -22,9 +19,13 @@ public class TurretTargetSelection : MonoBehaviour {
     }
 
     public void SelectTarget() {
+        // Ensure the selected target is still valid
+        if (SelectedTarget && SelectedTarget.GetComponent<IHasHealth>() == null) {
+            SelectedTarget = null; // Clear the target if it no longer exists
+        }
+
         if (turretEnemyDetection.EnemiesInRange.Count <= 0) {
             SelectedTarget = null;
-            //Debug.Log("No enemies in range to select.");
             return;
         }
 
@@ -89,8 +90,8 @@ public class TurretTargetSelection : MonoBehaviour {
     }
 
     private Transform GetHighestHealthTarget() {
-        Transform highestHealthTarget = SelectedTarget; // Start with the current target
-        int maxHealth = highestHealthTarget ? highestHealthTarget.GetComponent<IHasHealth>().HealthPoints : 0;
+        Transform highestHealthTarget = null;
+        float maxHealth = 0f;
         int priorityThreshold = 10; // Larger margin to switch targets
 
         foreach (Transform enemy in turretEnemyDetection.EnemiesInRange) {
@@ -99,7 +100,7 @@ public class TurretTargetSelection : MonoBehaviour {
                 int enemyHealth = healthComponent.HealthPoints;
 
                 // If current target is valid and within tolerance, keep it
-                if (highestHealthTarget != null && enemy == highestHealthTarget) {
+                if (highestHealthTarget && enemy == highestHealthTarget) {
                     continue; // Skip checking the current target, it's already selected
                 }
 
@@ -109,7 +110,7 @@ public class TurretTargetSelection : MonoBehaviour {
                     highestHealthTarget = enemy;
                 }
                 // If this enemy's health is within the priority threshold and there's no other target with significantly higher health, prefer the current target
-                else if (enemyHealth > maxHealth && enemyHealth <= maxHealth + priorityThreshold && highestHealthTarget == null) {
+                else if (enemyHealth > maxHealth && enemyHealth <= maxHealth + priorityThreshold && !highestHealthTarget) {
                     highestHealthTarget = enemy;
                 }
             }
@@ -117,6 +118,4 @@ public class TurretTargetSelection : MonoBehaviour {
 
         return highestHealthTarget;
     }
-
-
 }
