@@ -23,7 +23,7 @@ public class TurretFiring : MonoBehaviour, IFireable {
         turret = GetComponent<Turret>();
         turretAiming = GetComponent<TurretAiming>();
         turretTargetSelection = GetComponent<TurretTargetSelection>();
-        fireCooldown = turret.BaseFireCooldown;
+        fireCooldown = turret.BaseFireRate;
 
         if (turretAiming) {
             isAutoAim = turretAiming.IsAutoAim;

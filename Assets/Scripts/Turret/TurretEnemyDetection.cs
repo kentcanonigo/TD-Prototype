@@ -9,6 +9,7 @@ public class TurretEnemyDetection : MonoBehaviour {
     public List<Transform> EnemiesInRange { get; private set; }
 
     private CircleCollider2D rangeCollider;
+    private float lastBaseRange; // Cache the last base range
 
     private Turret turret;
 
@@ -18,19 +19,19 @@ public class TurretEnemyDetection : MonoBehaviour {
     private Color rangeColor;
     
     private void OnEnable() {
-        UpdateTurretSO(); // Initial update
+        UpdateGizmos(); // Initial update
     }
 
     public void OnValidate() {
-        UpdateTurretSO(); // Call to update the turretSO when OnValidate is triggered
+        UpdateGizmos(); // Call to update the turretSO when OnValidate is triggered
     }
     
-    private void UpdateTurretSO() {
+    private void UpdateGizmos() {
         // Find the Turret component in the parent or sibling objects
         turret = GetComponent<Turret>();
-        if (turret != null) {
-            detectionRangeGizmo = turret.TurretSO != null ? turret.TurretSO.baseRange : 0f; // Set detection range
-            rangeColor = turret.TurretSO != null ? Color.green : Color.red;
+        if (turret) {
+            detectionRangeGizmo = turret.TurretSO ? turret.TurretSO.baseRange : 0f; // Set detection range
+            rangeColor = turret.TurretSO ? Color.green : Color.red;
         }
     }
 
@@ -50,6 +51,14 @@ public class TurretEnemyDetection : MonoBehaviour {
     private void Start() {
         rangeCollider.isTrigger = true;
         rangeCollider.radius = turret.BaseRange;
+    }
+
+    private void Update() {
+        if (Mathf.Abs(turret.BaseRange - lastBaseRange) > Mathf.Epsilon) {
+            rangeCollider.radius = turret.BaseRange; // Update the collider's radius
+            lastBaseRange = turret.BaseRange; // Cache the new value
+            detectionRangeGizmo = lastBaseRange;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
