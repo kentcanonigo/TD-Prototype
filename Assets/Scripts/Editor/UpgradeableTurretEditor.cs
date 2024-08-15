@@ -1,11 +1,11 @@
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(Turret), true)] // This allows it to work with derived classes
-public class TurretEditor : Editor {
+[CustomEditor(typeof(UpgradeableTurret), true)] // This allows it to work with derived classes
+public class UpgradeableTurretEditor : Editor {
     public override void OnInspectorGUI() {
         // Get the Turret instance
-        Turret turret = (Turret)target;
+        UpgradeableTurret turret = (UpgradeableTurret)target;
 
         // Start iterating over the properties of the serialized object
         SerializedProperty iterator = serializedObject.GetIterator();
@@ -45,7 +45,9 @@ public class TurretEditor : Editor {
                         EditorGUI.EndDisabledGroup();
                         turret.BaseDamage = EditorGUILayout.IntField("Damage", turret.BaseDamage);
                         turret.BaseRange = EditorGUILayout.FloatField("Range", turret.BaseRange);
+                        EditorGUILayout.LabelField("The upgrade cost is absolute when saved!", EditorStyles.boldLabel);
                         turret.BaseCost = EditorGUILayout.IntField("Cost", turret.BaseCost);
+                        EditorGUILayout.Space();
                         turret.BaseFireRate = EditorGUILayout.FloatField("Fire Rate", turret.BaseFireRate);
                         turret.BaseRotationSpeed = EditorGUILayout.FloatField("Rotation Speed", turret.BaseRotationSpeed);
                         turret.BaseProjectileSpeed = EditorGUILayout.FloatField("Projectile Speed", turret.BaseProjectileSpeed);
@@ -53,6 +55,11 @@ public class TurretEditor : Editor {
                         if (EditorGUI.EndChangeCheck()) {
                             // Mark the turret as dirty if any field has been modified
                             EditorUtility.SetDirty(turret);
+                        }
+
+                        // Show the export button
+                        if (GUILayout.Button("Export Turret Upgrade")) {
+                            ExportTurretUpgrade(turret);
                         }
                     }
                 } else {
@@ -66,5 +73,25 @@ public class TurretEditor : Editor {
 
         // Apply any property modifications
         serializedObject.ApplyModifiedProperties();
+    }
+
+    private void ExportTurretUpgrade(Turret turret) {
+        // Create a new instance of the TurretUpgradeSO
+        TurretUpgradeSO newUpgrade = ScriptableObject.CreateInstance<TurretUpgradeSO>();
+
+        // Calculate bonuses by subtracting base values from current turret values
+        newUpgrade.upgradeCost = turret.TurretSO.baseCost;
+        newUpgrade.bonusDamage = turret.BaseDamage - turret.TurretSO.baseDamage;
+        newUpgrade.bonusRange = turret.BaseRange - turret.TurretSO.baseRange;
+        newUpgrade.bonusFireRate = turret.BaseFireRate - turret.TurretSO.baseFireRate;
+        newUpgrade.bonusRotationSpeed = turret.BaseRotationSpeed - turret.TurretSO.baseRotationSpeed;
+        newUpgrade.bonusProjectileSpeed = turret.BaseProjectileSpeed - turret.TurretSO.baseProjectileSpeed;
+
+        // Save the new asset to the project
+        string path = $"Assets/ScriptableObjects/Turrets/{turret.TurretName} Upgrade.asset";
+        AssetDatabase.CreateAsset(newUpgrade, path);
+        AssetDatabase.SaveAssets();
+
+        EditorUtility.DisplayDialog("Export Complete", $"Turret Upgrade exported to {path}", "OK");
     }
 }

@@ -15,45 +15,34 @@ public class EnemyEditor : Editor {
             if (iterator.name == "enemySO") {
                 // Draw the EnemySO field
                 EditorGUILayout.PropertyField(iterator, new GUIContent("Enemy Stats Scriptable Object"));
-                
+
                 // Get the assigned EnemySO
                 EnemySO enemySO = (EnemySO)iterator.objectReferenceValue;
 
                 if (enemySO != null) {
-                    if (!EditorApplication.isPlaying) {
-                        EditorGUILayout.Space();
-                        EditorGUILayout.LabelField("Enemy Stats (Read-Only)", EditorStyles.boldLabel);
+                    EditorGUILayout.Space();
+                    EditorGUILayout.LabelField("Enemy Stats (Editable)", EditorStyles.boldLabel);
+                    EditorGUI.BeginDisabledGroup(true); // Disable editing
+                    EditorGUILayout.TextField("Enemy Name", enemySO.enemyName);
+                    EditorGUILayout.TextField("Enemy Description", enemySO.enemyDescription);
+                    EditorGUI.EndDisabledGroup(); // Re-enable editing
+                    // Allow editing of live values in play mode
+                    enemySO.healthPoints = EditorGUILayout.IntField("Health", enemySO.healthPoints);
+                    enemySO.armor = EditorGUILayout.IntField("Armor", enemySO.armor);
+                    enemySO.speed = EditorGUILayout.FloatField("Speed", enemySO.speed);
+                    enemySO.damageToCore = EditorGUILayout.IntField("Damage to Core", enemySO.damageToCore);
+                    enemySO.sizeMultiplier = EditorGUILayout.FloatField("Size Multiplier", enemySO.sizeMultiplier);
 
-                        // Display the fields from the ScriptableObject as read-only
-                        EditorGUI.BeginDisabledGroup(true); // Disable editing
-                        EditorGUILayout.TextField("Enemy Name", enemySO.enemyName);
-                        EditorGUILayout.TextField("Enemy Description", enemySO.enemyDescription);
-                        EditorGUILayout.TextField("Prefab", enemySO.enemyPrefab.name);
-                        EditorGUILayout.IntField("Health", enemySO.healthPoints);
-                        EditorGUILayout.IntField("Armor", enemySO.armor);
-                        EditorGUILayout.FloatField("Speed", enemySO.speed);
-                        EditorGUILayout.IntField("Damage to Core", enemySO.damageToCore);
-                        EditorGUILayout.FloatField("Size Multiplier", enemySO.sizeMultiplier);
-                        EditorGUI.EndDisabledGroup(); // Re-enable editing
-                    } else {
-                        
-                        EditorGUILayout.Space();
-                        EditorGUILayout.LabelField("Enemy Stats (Not saved)", EditorStyles.boldLabel);
-                        // Display the fields from the ScriptableObject as read-only
-                        EditorGUI.BeginDisabledGroup(true); // Disable editing
-                        EditorGUILayout.TextField("Enemy Name", enemySO.enemyName);
-                        EditorGUILayout.TextField("Enemy Description", enemySO.enemyDescription);
-                        EditorGUILayout.TextField("Prefab", enemySO.enemyPrefab.name);
-                        EditorGUI.EndDisabledGroup(); // Re-enable editing
-                        enemySO.healthPoints = EditorGUILayout.IntField("Health", enemySO.healthPoints);
-                        enemySO.armor = EditorGUILayout.IntField("Armor", enemySO.armor);
-                        enemySO.speed = EditorGUILayout.FloatField("Speed", enemySO.speed);
-                        enemySO.damageToCore = EditorGUILayout.IntField("Damage to Core", enemySO.damageToCore);
-                        enemySO.sizeMultiplier = EditorGUILayout.FloatField("Size Multiplier", enemySO.sizeMultiplier);
-                        
+                    if (EditorApplication.isPlaying) {
+                        // Show the Apply Changes button
                         if (GUILayout.Button("Apply Changes")) {
                             ApplyNewEnemyStats(enemy, enemySO.healthPoints, enemySO.armor, enemySO.speed, enemySO.damageToCore, enemySO.sizeMultiplier);
                         }
+                    }
+                   
+                    // Add Save Changes button
+                    if (GUILayout.Button("Save Changes")) {
+                        SaveEnemyStats(enemySO);
                     }
                 } else {
                     EditorGUILayout.HelpBox("EnemySO is not assigned.", MessageType.Warning);
@@ -77,19 +66,21 @@ public class EnemyEditor : Editor {
     }
 
     private void ApplyNewEnemyStats(Enemy enemy, int health, int armor, float speed, int damageToCore, float sizeMultiplier) {
-        Debug.Log("Applying new stats...");
         enemy.SetHealth(health);
         enemy.SetArmor(armor);
         enemy.SetSpeed(speed);
         enemy.SetDamageToCore(damageToCore);
         enemy.SetSizeMultiplier(sizeMultiplier);
-        Debug.Log($"New Health: {enemy.HealthPoints}, Armor: {enemy.Armor}");
-        Debug.Log($"Passed Health: {health}, Armor: {armor}");
-        
-        
-        serializedObject.ApplyModifiedProperties();
+
+        // Mark the enemy object as dirty
         EditorUtility.SetDirty(enemy);
-        serializedObject.Update();
     }
-    
+
+    private void SaveEnemyStats(EnemySO enemySO) {
+        // Debug.Log("Saving enemy stats...");
+        // Mark the ScriptableObject as dirty so changes are saved
+        EditorUtility.SetDirty(enemySO);
+        AssetDatabase.SaveAssets(); // Save the asset to disk
+        EditorUtility.DisplayDialog("Save Complete", $"Enemy stats exported to {AssetDatabase.GetAssetPath(enemySO)}", "OK");
+    }
 }

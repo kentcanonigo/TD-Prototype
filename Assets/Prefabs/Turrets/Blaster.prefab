@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8689549506225556376}
-  - component: {fileID: 1529503423998538379}
+  - component: {fileID: 496109351340924263}
   - component: {fileID: 7863552034139277022}
   - component: {fileID: 6473297854900932289}
   - component: {fileID: 8427924058008417009}
@@ -38,7 +38,7 @@ Transform:
   - {fileID: 5027308842891710721}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1529503423998538379
+--- !u!114 &496109351340924263
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -47,10 +47,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 504774227951090818}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fee76eaac7fd3e142970da27e90372bc, type: 3}
+  m_Script: {fileID: 11500000, guid: fd9c429c328c4254a376c2573d14b400, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   turretSO: {fileID: 11400000, guid: d53bd7d8d8c7acd428b661abdee51265, type: 2}
+  turretUpgradeSOList: []
 --- !u!114 &7863552034139277022
 MonoBehaviour:
   m_ObjectHideFlags: 0

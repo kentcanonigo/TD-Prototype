@@ -5,10 +5,10 @@ using Unity.Collections;
 using UnityEngine;
 
 [SelectionBase]
-public class UpgradableTurret : Turret, IUpgradable {
+public class UpgradeableTurret : Turret, IUpgradable {
     [field: Header("Turret Upgrades")]
-    [SerializeField] private TurretUpgradeSO[] turretUpgradeSOList; // The list of upgrades that can be applied to the turret
-
+    [SerializeField] private List<TurretUpgradeSO> turretUpgradeSOList; // The list of upgrades that can be applied to the turret
+    
     public void Upgrade() {
         throw new NotImplementedException();
     }
