@@ -7,8 +7,8 @@ public class TurretTargetSelection : MonoBehaviour {
     public Transform SelectedTarget { get; private set; }
 
     // Enum for targeting preferences
-    public enum TargetingPreference { Closest, Furthest, LowestHealth, HighestHealth }
-    public TargetingPreference targetingPreference;
+    public enum TargetingPreference { Closest, Furthest, LowestHealth, HighestHealth, FirstEntered, LastEntered }
+    public TargetingPreference targetingPreference = TargetingPreference.FirstEntered;
     
     private void Awake() {
         turretEnemyDetection = GetComponent<TurretEnemyDetection>();
@@ -42,7 +42,23 @@ public class TurretTargetSelection : MonoBehaviour {
             case TargetingPreference.HighestHealth:
                 SelectedTarget = GetHighestHealthTarget();
                 break;
+            case TargetingPreference.FirstEntered:
+                SelectedTarget = GetFirstEnteredTarget();
+                break;
+            case TargetingPreference.LastEntered:
+                SelectedTarget = GetLastEnteredTarget();
+                break;
         }
+    }
+    
+    private Transform GetFirstEnteredTarget() {
+        // Return the first enemy in the list if it exists
+        return turretEnemyDetection.EnemiesInRange.Count > 0 ? turretEnemyDetection.EnemiesInRange[0] : null;
+    }
+
+    private Transform GetLastEnteredTarget() {
+        // Return the last enemy in the list if it exists
+        return turretEnemyDetection.EnemiesInRange.Count > 0 ? turretEnemyDetection.EnemiesInRange[^1] : null;
     }
 
     private Transform GetClosestTarget() {

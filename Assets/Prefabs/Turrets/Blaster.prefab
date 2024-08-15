@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6473297854900932289}
   - component: {fileID: 8427924058008417009}
   - component: {fileID: 6925835890174874824}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Blaster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d5a2e861e80bf54490e6801e275d49b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetingPreference: 0
+  targetingPreference: 4
 --- !u!1001 &6259465584704021240
 PrefabInstance:
   m_ObjectHideFlags: 0

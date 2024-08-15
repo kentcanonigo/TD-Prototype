@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Turret))]
+[RequireComponent(typeof(Turret))] [RequireComponent(typeof(CircleCollider2D))]
 public class TurretEnemyDetection : MonoBehaviour {
     [field: Header("Enemy Detection List")]
     public List<Transform> EnemiesInRange { get; private set; }
+
+    private CircleCollider2D rangeCollider;
 
     private Turret turret;
 
@@ -41,50 +43,30 @@ public class TurretEnemyDetection : MonoBehaviour {
     
     private void Awake() {
         turret = GetComponent<Turret>();
+        rangeCollider = GetComponent<CircleCollider2D>();
         EnemiesInRange = new List<Transform>();
-        overlapResults = new List<Collider2D>();
-        contactFilter = new ContactFilter2D {
-            useTriggers = true,
-            layerMask = LayerMask.GetMask("Enemies"),
-            useLayerMask = true
-        };
     }
 
     private void Start() {
-        CircleCollider2D rangeCollider = gameObject.AddComponent<CircleCollider2D>();
         rangeCollider.isTrigger = true;
         rangeCollider.radius = turret.BaseRange;
     }
-    
-    private float checkInterval = 0.5f; // seconds
-    private float nextCheckTime = 0f;
 
-    private void Update() {
-        if (Time.time >= nextCheckTime) {
-            CheckEnemiesInRange();
-            nextCheckTime = Time.time + checkInterval; // Set next check time
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.TryGetComponent(out IHasHealth enemy)) {
+            // Add the enemy to the list when it enters the trigger
+            EnemiesInRange.Add(collision.transform);
+            // Optionally, subscribe to the enemy's death event here
+            //enemy.OnEnemyDeath += HandleEnemyDeath;
         }
     }
-    
-    // Needed for overlap circle
-    
-    private List<Collider2D> overlapResults;
-    private ContactFilter2D contactFilter;
-    
-    private void CheckEnemiesInRange() {
-        // Clear the current list of enemies
-        EnemiesInRange.Clear();
 
-        // Use OverlapCircle with the contact filter
-        int colliderCount = Physics2D.OverlapCircle(transform.position, turret.BaseRange, contactFilter, overlapResults);
-
-        for (int i = 0; i < colliderCount; i++) {
-            // Check if the collider has the IEnemy component
-            if (overlapResults[i].TryGetComponent(out IHasHealth enemy)) {
-                EnemiesInRange.Add(overlapResults[i].transform);
-                enemy.OnEnemyDeath += HandleEnemyDeath; // Subscribe to the death event
-                //Debug.Log($"Enemy in range: {overlapResults[i].name}");
-            }
+    private void OnTriggerExit2D(Collider2D collision) {
+        if (collision.TryGetComponent(out IHasHealth enemy)) {
+            // Remove the enemy from the list when it exits the trigger
+            EnemiesInRange.Remove(collision.transform);
+            // Optionally, unsubscribe from the enemy's death event here
+            //enemy.OnEnemyDeath -= HandleEnemyDeath;
         }
     }
 
@@ -93,6 +75,7 @@ public class TurretEnemyDetection : MonoBehaviour {
         
         // Ensure we unsubscribe from the event to avoid memory leaks
         if (enemyTransform.TryGetComponent(out IHasHealth enemy)) {
+            Debug.Log("Unsubscribing from enemy death event");
             enemy.OnEnemyDeath -= HandleEnemyDeath; // Unsubscribe from the event
         }
     }

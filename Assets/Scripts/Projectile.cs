@@ -29,15 +29,20 @@ public class Projectile : MonoBehaviour {
         transform.Translate(Vector3.right * (speed * Time.fixedDeltaTime));
     }
 
+    bool hasHit = false;
+    
     // Trigger collision detection
     void OnTriggerEnter2D(Collider2D collision) {
         IHasHealth targetHealth = collision.GetComponent<IHasHealth>();
-        if (targetHealth != null) {
-            SpawnParticles(collision.GetComponent<Transform>().position);
-            HitTarget(targetHealth);
-        } else {
-            // Handle cases where the projectile hits something else, like terrain or obstacles
-            Destroy(gameObject);
+        if (!hasHit) {
+            if (targetHealth != null) {
+                SpawnParticles(collision.GetComponent<Transform>().position);
+                HitTarget(targetHealth);
+            } else {
+                // Handle cases where the projectile hits something else, like terrain or obstacles
+                Destroy(gameObject);
+            }
+            hasHit = true;
         }
     }
 
