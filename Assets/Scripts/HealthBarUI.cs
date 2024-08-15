@@ -14,7 +14,7 @@ public class HealthBarUI : MonoBehaviour {
         Hide();
     }
 
-    private void Enemy_OnHealthChanged(object sender, Enemy.OnHealthChangedEventArgs e) {
+    private void Enemy_OnHealthChanged(object sender, IHasHealth.OnHealthChangedEventArgs e) {
         barImage.fillAmount = e.healthNormalized;
 
         if (e.healthNormalized is 0f or 1f) {

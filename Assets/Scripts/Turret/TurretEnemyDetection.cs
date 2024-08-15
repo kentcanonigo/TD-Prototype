@@ -53,30 +53,27 @@ public class TurretEnemyDetection : MonoBehaviour {
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.TryGetComponent(out IHasHealth enemy)) {
+        // Get the top-level parent object that has the IHasHealth component
+        Transform parent = collision.transform.root;
+
+        if (parent.TryGetComponent(out IHasHealth enemy)) {
             // Add the enemy to the list when it enters the trigger
-            EnemiesInRange.Add(collision.transform);
+            EnemiesInRange.Add(parent);
             // Optionally, subscribe to the enemy's death event here
             //enemy.OnEnemyDeath += HandleEnemyDeath;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
-        if (collision.TryGetComponent(out IHasHealth enemy)) {
+        // Get the top-level parent object that has the IHasHealth component
+        Transform parent = collision.transform.root;
+
+        if (parent.TryGetComponent(out IHasHealth enemy)) {
             // Remove the enemy from the list when it exits the trigger
-            EnemiesInRange.Remove(collision.transform);
+            EnemiesInRange.Remove(parent);
             // Optionally, unsubscribe from the enemy's death event here
             //enemy.OnEnemyDeath -= HandleEnemyDeath;
         }
     }
 
-    private void HandleEnemyDeath(Transform enemyTransform, EventArgs args) {
-        EnemiesInRange.Remove(enemyTransform);
-        
-        // Ensure we unsubscribe from the event to avoid memory leaks
-        if (enemyTransform.TryGetComponent(out IHasHealth enemy)) {
-            Debug.Log("Unsubscribing from enemy death event");
-            enemy.OnDeath -= HandleEnemyDeath; // Unsubscribe from the event
-        }
-    }
 }

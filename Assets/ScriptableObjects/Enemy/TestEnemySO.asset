@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82eb4be55c9c8b64d9c3a07dcb00b11f, type: 3}
-  m_Name: Glorplax
+  m_Name: TestEnemySO
   m_EditorClassIdentifier: 
   enemyName: Glorplax
   enemyDescription: A cute lil boi
   enemyPrefab: {fileID: 511332154934885617, guid: 3802f198f5bccdc48ac888c4204912b0, type: 3}
-  healthPoints: 25
+  healthPoints: 50
   armor: 0
   speed: 1
   damageToCore: 1

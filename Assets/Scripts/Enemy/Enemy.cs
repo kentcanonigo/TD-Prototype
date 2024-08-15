@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Enemy : MonoBehaviour, IHasHealth {
+[SelectionBase]
+public class Enemy : MonoBehaviour, IHasHealth {
     [Header("Enemy")]
     [SerializeField] private EnemySO enemySO; // Reference to the enemy stats ScriptableObject
 
@@ -13,15 +14,8 @@ public abstract class Enemy : MonoBehaviour, IHasHealth {
     public float SizeMultiplier { get; private set; } // SizeMultiplier; // Size multiplier of the enemy
     public int DamageToCore { get; private set; } // Damage that the enemy deals to the core
     public bool IsDead => HealthPoints <= 0; // Implementing IsDead property
-    public event DeathHandler<Transform> OnDeath;
-    
-
-    private Wiggle enemyWiggle;
-
-    public event EventHandler<OnHealthChangedEventArgs> OnHealthChanged;
-    public class OnHealthChangedEventArgs : EventArgs {
-        public float healthNormalized;
-    }
+    public event IHasHealth.DeathHandler<Transform> OnDeath;
+    public event EventHandler<IHasHealth.OnHealthChangedEventArgs> OnHealthChanged;
 
     private void Awake() {
         TotalHealthPoints = enemySO.healthPoints; // Set stats from the ScriptableObject
@@ -30,22 +24,18 @@ public abstract class Enemy : MonoBehaviour, IHasHealth {
         SizeMultiplier = enemySO.sizeMultiplier;
         DamageToCore = enemySO.damageToCore;
         HealthPoints = TotalHealthPoints;
-        enemyWiggle = gameObject.GetComponentInChildren<Wiggle>();
     }
 
     private void Start() {
-        enemyWiggle.animationLoopTime = enemySO.wiggleSpeed;
-        enemyWiggle.posRange = enemySO.wigglePosRange;
-        enemyWiggle.rotRange = enemySO.wiggleRotRange;
         transform.localScale *= SizeMultiplier;
     }
 
-    public virtual void TakeDamage(int damage) {
+    public void TakeDamage(int damage) {
         // Calculate actual damage after considering armor
         int actualDamage = Mathf.Max(damage - Armor, 0);
         HealthPoints -= actualDamage;
 
-        OnHealthChanged?.Invoke(this, new OnHealthChangedEventArgs {
+        OnHealthChanged?.Invoke(this, new IHasHealth.OnHealthChangedEventArgs {
             healthNormalized = (float)HealthPoints / TotalHealthPoints
         });
         
@@ -55,7 +45,7 @@ public abstract class Enemy : MonoBehaviour, IHasHealth {
         }
     }
 
-    public virtual void Kill() {
+    public void Kill() {
         // Handle enemy death (e.g., play death animation, destroy the object)
         //Debug.Log($"{gameObject.name} died!");
         OnDeath?.Invoke(transform, EventArgs.Empty);
