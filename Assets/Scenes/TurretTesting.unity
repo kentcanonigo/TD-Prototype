@@ -122,63 +122,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &351235897
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 504774227951090818, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
-      propertyPath: m_Name
-      value: Blaster (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 8689549506225556376, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -1.273
-      objectReference: {fileID: 0}
-    - target: {fileID: 8689549506225556376, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -2.44
-      objectReference: {fileID: 0}
-    - target: {fileID: 8689549506225556376, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8689549506225556376, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8689549506225556376, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8689549506225556376, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8689549506225556376, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8689549506225556376, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8689549506225556376, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8689549506225556376, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
 --- !u!1 &1123630564
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,9 +415,49 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 496109351340924263, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
+      propertyPath: appliedTurretUpgradeSOList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 496109351340924263, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
+      propertyPath: appliedTurretUpgradeSOList.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: e0701cb4d30c71441a85e6afe30f85ac, type: 2}
+    - target: {fileID: 496109351340924263, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
+      propertyPath: appliedTurretUpgradeSOList.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 3e461f3b86cd0a945bd3414ac39312fb, type: 2}
+    - target: {fileID: 496109351340924263, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
+      propertyPath: appliedTurretUpgradeSOList.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: ade685e5f660bee44b2f8ece8c81540f, type: 2}
+    - target: {fileID: 496109351340924263, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
+      propertyPath: appliedTurretUpgradeSOList.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: 9341da3b574e5f041a59f51bffbb0710, type: 2}
     - target: {fileID: 504774227951090818, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
       propertyPath: m_Name
       value: Blaster
+      objectReference: {fileID: 0}
+    - target: {fileID: 5658559279772820044, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
+      propertyPath: m_Radius
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5658559279772820044, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6473297854900932289, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6925835890174874824, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8427924058008417009, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8689549506225556376, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -528,5 +511,4 @@ SceneRoots:
   - {fileID: 1380760702}
   - {fileID: 1143337596}
   - {fileID: 5015650356009068112}
-  - {fileID: 351235897}
   - {fileID: 1123630566}

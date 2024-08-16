@@ -1,4 +1,4 @@
 public interface IUpgradable {
-    void Upgrade();
-    void Downgrade();
+    bool Upgrade();
+    bool Downgrade();
 }
