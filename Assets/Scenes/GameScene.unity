@@ -1048,9 +1048,9 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1267191229}
-  - {fileID: 1464049954}
   - {fileID: 1933882007}
   - {fileID: 928943576}
+  - {fileID: 1464049954}
   m_Father: {fileID: 1594076165}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
@@ -4666,7 +4666,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -443.3, y: -12}
+  m_AnchoredPosition: {x: -443.29987, y: -12}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1464049955
@@ -5074,6 +5074,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waveUIText: {fileID: 1267191230}
+  creditsText: {fileID: 1464049955}
   coreHPUIText: {fileID: 928943577}
   modulesUIText: {fileID: 1933882008}
   debugCanvasGroup: {fileID: 1425877}

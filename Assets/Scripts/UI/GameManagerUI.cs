@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class GameManagerUI : MonoBehaviour {
 
     [SerializeField] private TextMeshProUGUI waveUIText;
+    [SerializeField] private TextMeshProUGUI creditsText;
     [FormerlySerializedAs("spiralHPUIText")] [SerializeField] private TextMeshProUGUI coreHPUIText;
     [SerializeField] private TextMeshProUGUI modulesUIText;
     
@@ -60,6 +61,7 @@ public class GameManagerUI : MonoBehaviour {
         waveUIText.text = $"Wave: {GameManager.Instance.CurrentWave}/{GameManager.Instance.GetTotalWaves()}";
         coreHPUIText.text = $"Core HP: {GameManager.Instance.CurrentCoreHP}/{GameManager.Instance.MaxCoreHP}";
         modulesUIText.text = $"Modules: {GameManager.Instance.CurrentModules}";
+        creditsText.text =  $"Credits: {GameManager.Instance.CurrentCredits}";
     }
 
 }

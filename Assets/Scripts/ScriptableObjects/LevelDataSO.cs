@@ -8,7 +8,7 @@ public class LevelDataSO : ScriptableObject {
     public Vector2Int levelSize;
     public int totalCoreHP;
     public int startingModules;
-    public int startingMoney;
+    public int startingCredits;
     public List<int> moduleRewards;
     public TextAsset levelFile;
     public Vector2Int spiralPosition;

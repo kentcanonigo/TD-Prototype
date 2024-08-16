@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: FirstLevel
   m_EditorClassIdentifier: 
   levelName: First Level
-  levelSize: {x: 20, y: 20}
+  levelSize: {x: 18, y: 16}
   totalCoreHP: 50
   startingModules: 10
+  startingCredits: 120
   moduleRewards: 010000000200000003000000
   levelFile: {fileID: 4900000, guid: 15da6d83e4d29e84a9b51225aa044bb8, type: 3}
   spiralPosition: {x: 12, y: 12}
