@@ -6,7 +6,7 @@ public class GridSelection : MonoBehaviour {
     
     public static GridSelection Instance { get; private set; }
 
-    [SerializeField] private bool debugMode;
+    [SerializeField] private bool debugMode = false;
     
     public Grid<GridMapObject> grid;
     public LayerMask gridLayerMask; // Layer mask to identify the grid

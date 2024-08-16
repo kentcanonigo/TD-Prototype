@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
 
-public class ModuleBuilder : MonoBehaviour {
-    public static ModuleBuilder Instance { get; private set; }
-    
+public class BuildManager : MonoBehaviour {
+    public static BuildManager Instance { get; private set; }
+
     private GridMapObject selectedGridObject;
 
     private void Awake() {
@@ -87,6 +87,22 @@ public class ModuleBuilder : MonoBehaviour {
                 }
             } else {
                 Debug.LogWarning("Cannot build a turret here.");
+            }
+        } else {
+            Debug.LogWarning("No grid object selected.");
+        }
+    }
+
+    public void OnSellTurretButtonClicked() {
+        if (selectedGridObject != null) {
+            if (selectedGridObject.GetBuiltTurret()) {
+                // TODO: Give player money based on turret stuff
+                Turret builtTurret = selectedGridObject.GetBuiltTurret();
+                selectedGridObject.SetBuiltTurret(null);
+                Destroy(builtTurret.gameObject);
+                GridSelection.Instance.TriggerSelectGridCell(selectedGridObject.x, selectedGridObject.y);
+            } else {
+                Debug.LogWarning("No turret in this position.");
             }
         } else {
             Debug.LogWarning("No grid object selected.");

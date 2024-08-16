@@ -150,8 +150,11 @@ public class GridManager : MonoBehaviour {
                 gridMap.GetGrid().GetXY(mousePosition, out int x, out int y);
                 GridMapObject node = gridMap.GetNode(x, y);
                 if (node != null) {
-                    // Check if the node is permanent (assuming you have a method to check that)
-                    if (node.GetNodeType() == GridMapObject.NodeType.PermanentModule) {
+                    if (node.GetBuiltTurret()) {
+                        Turret builtTurret = node.GetBuiltTurret();
+                        node.SetBuiltTurret(null);
+                        Destroy(builtTurret.gameObject);
+                    } else if (node.GetNodeType() == GridMapObject.NodeType.PermanentModule) {  // Check if the node is permanent (assuming you have a method to check that)
                         // Set the node type to None if it's permanent
                         node.SetNodeType(GridMapObject.NodeType.None); // Change NodeType.None to the appropriate value for no node type
                     } else {

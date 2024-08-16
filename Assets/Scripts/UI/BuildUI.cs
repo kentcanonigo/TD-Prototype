@@ -17,7 +17,7 @@ public class BuildUI : MonoBehaviour {
 
     private void Awake() {
         buildModuleButton.onClick.AddListener((() => {
-            ModuleBuilder.Instance.OnBuildModuleButtonClicked();
+            BuildManager.Instance.OnBuildModuleButtonClicked();
         }));
         
         turretInfoButton.onClick.AddListener((() => {
@@ -29,7 +29,7 @@ public class BuildUI : MonoBehaviour {
         }));
         
         turretSellButton.onClick.AddListener((() => {
-            
+            BuildManager.Instance.OnSellTurretButtonClicked();
         }));
     }
 
@@ -46,7 +46,7 @@ public class BuildUI : MonoBehaviour {
         bool isTurretBuilt = selectedGridObject.GetBuiltTurret();
         bool isValidBuildLocation = selectedGridObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.PermanentModule or GridMapObject.NodeType.None;
 
-        buildMenuCanvasGroup.alpha = !isTurretBuilt || isValidBuildLocation ? 1f : 0f;
+        buildMenuCanvasGroup.alpha = !isTurretBuilt && isValidBuildLocation ? 1f : 0f;
         turretInfoCanvasGroup.alpha = isTurretBuilt ? 1f : 0f;
         
         if (!isTurretBuilt) {

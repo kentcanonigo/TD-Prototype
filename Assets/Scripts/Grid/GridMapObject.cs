@@ -66,8 +66,11 @@ public class GridMapObject {
     public NodeType GetNodeType() {
         return nodeType;
     }
+
+    public Turret GetBuiltTurret() {
+        return builtTurret;
+    }
     
-    public Turret GetBuiltTurret() => builtTurret;
     public void SetBuiltTurret(Turret turret) => builtTurret = turret;
 
     public void CalculateFCost() {
