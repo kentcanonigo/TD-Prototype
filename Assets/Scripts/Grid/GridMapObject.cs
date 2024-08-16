@@ -23,6 +23,7 @@ public class GridMapObject {
     }
     
     private NodeType nodeType = NodeType.None;
+    private Turret turret;
     
     public GridMapObject(Grid<GridMapObject> grid, int x, int y) {
         this.grid = grid;
@@ -98,23 +99,22 @@ public class GridMapObject {
     [Serializable]
     public class SaveObject {
         public NodeType nodeType;
-        public bool isWalkable;
-        public bool isBuildable;
         public int x, y;
+        public Turret turret;
     }
 
     public SaveObject Save() {
         return new SaveObject {
             nodeType = nodeType,
-            isWalkable = IsWalkable,
-            isBuildable = IsBuildable,
             x = x,
             y = y,
+            turret = turret,
         };
     }
 
     public void Load(SaveObject saveObject) {
         nodeType = saveObject.nodeType;
+        turret = saveObject.turret;
         SetNodeType(nodeType);
     }
 }
