@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour {
     
     public static GameManager Instance { get; private set; }
 
+    public int CurrentMoney { get; private set; }
     public int CurrentCoreHP { get; private set; }
     public int MaxCoreHP { get; private set; }
     public int CurrentWave { get; private set; }

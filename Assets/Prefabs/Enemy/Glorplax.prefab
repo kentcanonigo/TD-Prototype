@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2113267460017666046}
   - component: {fileID: 6346340941055817566}
   - component: {fileID: 4234487848476719259}
+  - component: {fileID: 619240252592352769}
   m_Layer: 7
   m_Name: Glorplax
   m_TagString: Enemy
@@ -61,6 +62,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wiggleSO: {fileID: 11400000, guid: 1237de00d5d986e48826467594f2164f, type: 2}
   enemyVisuals: {fileID: 2293464770909412712}
+--- !u!114 &619240252592352769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511332154934885617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0082843d4a453998cbb82354199cd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &936793156137939410
 PrefabInstance:
   m_ObjectHideFlags: 0
