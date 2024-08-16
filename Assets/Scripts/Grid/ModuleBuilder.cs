@@ -1,9 +1,8 @@
 using UnityEngine;
 
 public class ModuleBuilder : MonoBehaviour {
-    
     public static ModuleBuilder Instance { get; private set; }
-    
+
     private GridMapObject selectedGridObject;
 
     private void Awake() {
@@ -16,11 +15,24 @@ public class ModuleBuilder : MonoBehaviour {
 
     private void GridSelection_OnSelectGridCell(object sender, GridSelection.OnSelectGridCellEventArgs e) {
         selectedGridObject = GridManager.Instance.TryGetMainGrid().GetGridObject(e.x, e.y);
+        switch (selectedGridObject.GetNodeType()) {
+            case GridMapObject.NodeType.None:
+                break;
+            case GridMapObject.NodeType.BuiltModule:
+                break;
+            case GridMapObject.NodeType.PermanentModule:
+                break;
+            case GridMapObject.NodeType.Core:
+                break;
+            case GridMapObject.NodeType.Vortex:
+                break;
+        }
     }
 
     public void OnBuildModuleButtonClicked() {
         if (selectedGridObject != null) {
             if (GameManager.Instance.CurrentGameState == GameManager.GameState.BuildPhase) {
+                // In build phase
                 if (selectedGridObject.GetNodeType() == GridMapObject.NodeType.BuiltModule) {
                     // If the selected object is a BuiltModule, remove it
                     RemoveModule();
@@ -46,6 +58,19 @@ public class ModuleBuilder : MonoBehaviour {
                 }
             } else {
                 Debug.LogWarning("Can only build in build phase");
+            }
+        } else {
+            Debug.LogWarning("No grid object selected.");
+        }
+    }
+
+    public void OnBuildTurretButtonClicked(TurretSO turretSO) {
+        if (selectedGridObject != null) {
+            if (selectedGridObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.PermanentModule) {
+                // If the selected object is a BuiltModule or PermanentModule
+                //TODO : Build the turret
+            } else {
+                Debug.LogWarning("Cannot build a turret here.");
             }
         } else {
             Debug.LogWarning("No grid object selected.");

@@ -1,4 +1,4 @@
 public interface IUpgradable {
-    void Upgrade();
-    void Downgrade();
+    void AddUpgrade(TurretUpgradeSO upgrade);
+    void RemoveUpgrade(TurretUpgradeSO upgrade);
 }

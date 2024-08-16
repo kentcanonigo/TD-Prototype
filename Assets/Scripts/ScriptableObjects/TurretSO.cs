@@ -11,7 +11,6 @@ public class TurretSO : ScriptableObject {
     public float baseRange = 4f;
     public int baseCost = 10;
     public float baseFireRate = 1f;
-    public float baseFireCooldown = 1f;
     public float baseRotationSpeed = 1f;
     public float baseProjectileSpeed = 10f;
 }

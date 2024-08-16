@@ -11,8 +11,4 @@ public class EnemySO : ScriptableObject {
     public float speed = 2f;       // Speed at which the enemy moves
     public int damageToCore = 1; // The damage of this enemy to the core if it were to reach it
     public float sizeMultiplier = 1f; // Size multiplier of the enemy
-    [Header("Wiggle for Enemy Movement")]
-    public float wiggleSpeed = 1f;
-    public float wigglePosRange = 0.1f;
-    public float wiggleRotRange = 0.2f;
 }

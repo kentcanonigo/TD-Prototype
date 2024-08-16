@@ -3,8 +3,16 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class BuildUI : MonoBehaviour {
+    [Header("Building")]
+    [SerializeField] private CanvasGroup buildMenuCanvasGroup;
     [SerializeField] private Button buildModuleButton;
     [SerializeField] private Button buildBlasterButton;
+    
+    [Header("Turret Info")]
+    [SerializeField] private CanvasGroup turretInfoCanvasGroup;
+    [SerializeField] private Button turretInfoButton;
+    [SerializeField] private Button turretUpgradeButton;
+    [SerializeField] private Button turretSellButton;
 
     private void Awake() {
         buildModuleButton.onClick.AddListener((() => {
@@ -15,6 +23,17 @@ public class BuildUI : MonoBehaviour {
             
         }));
         
+        turretInfoButton.onClick.AddListener((() => {
+            
+        }));
+        
+        turretUpgradeButton.onClick.AddListener((() => {
+            
+        }));
+        
+        turretSellButton.onClick.AddListener((() => {
+            
+        }));
     }
 
     private void Start() {

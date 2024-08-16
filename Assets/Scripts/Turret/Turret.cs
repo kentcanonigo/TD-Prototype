@@ -1,39 +1,67 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.Collections;
 using UnityEngine;
 
 [SelectionBase]
-public class Turret : MonoBehaviour {
-    [field: Header("Turret Stats SO")]
-    [SerializeField] private TurretSO turretSO; // Backing field for the property
+public class Turret : MonoBehaviour, IUpgradable {
+    [field: Header("Turret Stats SO")] [SerializeField]
+    private TurretSO turretSO; // Backing field for the property
+
+    [SerializeField] private List<TurretUpgradeSO> appliedUpgrades;
 
     public TurretSO TurretSO {
-        get { return turretSO; }
-        private set { turretSO = value; } // Optionally allow setting in the class if needed
+        get => turretSO;
+        set => turretSO = value; // Allow setting in the class
     }
 
-    [field: Header("Turret Stats")] public string TurretName { get; private set; }
-    public string TurretDescription { get; private set; }
-    public int BaseDamage { get; private set; }
-    public float BaseRotationSpeed { get; private set; }
-    public float BaseRange { get; private set; }
-    public int BaseCost { get; private set; }
-    public float BaseFireRate { get; private set; }
-    public float BaseFireCooldown { get; private set; }
-    public float BaseProjectileSpeed { get; private set; }
-    
+    [field: Header("Turret Stats")] public string TurretName { get; set; }
+    public string TurretDescription { get; set; }
+    public int BaseDamage { get; set; }
+    public float BaseRotationSpeed { get; set; }
+    public float BaseRange { get; set; }
+    public int BaseCost { get; set; }
+    public float BaseFireRate { get; set; }
+    public float BaseProjectileSpeed { get; set; }
+
     private void Awake() {
-        // Assign turret stats from the ScriptableObject
-        TurretName = TurretSO.turretName;
-        TurretDescription = TurretSO.turretDescription;
-        BaseDamage = TurretSO.baseDamage;
-        BaseRange = TurretSO.baseRange;
-        BaseCost = TurretSO.baseCost;
-        BaseFireRate = TurretSO.baseFireRate;
-        BaseFireCooldown = TurretSO.baseFireCooldown;
-        BaseRotationSpeed = TurretSO.baseRotationSpeed;
-        BaseProjectileSpeed = TurretSO.baseProjectileSpeed;
+        appliedUpgrades = new List<TurretUpgradeSO>();
+    }
+    
+    void Start() {
+        ApplyBaseStats();
+        ApplyUpgrades();
+    }
+
+    void ApplyBaseStats() {
+        if (string.IsNullOrEmpty(TurretName)) TurretName = TurretSO.turretName;
+        if (string.IsNullOrEmpty(TurretDescription)) TurretDescription = TurretSO.turretDescription;
+        if (BaseDamage == 0) BaseDamage = TurretSO.baseDamage;
+        if (BaseRange == 0) BaseRange = TurretSO.baseRange;
+        if (BaseCost == 0) BaseCost = TurretSO.baseCost;
+        if (BaseFireRate == 0) BaseFireRate = TurretSO.baseFireRate;
+        if (BaseRotationSpeed == 0) BaseRotationSpeed = TurretSO.baseRotationSpeed;
+        if (BaseProjectileSpeed == 0) BaseProjectileSpeed = TurretSO.baseProjectileSpeed;
+    }
+
+    void ApplyUpgrades() {
+        foreach (TurretUpgradeSO upgrade in appliedUpgrades) {
+            BaseDamage += upgrade.bonusDamage;
+            BaseRange += upgrade.bonusRange;
+            BaseFireRate += upgrade.bonusFireRate;
+            BaseRotationSpeed += upgrade.bonusRotationSpeed;
+            BaseProjectileSpeed += upgrade.bonusProjectileSpeed;
+            // Apply other upgrade effects
+        }
+    }
+
+    public void AddUpgrade(TurretUpgradeSO upgrade) {
+        appliedUpgrades.Add(upgrade);
+        ApplyUpgrades();
+    }
+
+    public void RemoveUpgrade(TurretUpgradeSO upgrade) {
+        appliedUpgrades.Remove(upgrade);
+        ApplyBaseStats();
+        ApplyUpgrades();
     }
 }

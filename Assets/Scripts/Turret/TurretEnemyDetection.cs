@@ -9,6 +9,7 @@ public class TurretEnemyDetection : MonoBehaviour {
     public List<Transform> EnemiesInRange { get; private set; }
 
     private CircleCollider2D rangeCollider;
+    private float lastBaseRange; // Cache the last base range
 
     private Turret turret;
 
@@ -18,19 +19,21 @@ public class TurretEnemyDetection : MonoBehaviour {
     private Color rangeColor;
     
     private void OnEnable() {
-        UpdateTurretSO(); // Initial update
+        UpdateGizmos(); // Initial update
     }
 
     public void OnValidate() {
-        UpdateTurretSO(); // Call to update the turretSO when OnValidate is triggered
+        UpdateGizmos(); // Call to update the turretSO when OnValidate is triggered
     }
     
-    private void UpdateTurretSO() {
+    public void UpdateGizmos() {
         // Find the Turret component in the parent or sibling objects
+        //Debug.Log("Updating Gizmos!");
         turret = GetComponent<Turret>();
-        if (turret != null) {
-            detectionRangeGizmo = turret.TurretSO != null ? turret.TurretSO.baseRange : 0f; // Set detection range
-            rangeColor = turret.TurretSO != null ? Color.green : Color.red;
+        if (turret) {
+            detectionRangeGizmo = turret.TurretSO ? turret.TurretSO.baseRange : 0f; // Set detection range
+            rangeColor = turret.TurretSO ? Color.green : Color.red;
+            //Debug.Log("Updated Gizmos!");
         }
     }
 
@@ -52,31 +55,36 @@ public class TurretEnemyDetection : MonoBehaviour {
         rangeCollider.radius = turret.BaseRange;
     }
 
+    private void Update() {
+        if (Mathf.Abs(turret.BaseRange - lastBaseRange) > Mathf.Epsilon) {
+            rangeCollider.radius = turret.BaseRange; // Update the collider's radius
+            lastBaseRange = turret.BaseRange; // Cache the new value
+            detectionRangeGizmo = lastBaseRange;
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.TryGetComponent(out IHasHealth enemy)) {
+        // Get the top-level parent object that has the IHasHealth component
+        Transform parent = collision.transform.root;
+
+        if (parent.TryGetComponent(out IHasHealth enemy)) {
             // Add the enemy to the list when it enters the trigger
-            EnemiesInRange.Add(collision.transform);
+            EnemiesInRange.Add(parent);
             // Optionally, subscribe to the enemy's death event here
             //enemy.OnEnemyDeath += HandleEnemyDeath;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
-        if (collision.TryGetComponent(out IHasHealth enemy)) {
+        // Get the top-level parent object that has the IHasHealth component
+        Transform parent = collision.transform.root;
+
+        if (parent.TryGetComponent(out IHasHealth enemy)) {
             // Remove the enemy from the list when it exits the trigger
-            EnemiesInRange.Remove(collision.transform);
+            EnemiesInRange.Remove(parent);
             // Optionally, unsubscribe from the enemy's death event here
             //enemy.OnEnemyDeath -= HandleEnemyDeath;
         }
     }
 
-    private void HandleEnemyDeath(Transform enemyTransform, EventArgs args) {
-        EnemiesInRange.Remove(enemyTransform);
-        
-        // Ensure we unsubscribe from the event to avoid memory leaks
-        if (enemyTransform.TryGetComponent(out IHasHealth enemy)) {
-            Debug.Log("Unsubscribing from enemy death event");
-            enemy.OnEnemyDeath -= HandleEnemyDeath; // Unsubscribe from the event
-        }
-    }
 }

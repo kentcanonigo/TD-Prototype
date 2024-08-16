@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82eb4be55c9c8b64d9c3a07dcb00b11f, type: 3}
-  m_Name: Test Enemy
+  m_Name: GlorplaxSO
   m_EditorClassIdentifier: 
   enemyName: Glorplax
   enemyDescription: A cute lil boi
@@ -20,6 +20,3 @@ MonoBehaviour:
   speed: 1
   damageToCore: 1
   sizeMultiplier: 1
-  wiggleSpeed: 1
-  wigglePosRange: 0.2
-  wiggleRotRange: 0.2

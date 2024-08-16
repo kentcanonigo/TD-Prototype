@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2113267460017666046}
-  - component: {fileID: 3353721738059540082}
-  - component: {fileID: 1165074457455198392}
-  - component: {fileID: 64856141658281738}
+  - component: {fileID: 6346340941055817566}
+  - component: {fileID: 4234487848476719259}
+  - component: {fileID: 619240252592352769}
   m_Layer: 7
   m_Name: Glorplax
   m_TagString: Enemy
@@ -35,7 +35,7 @@ Transform:
   - {fileID: 7558043560886082344}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3353721738059540082
+--- !u!114 &6346340941055817566
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,72 +44,36 @@ MonoBehaviour:
   m_GameObject: {fileID: 511332154934885617}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 161ad7a3d373eac43aea9d06fb645164, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c5eb62966d49b94083871fc5e67ad03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   enemySO: {fileID: 11400000, guid: 8696eb502a9531c47b2f123289708550, type: 2}
---- !u!50 &1165074457455198392
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 511332154934885617}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
---- !u!70 &64856141658281738
-CapsuleCollider2D:
+--- !u!114 &4234487848476719259
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 511332154934885617}
   m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.040976584, y: -0.040976465}
-  m_Size: {x: 0.6365887, y: 0.9180471}
-  m_Direction: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 222c07c9b465432589dc2a95cc1c7544, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wiggleSO: {fileID: 11400000, guid: 1237de00d5d986e48826467594f2164f, type: 2}
+  enemyVisuals: {fileID: 2293464770909412712}
+--- !u!114 &619240252592352769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511332154934885617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0082843d4a453998cbb82354199cd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &936793156137939410
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -121,6 +85,10 @@ PrefabInstance:
     - target: {fileID: 1356760408961313978, guid: e31379d1fe68c0d4fbe59bead880069a, type: 3}
       propertyPath: m_Name
       value: GlorplaxVisual
+      objectReference: {fileID: 0}
+    - target: {fileID: 2591961305815729714, guid: e31379d1fe68c0d4fbe59bead880069a, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2886176790447410768, guid: e31379d1fe68c0d4fbe59bead880069a, type: 3}
       propertyPath: m_Enabled
@@ -141,7 +109,15 @@ PrefabInstance:
     - target: {fileID: 5029870470625435412, guid: e31379d1fe68c0d4fbe59bead880069a, type: 3}
       propertyPath: enemy
       value: 
-      objectReference: {fileID: 3353721738059540082}
+      objectReference: {fileID: 6346340941055817566}
+    - target: {fileID: 5088682846444652409, guid: e31379d1fe68c0d4fbe59bead880069a, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6925200935085175945, guid: e31379d1fe68c0d4fbe59bead880069a, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 7341915203708480250, guid: e31379d1fe68c0d4fbe59bead880069a, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -195,6 +171,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e31379d1fe68c0d4fbe59bead880069a, type: 3}
+--- !u!1 &2293464770909412712 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1356760408961313978, guid: e31379d1fe68c0d4fbe59bead880069a, type: 3}
+  m_PrefabInstance: {fileID: 936793156137939410}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7558043560886082344 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7341915203708480250, guid: e31379d1fe68c0d4fbe59bead880069a, type: 3}

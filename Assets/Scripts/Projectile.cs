@@ -33,7 +33,7 @@ public class Projectile : MonoBehaviour {
     
     // Trigger collision detection
     void OnTriggerEnter2D(Collider2D collision) {
-        IHasHealth targetHealth = collision.GetComponent<IHasHealth>();
+        IHasHealth targetHealth = collision.GetComponentInParent<IHasHealth>();
         if (!hasHit) {
             if (targetHealth != null) {
                 SpawnParticles(collision.GetComponent<Transform>().position);
