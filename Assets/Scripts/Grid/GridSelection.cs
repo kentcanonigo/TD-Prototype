@@ -82,4 +82,8 @@ public class GridSelection : MonoBehaviour {
         Debug.DrawLine(cellCenter - Vector3.right * 0.5f, cellCenter + Vector3.right * 0.5f, highlightColor, 0.1f);
         Debug.DrawLine(cellCenter - Vector3.up * 0.5f, cellCenter + Vector3.up * 0.5f, highlightColor, 0.1f);
     }
+    
+    public void TriggerSelectGridCell(int x, int y) {
+        OnSelectGridCell?.Invoke(this, new OnSelectGridCellEventArgs { x = x, y = y });
+    }
 }

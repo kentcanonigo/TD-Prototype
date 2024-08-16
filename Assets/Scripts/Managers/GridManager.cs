@@ -91,6 +91,14 @@ public class GridManager : MonoBehaviour {
     public Vector3 GetWorldPosition(int x, int y) {
         return new Vector3(x, y) * cellSize + Vector3.zero;
     }
+    
+    public Vector3 GetWorldPositionWithOffset(GridMapObject gridMapObject) {
+        return GetWorldPositionWithOffset(gridMapObject.x, gridMapObject.y);
+    }
+    
+    public Vector3 GetWorldPositionWithOffset(int x, int y) {
+        return new Vector3(x, y) * cellSize + CellOffset;
+    }
 
     public Grid<GridMapObject> TryGetMainGrid() {
         if (mainGameGrid != null) {
@@ -136,36 +144,38 @@ public class GridManager : MonoBehaviour {
             }
         }
 
-        if (Input.GetMouseButtonDown(1)) {
-            Vector3 mousePosition = UtilsClass.GetMouseWorldPosition();
-            gridMap.GetGrid().GetXY(mousePosition, out int x, out int y);
-            GridMapObject node = gridMap.GetNode(x, y);
-            if (node != null) {
-                // Check if the node is permanent (assuming you have a method to check that)
-                if (node.GetNodeType() == GridMapObject.NodeType.PermanentModule) {
-                    // Set the node type to None if it's permanent
-                    node.SetNodeType(GridMapObject.NodeType.None); // Change NodeType.None to the appropriate value for no node type
-                } else {
-                    // Otherwise, set the node to not walkable and change its type
-                    gridMap.SetNodeType(mousePosition, currentNodeType);
+        if (GameManager.Instance.mapEditMode) {
+            if (Input.GetMouseButtonDown(1)) {
+                Vector3 mousePosition = UtilsClass.GetMouseWorldPosition();
+                gridMap.GetGrid().GetXY(mousePosition, out int x, out int y);
+                GridMapObject node = gridMap.GetNode(x, y);
+                if (node != null) {
+                    // Check if the node is permanent (assuming you have a method to check that)
+                    if (node.GetNodeType() == GridMapObject.NodeType.PermanentModule) {
+                        // Set the node type to None if it's permanent
+                        node.SetNodeType(GridMapObject.NodeType.None); // Change NodeType.None to the appropriate value for no node type
+                    } else {
+                        // Otherwise, set the node to not walkable and change its type
+                        gridMap.SetNodeType(mousePosition, currentNodeType);
+                    }
+                    UpdatePathForVortexList();
                 }
-                UpdatePathForVortexList();
             }
-        }
 
-        if (Input.GetKeyDown(KeyCode.T)) {
-            currentNodeType = GridMapObject.NodeType.PermanentModule;
-            CMDebug.TextPopupMouse(currentNodeType.ToString());
-        }
+            if (Input.GetKeyDown(KeyCode.T)) {
+                currentNodeType = GridMapObject.NodeType.PermanentModule;
+                CMDebug.TextPopupMouse(currentNodeType.ToString());
+            }
         
-        if (Input.GetKeyDown(KeyCode.Y)) {
-            currentNodeType = GridMapObject.NodeType.BuiltModule;
-            CMDebug.TextPopupMouse(currentNodeType.ToString());
-        }
+            if (Input.GetKeyDown(KeyCode.Y)) {
+                currentNodeType = GridMapObject.NodeType.BuiltModule;
+                CMDebug.TextPopupMouse(currentNodeType.ToString());
+            }
         
-        if (Input.GetKeyDown(KeyCode.P)) {
-            gridMap.Save();
-            CMDebug.TextPopupMouse("SAVED!");
+            if (Input.GetKeyDown(KeyCode.P)) {
+                gridMap.Save();
+                CMDebug.TextPopupMouse("SAVED!");
+            }
         }
     }
     

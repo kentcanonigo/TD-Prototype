@@ -10,6 +10,9 @@ public class GameManagerUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI creditsText;
     [FormerlySerializedAs("spiralHPUIText")] [SerializeField] private TextMeshProUGUI coreHPUIText;
     [SerializeField] private TextMeshProUGUI modulesUIText;
+    [SerializeField] private Animator debugMenuAnimator;
+    [SerializeField] private Button toggleDebugMenuButton;
+    [SerializeField] private Toggle toggleMapEditModeButton;
     
     [SerializeField] private CanvasGroup debugCanvasGroup;
     [SerializeField] private Button decrementHPButton;
@@ -18,6 +21,7 @@ public class GameManagerUI : MonoBehaviour {
     [SerializeField] private Button endWaveButton;
     [SerializeField] private Button spawnEnemyButton;
     [SerializeField] private TextMeshProUGUI gameStateText;
+    private static readonly int IsOpen = Animator.StringToHash("isOpen");
 
     private void Awake() {
         decrementHPButton.onClick.AddListener((() => {
@@ -38,6 +42,14 @@ public class GameManagerUI : MonoBehaviour {
         
         spawnEnemyButton.onClick.AddListener((() => {
             GameManager.Instance.SpawnTestEnemy();
+        }));
+        
+        toggleDebugMenuButton.onClick.AddListener((() => {
+            debugMenuAnimator.SetBool(IsOpen, !debugMenuAnimator.GetBool(IsOpen));
+        }));
+
+        toggleMapEditModeButton.onValueChanged.AddListener((value => {
+            GameManager.Instance.mapEditMode = value;
         }));
     }
 

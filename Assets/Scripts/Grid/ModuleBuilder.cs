@@ -1,8 +1,9 @@
+using System;
 using UnityEngine;
 
 public class ModuleBuilder : MonoBehaviour {
     public static ModuleBuilder Instance { get; private set; }
-
+    
     private GridMapObject selectedGridObject;
 
     private void Awake() {
@@ -44,6 +45,7 @@ public class ModuleBuilder : MonoBehaviour {
                         if (GridManager.Instance.TryUpdatePathForVortexList(selectedGridObject)) {
                             // Building does not block the path
                             BuildModule(selectedGridObject);
+                            GridSelection.Instance.TriggerSelectGridCell(selectedGridObject.x, selectedGridObject.y);
                             GameManager.Instance.DecrementModuleCount(); // Decrement the module count after building
                         } else {
                             Debug.LogWarning("Building here would block the path to the core!");
@@ -67,17 +69,22 @@ public class ModuleBuilder : MonoBehaviour {
     public void OnBuildTurretButtonClicked(TurretSO turretSO) {
         if (selectedGridObject != null) {
             if (selectedGridObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.PermanentModule) {
-                // TODO: Check if player has enough money
-                // If the selected object is a BuiltModule or PermanentModule
-                // Instantiate the turret prefab
-                GameObject turretPrefab = Instantiate(turretSO.turretPrefab, GridManager.Instance.GetWorldPosition(selectedGridObject), Quaternion.identity);
-                Turret turret = turretPrefab.GetComponent<Turret>();
+                if (!selectedGridObject.GetBuiltTurret()) {
+                    // TODO: Check if player has enough money
+                    // If the selected object is a BuiltModule or PermanentModule
+                    // Instantiate the turret prefab
+                    GameObject turretPrefab = Instantiate(turretSO.turretPrefab, GridManager.Instance.GetWorldPositionWithOffset(selectedGridObject), Quaternion.identity);
+                    Turret turret = turretPrefab.GetComponent<Turret>();
 
-                // Link the turret to the grid system
-                selectedGridObject.SetBuiltTurret(turret);
+                    // Link the turret to the grid system
+                    selectedGridObject.SetBuiltTurret(turret);
 
-                // Additional setup (e.g., positioning, initialization)
-                turret.Initialize(turretSO);
+                    // Additional setup (e.g., positioning, initialization)
+                    turret.Initialize(turretSO);
+                    GridSelection.Instance.TriggerSelectGridCell(selectedGridObject.x, selectedGridObject.y);
+                } else {
+                    Debug.LogWarning("Turret already exists here.");
+                }
             } else {
                 Debug.LogWarning("Cannot build a turret here.");
             }
