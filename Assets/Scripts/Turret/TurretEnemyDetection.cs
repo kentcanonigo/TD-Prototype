@@ -1,47 +1,39 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Turret))]
-[RequireComponent(typeof(CircleCollider2D))]
+[RequireComponent(typeof(Turret))] [RequireComponent(typeof(CircleCollider2D))]
 public class TurretEnemyDetection : MonoBehaviour {
     [field: Header("Enemy Detection List")]
     public List<Transform> EnemiesInRange { get; private set; }
 
     private CircleCollider2D rangeCollider;
-    private float lastBaseRange;
+    private float lastBaseRange; // Cache the last base range
 
     private Turret turret;
 
     #region EDITOR
 
-    private float detectionRangeGizmo;
+    private float detectionRangeGizmo; // The detection range of the turret;
     private Color rangeColor;
-
+    
     private void OnEnable() {
-        UpdateGizmos();
+        UpdateGizmos(); // Initial update
     }
 
-    private void OnValidate() {
-        UpdateGizmos();
+    public void OnValidate() {
+        UpdateGizmos(); // Call to update the turretSO when OnValidate is triggered
     }
-
+    
     public void UpdateGizmos() {
+        // Find the Turret component in the parent or sibling objects
+        //Debug.Log("Updating Gizmos!");
         turret = GetComponent<Turret>();
         if (turret) {
-            detectionRangeGizmo = turret.BaseRange; // Use the current range
+            detectionRangeGizmo = turret.TurretSO ? turret.TurretSO.baseRange : 0f; // Set detection range
             rangeColor = turret.TurretSO ? Color.green : Color.red;
-
-            // Make sure to update the collider radius even in edit mode
-            if (rangeCollider == null) {
-                rangeCollider = GetComponent<CircleCollider2D>();
-            }
-            rangeCollider.radius = detectionRangeGizmo;
-        }
-
-        // Repaint the scene view to reflect the changes immediately
-        if (!Application.isPlaying) {
-            UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
-            UnityEditor.SceneView.RepaintAll();
+            //Debug.Log("Updated Gizmos!");
         }
     }
 
@@ -65,25 +57,34 @@ public class TurretEnemyDetection : MonoBehaviour {
 
     private void Update() {
         if (Mathf.Abs(turret.BaseRange - lastBaseRange) > Mathf.Epsilon) {
-            rangeCollider.radius = turret.BaseRange;
-            lastBaseRange = turret.BaseRange;
+            rangeCollider.radius = turret.BaseRange; // Update the collider's radius
+            lastBaseRange = turret.BaseRange; // Cache the new value
             detectionRangeGizmo = lastBaseRange;
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
+        // Get the top-level parent object that has the IHasHealth component
         Transform parent = collision.transform.root;
 
         if (parent.TryGetComponent(out IHasHealth enemy)) {
+            // Add the enemy to the list when it enters the trigger
             EnemiesInRange.Add(parent);
+            // Optionally, subscribe to the enemy's death event here
+            //enemy.OnEnemyDeath += HandleEnemyDeath;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
+        // Get the top-level parent object that has the IHasHealth component
         Transform parent = collision.transform.root;
 
         if (parent.TryGetComponent(out IHasHealth enemy)) {
+            // Remove the enemy from the list when it exits the trigger
             EnemiesInRange.Remove(parent);
+            // Optionally, unsubscribe from the enemy's death event here
+            //enemy.OnEnemyDeath -= HandleEnemyDeath;
         }
     }
+
 }

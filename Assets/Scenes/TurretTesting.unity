@@ -264,6 +264,10 @@ PrefabInstance:
       propertyPath: enemySO
       value: 
       objectReference: {fileID: 11400000, guid: 0ed838c59e333ba49a387fd3477ca34a, type: 2}
+    - target: {fileID: 6346340941055817566, guid: 3802f198f5bccdc48ac888c4204912b0, type: 3}
+      propertyPath: enemySO
+      value: 
+      objectReference: {fileID: 11400000, guid: 0ed838c59e333ba49a387fd3477ca34a, type: 2}
     m_RemovedComponents:
     - {fileID: 0}
     m_RemovedGameObjects: []
@@ -416,6 +420,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 496109351340924263, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
+      propertyPath: turretSO
+      value: 
+      objectReference: {fileID: 11400000, guid: d53bd7d8d8c7acd428b661abdee51265, type: 2}
+    - target: {fileID: 496109351340924263, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
       propertyPath: appliedTurretUpgradeSOList.Array.size
       value: 0
       objectReference: {fileID: 0}
@@ -441,15 +449,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5658559279772820044, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
       propertyPath: m_Radius
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5658559279772820044, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6473297854900932289, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
-      propertyPath: m_Enabled
-      value: 1
+      value: 0.0001
       objectReference: {fileID: 0}
     - target: {fileID: 6925835890174874824, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
       propertyPath: m_Enabled
@@ -461,11 +461,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8689549506225556376, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.273
+      value: 3.41
       objectReference: {fileID: 0}
     - target: {fileID: 8689549506225556376, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.063
+      value: -2.73
       objectReference: {fileID: 0}
     - target: {fileID: 8689549506225556376, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -499,7 +499,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 496109351340924263, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
