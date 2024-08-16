@@ -67,8 +67,17 @@ public class ModuleBuilder : MonoBehaviour {
     public void OnBuildTurretButtonClicked(TurretSO turretSO) {
         if (selectedGridObject != null) {
             if (selectedGridObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.PermanentModule) {
+                // TODO: Check if player has enough money
                 // If the selected object is a BuiltModule or PermanentModule
-                //TODO : Build the turret
+                // Instantiate the turret prefab
+                GameObject turretPrefab = Instantiate(turretSO.turretPrefab, GridManager.Instance.GetWorldPosition(selectedGridObject), Quaternion.identity);
+                Turret turret = turretPrefab.GetComponent<Turret>();
+
+                // Link the turret to the grid system
+                selectedGridObject.SetBuiltTurret(turret);
+
+                // Additional setup (e.g., positioning, initialization)
+                turret.Initialize(turretSO);
             } else {
                 Debug.LogWarning("Cannot build a turret here.");
             }

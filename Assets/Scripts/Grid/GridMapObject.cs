@@ -23,7 +23,7 @@ public class GridMapObject {
     }
     
     private NodeType nodeType = NodeType.None;
-    private Turret turret;
+    private Turret builtTurret;
     
     public GridMapObject(Grid<GridMapObject> grid, int x, int y) {
         this.grid = grid;
@@ -66,6 +66,9 @@ public class GridMapObject {
     public NodeType GetNodeType() {
         return nodeType;
     }
+    
+    public Turret GetBuiltTurret() => builtTurret;
+    public void SetBuiltTurret(Turret turret) => builtTurret = turret;
 
     public void CalculateFCost() {
         fCost = gCost + hCost;
@@ -108,13 +111,13 @@ public class GridMapObject {
             nodeType = nodeType,
             x = x,
             y = y,
-            turret = turret,
+            turret = builtTurret,
         };
     }
 
     public void Load(SaveObject saveObject) {
         nodeType = saveObject.nodeType;
-        turret = saveObject.turret;
+        builtTurret = saveObject.turret;
         SetNodeType(nodeType);
     }
 }

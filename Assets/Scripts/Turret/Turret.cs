@@ -64,4 +64,10 @@ public class Turret : MonoBehaviour, IUpgradable {
         ApplyBaseStats();
         ApplyUpgrades();
     }
+
+    public void Initialize(TurretSO turretSO) {
+        this.turretSO = turretSO;
+        ApplyBaseStats();
+        ApplyUpgrades();
+    }
 }
