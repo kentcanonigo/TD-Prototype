@@ -17,55 +17,28 @@ public class GridManager : MonoBehaviour {
     private float cellSize = 1f;
     [Required]
     [SerializeField] private GridMapVisual gridMapVisual;
+    [Required] [AssetsOnly]
+    [SerializeField] public GameObject corePrefab;
+    [Required] [AssetsOnly]
+    [SerializeField] public GameObject vortexPrefab;
     [SerializeField] private bool showDebugOnPlay;
-    [SerializeField] private bool showGridNumberGizmos;
+    [ShowIf("showDebugOnPlay")] [EnableIf("showDebugOnPlay")]
     [SerializeField] private bool showGridIsBuildableGizmos;
+    [SerializeField] private bool showGridNumberGizmos;
     [SerializeField] private bool alwaysShowGridGizmos;
     private Grid<GridMapObject> mainGameGrid; // For camera stuff
     private GridMapObject core; // The spiral
     private List<GridMapObject> vortexes; // A list of all the vortexes in the level
     private Dictionary<GridMapObject, List<GridMapObject>> vortexPaths; // Store paths for each vortex
     private GridMap gridMap; // THE gridmap
-    
-    public Vector3 CellOffset { get; private set; }
-    
-    // Events
 
-    public event EventHandler OnGridMapInitialized;
-    public event EventHandler<OnSpiralInitializedEventArgs> OnSpiralInitialized;
-    public event EventHandler<OnVortexInitializedEventArgs> OnVortexInitialized;
-    
-    public class OnSpiralInitializedEventArgs : EventArgs {
-        public int x;
-        public int y;
-    }
-
-    public class OnVortexInitializedEventArgs : EventArgs {
-        public int x;
-        public int y;
-    }
-    
+    private Vector3 CellOffset { get; set; }
     
     //Gizmos
     
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green; // Set the color for the grid lines
-
-        for (int x = 0; x < gridWidth; x++) {
-            for (int y = 0; y < gridHeight; y++) {
-#if UNITY_EDITOR
-                if (showGridNumberGizmos) {
-                    Handles.Label(GetWorldPosition(x, y) + new Vector3(cellSize / 2 - .4f, cellSize / 2, 0), $"({x}, {y})");
-                }
-
-                if (showGridIsBuildableGizmos) {
-                    Handles.Label(GetWorldPosition(x, y) + new Vector3(cellSize / 2 - .4f, cellSize / 2, 0), $"{gridMap?.GetGrid().GetGridObject(x, y)}");
-                }
-#endif
-            }
-        }
-        
         Gizmos.DrawLine(GetWorldPosition(0, gridHeight), GetWorldPosition(gridWidth, gridHeight));
         Gizmos.DrawLine(GetWorldPosition(gridWidth, 0), GetWorldPosition(gridWidth, gridHeight));
     }
@@ -78,6 +51,16 @@ public class GridManager : MonoBehaviour {
                 for (int y = 0; y < gridHeight; y++) {
                     Gizmos.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y + 1));
                     Gizmos.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y));
+                    
+#if UNITY_EDITOR
+                    if (showGridNumberGizmos) {
+                        Handles.Label(GetWorldPosition(x, y) + new Vector3(cellSize / 2 - .4f, cellSize / 2, 0), $"({x}, {y})");
+                    }
+
+                    if (showGridIsBuildableGizmos) {
+                        Handles.Label(GetWorldPosition(x, y) + new Vector3(cellSize / 2 - .4f, cellSize / 2, 0), $"{gridMap?.GetGrid().GetGridObject(x, y)}");
+                    }
+#endif
                 }
             }
             
@@ -125,9 +108,6 @@ public class GridManager : MonoBehaviour {
         CellOffset = new Vector3(cellSize / 2f, cellSize / 2f, 0f);
         mainGameGrid = gridMap.GetGrid();
         gridMap.SetGridMapVisual(gridMapVisual);
-
-        // Notify that the grid map has been initialized
-        OnGridMapInitialized?.Invoke(this, EventArgs.Empty);
     }
 
     private GridMapObject.NodeType currentNodeType = GridMapObject.NodeType.PermanentModule;
@@ -198,8 +178,8 @@ public class GridManager : MonoBehaviour {
         core.SetNodeType(GridMapObject.NodeType.Core);
 
         // Instantiate the spiral GameObject
-        // Instantiate(spiralPrefab, GetWorldPosition(spiral.x, spiral.y), Quaternion.identity);
-        OnSpiralInitialized?.Invoke(this, new OnSpiralInitializedEventArgs {x = core.x,y = core.y});
+        // Instantiate(corePrefab, GetWorldPosition(spiral.x, spiral.y), Quaternion.identity);
+        GameObject coreGameObject = Instantiate(corePrefab, GetWorldPositionWithOffset(core.x, core.y), Quaternion.identity, transform);
 
         // Initialize vortexes
         foreach (Vector2Int vortexPosition in levelDataSO.vortexPositions) {
@@ -213,7 +193,7 @@ public class GridManager : MonoBehaviour {
 
             // Instantiate the vortex GameObject
             // Instantiate(vortexPrefab, GetWorldPosition(vortexNode.x, vortexNode.y), Quaternion.identity);
-            OnVortexInitialized?.Invoke(this, new OnVortexInitializedEventArgs {x = vortexNode.x, y = vortexNode.y});
+            GameObject vortexGameObject = Instantiate(vortexPrefab, GetWorldPositionWithOffset(vortexNode.x, vortexNode.y), Quaternion.identity, transform);
 
             // Mark surrounding tiles as non-buildable
             MarkSurroundingTilesAsNonBuildable(vortexNode);
@@ -224,7 +204,6 @@ public class GridManager : MonoBehaviour {
                 vortexPaths[vortexNode] = path; // Store the path for the vortex
             }
         }
-        GameManager.Instance.LoadLevelData(levelDataSO);
     }
     
     private void MarkSurroundingTilesAsNonBuildable(GridMapObject vortexNode) {
@@ -294,19 +273,21 @@ public class GridManager : MonoBehaviour {
 
         foreach (var vortex in vortexes) {
             if (vortex != null) {
-                List<GridMapObject> path = gridMap.FindPath(vortex.x, vortex.y, core.x, core.y);
-                if (path != null) {
-                    vortexPaths[vortex] = path; // Update the dictionary with the new path
-                    Debug.Log($"Path found and updated from vortex at ({vortex.x}, {vortex.y}) to spiral.");
+                if (core != null) {
+                    List<GridMapObject> path = gridMap.FindPath(vortex.x, vortex.y, core.x, core.y);
+                    if (path != null) {
+                        vortexPaths[vortex] = path; // Update the dictionary with the new path
+                        //Debug.Log($"Path found and updated from vortex at ({vortex.x}, {vortex.y}) to spiral.");
+                    } else {
+                        Debug.LogWarning($"Failed to find a path from vortex at ({vortex.x}, {vortex.y}) to spiral.");
+                    }
                 } else {
-                    Debug.LogWarning($"Failed to find a path from vortex at ({vortex.x}, {vortex.y}) to spiral.");
+                    Debug.LogWarning("Core has not been set.");
                 }
             } else {
                 Debug.LogWarning("A vortex in the list is null.");
             }
         }
-        
-        Debug.Log("All paths updated!");
     }
 
     public List<GridMapObject> GetVortexList() {

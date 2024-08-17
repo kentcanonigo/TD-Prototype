@@ -931,51 +931,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 358559591}
   m_CullTransparentMesh: 1
---- !u!1 &365630999
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 365631001}
-  - component: {fileID: 365631000}
-  m_Layer: 0
-  m_Name: SpiralVisuals
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &365631000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 365630999}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5dc76db7dd7df694daef92ff72778f37, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spiralPrefab: {fileID: 575393232458288753, guid: 64a1c851f99093344803f9c48e4df2b3, type: 3}
---- !u!4 &365631001
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 365630999}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &369531542
 GameObject:
   m_ObjectHideFlags: 0
@@ -4704,51 +4659,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1237796028}
   m_CullTransparentMesh: 1
---- !u!1 &1260486958
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1260486960}
-  - component: {fileID: 1260486959}
-  m_Layer: 0
-  m_Name: VortexVisuals
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1260486959
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1260486958}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99f9aad96ba45874c9d3bf927c4b7908, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  vortexPrefab: {fileID: 8095139351506957523, guid: 799e4342c8fdbbf40bf32e2f28e385cd, type: 3}
---- !u!4 &1260486960
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1260486958}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1267191228
 GameObject:
   m_ObjectHideFlags: 0
@@ -5171,9 +5081,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridMapVisual: {fileID: 1622208592}
+  corePrefab: {fileID: 575393232458288753, guid: 64a1c851f99093344803f9c48e4df2b3, type: 3}
+  vortexPrefab: {fileID: 8095139351506957523, guid: 799e4342c8fdbbf40bf32e2f28e385cd, type: 3}
   showDebugOnPlay: 0
-  showGridNumberGizmos: 0
   showGridIsBuildableGizmos: 0
+  showGridNumberGizmos: 0
   alwaysShowGridGizmos: 0
 --- !u!4 &1342459960
 Transform:
@@ -7677,14 +7589,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2102877238}
-  - component: {fileID: 2102877239}
   m_Layer: 5
-  m_Name: LevelLoaderUI
+  m_Name: LoadingUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2102877238
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7705,20 +7616,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2102877239
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2102877237}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09bef6bade197e24c8a4185b06ea999e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fadeCanvasGroup: {fileID: 2031486904}
-  fadeDuration: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -7736,5 +7633,3 @@ SceneRoots:
   - {fileID: 1996616617}
   - {fileID: 791991822}
   - {fileID: 707361779}
-  - {fileID: 365631001}
-  - {fileID: 1260486960}

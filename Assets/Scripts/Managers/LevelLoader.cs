@@ -1,42 +1,43 @@
 using System;
 using CodeMonkey;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class LevelLoader : MonoBehaviour {
     
     public static LevelLoader Instance { get; private set; }
     
+    [InlineEditor]
     [SerializeField] private LevelDataSO levelDataToLoad;
 
     private void Awake() {
         Instance = this;
-    }
-
-    private void Start() {
-        GridManager.Instance.OnGridMapInitialized += GridManager_OnGridMapInitialized;
-        LoadLevel(levelDataToLoad);
-    }
-
-    private void GridManager_OnGridMapInitialized(object sender, EventArgs e) {
-        Debug.Log($"Grid map initialized. Loading {levelDataToLoad.name}");
-        GridManager.Instance.InitializeLevel(levelDataToLoad);
+        LoadLevelGrid(levelDataToLoad, OnLevelGridLoaded);
     }
 
     private void Update() {
         if (Input.GetKeyDown(KeyCode.L)) {
-            LoadLevel(levelDataToLoad);
+            LoadLevelGrid(levelDataToLoad, OnLevelGridLoaded);
             CMDebug.TextPopupMouse($"Loading {levelDataToLoad.levelName}");
         }
     }
 
-    public void LoadLevel(LevelDataSO levelDataSO) {
+    public void LoadLevelGrid(LevelDataSO levelDataSO, Action callback) {
         // Test if the level actually has a level file
-        if (levelDataSO == null || levelDataSO.levelFile == null || string.IsNullOrEmpty(levelDataSO.levelFile.name)) {
+        if (!levelDataSO || !levelDataSO.levelFile || string.IsNullOrEmpty(levelDataSO.levelFile.name)) {
             Debug.LogError("No level data to load!");
         } else {
             // Trigger GridManager initialization
             GridManager.Instance.InitializeGrid(levelDataSO.levelSize.x, levelDataSO.levelSize.y);
+            callback?.Invoke();
         }
     }
-}
 
+    private void OnLevelGridLoaded() {
+        Debug.Log($"Grid map initialized. Loading {levelDataToLoad.name}");
+        GridManager.Instance.InitializeLevel(levelDataToLoad);
+        GameManager.Instance.LoadLevelData(levelDataToLoad);
+        BackgroundManager.Instance.ScaleImage();
+        GameInput.Instance.InitializeCamera();
+    }
+}

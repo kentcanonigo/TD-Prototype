@@ -2,22 +2,17 @@ using System;
 using UnityEngine;
 
 public class BackgroundManager : MonoBehaviour {
+    
+    public static BackgroundManager Instance { get; private set; }
+    
     private SpriteRenderer backgroundSprite;
 
     private void Awake() {
+        Instance = this;
         backgroundSprite = GetComponent<SpriteRenderer>();
     }
 
-    private void Start()
-    {
-        GridManager.Instance.OnGridMapInitialized += GridManager_OnGridMapInitialized;
-    }
-
-    private void GridManager_OnGridMapInitialized(object sender, EventArgs e) {
-        ScaleImage();
-    }
-
-    private void ScaleImage()
+    public void ScaleImage()
     {
         // Get the grid bounds
         Bounds gridBounds = GridManager.Instance.TryGetMainGrid().GetGridBounds();

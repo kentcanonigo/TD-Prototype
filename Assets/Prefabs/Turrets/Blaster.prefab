@@ -82,8 +82,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firePoint: {fileID: 6622198991674229746}
   projectileSO: {fileID: 11400000, guid: 9a07868536b83144ab1c7accd05e53c3, type: 2}
-  shootAlways: 1
-  angleThreshold: 5
+  shootAlways: 0
+  angleThreshold: 20
 --- !u!114 &8427924058008417009
 MonoBehaviour:
   m_ObjectHideFlags: 0

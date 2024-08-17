@@ -7,8 +7,8 @@ public class GridSelection : MonoBehaviour {
     public static GridSelection Instance { get; private set; }
 
     [SerializeField] private bool debugMode = false;
-    
-    public Grid<GridMapObject> grid;
+
+    private Grid<GridMapObject> grid;
     public LayerMask gridLayerMask; // Layer mask to identify the grid
     public Color highlightColor = Color.yellow;
     private Vector2Int selectedGridPosition;
@@ -26,10 +26,6 @@ public class GridSelection : MonoBehaviour {
     }
 
     private void Start() {
-        GridManager.Instance.OnGridMapInitialized += GridManager_OnGridMapInitialized;
-    }
-
-    private void GridManager_OnGridMapInitialized(object sender, EventArgs e) {
         grid = GridManager.Instance.TryGetMainGrid();
     }
 
