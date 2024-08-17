@@ -20,3 +20,4 @@ MonoBehaviour:
   speed: 1
   damageToCore: 1
   sizeMultiplier: 1
+  creditValue: 5

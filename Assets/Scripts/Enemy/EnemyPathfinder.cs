@@ -34,12 +34,15 @@ public class EnemyPathfinder : MonoBehaviour {
             currentPathIndex++; // Move to the next position in the path
             if (currentPathIndex >= path.Count) {
                 // Reached the end of the path (you can add logic for what happens next)
-                //Debug.Log($"{gameObject.name} reached the spiral!");
-                
-                GameManager.Instance.DecreaseCoreHP(enemy.DamageToCore);
-                enemy.Kill();
+
+                OnReachedSpiral();
             }
         }
     }
-    
+
+    private void OnReachedSpiral() {
+        
+        GameManager.Instance.DecreaseCoreHP(enemy.DamageToCore);
+        enemy.Kill();
+    }
 }

@@ -116,6 +116,11 @@ public class GameManager : MonoBehaviour {
         return waveSOList.Count;
     }
     
+    public void AddCredits(int amount) {
+        CurrentCredits += amount;
+        OnValueChanged?.Invoke(this, EventArgs.Empty);
+    }
+    
     // Game State Functions
     
     public void StartWave() {

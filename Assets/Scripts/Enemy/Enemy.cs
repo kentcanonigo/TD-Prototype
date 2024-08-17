@@ -15,6 +15,7 @@ public class Enemy : MonoBehaviour, IHasHealth {
     public float Speed { get; private set; } // Speed at which the enemy moves
     public float SizeMultiplier { get; private set; } // SizeMultiplier; // Size multiplier of the enemy
     public int DamageToCore { get; private set; } // Damage that the enemy deals to the core
+    public int CreditValue { get; private set; } // Credits dropped when the enemy dies
     public bool IsDead => HealthPoints <= 0; // Implementing IsDead property
     public event IHasHealth.DeathHandler<Transform> OnDeath;
     public event EventHandler<IHasHealth.OnHealthChangedEventArgs> OnHealthChanged;
@@ -25,6 +26,7 @@ public class Enemy : MonoBehaviour, IHasHealth {
         Speed = enemySO.speed;
         SizeMultiplier = enemySO.sizeMultiplier;
         DamageToCore = enemySO.damageToCore;
+        CreditValue = enemySO.creditValue;
         HealthPoints = TotalHealthPoints;
     }
 
@@ -51,6 +53,7 @@ public class Enemy : MonoBehaviour, IHasHealth {
         // Handle enemy death (e.g., play death animation, destroy the object)
         //Debug.Log($"{gameObject.name} died!");
         OnDeath?.Invoke(transform, EventArgs.Empty);
+        GameManager.Instance.AddCredits(CreditValue);
         Destroy(gameObject); // Destroy the enemy GameObject
     }
     
@@ -60,22 +63,5 @@ public class Enemy : MonoBehaviour, IHasHealth {
         OnHealthChanged?.Invoke(this, new IHasHealth.OnHealthChangedEventArgs {
             healthNormalized = (float)HealthPoints / TotalHealthPoints
         });
-    }
-    
-    public void SetArmor(int armor) {
-        Armor = armor;
-    }
-    
-    public void SetSpeed(float speed) {
-        Speed = speed;
-    }
-    
-    public void SetSizeMultiplier(float sizeMultiplier) {
-        SizeMultiplier = sizeMultiplier;
-        transform.localScale *= SizeMultiplier;
-    }
-    
-    public void SetDamageToCore(int damageToCore) {
-        DamageToCore = damageToCore;
     }
 }

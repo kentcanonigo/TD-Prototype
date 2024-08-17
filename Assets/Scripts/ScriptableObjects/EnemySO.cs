@@ -20,4 +20,5 @@ public class EnemySO : ScriptableObject {
     public int damageToCore = 1; // The damage of this enemy to the core if it were to reach it
     [Range(1, 2)]
     public float sizeMultiplier = 1f; // Size multiplier of the enemy
+    public int creditValue = 1; // Credits dropped when the enemy dies
 }

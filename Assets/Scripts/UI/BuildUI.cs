@@ -13,6 +13,8 @@ public class BuildUI : MonoBehaviour {
     [Required]
     [Header("Turret Building")]
     [SerializeField] private GameObject buildTurretUI;
+    [SerializeField] private Button sellModuleButton;
+    
     
     [Required]
     [SceneObjectsOnly]
@@ -39,6 +41,10 @@ public class BuildUI : MonoBehaviour {
         
         turretSellButton.onClick.AddListener((() => {
             BuildManager.Instance.OnSellTurretButtonClicked();
+        }));
+        
+        sellModuleButton.onClick.AddListener((() => {
+            BuildManager.Instance.OnSellModuleButtonClicked();
         }));
     }
 

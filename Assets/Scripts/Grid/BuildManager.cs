@@ -71,6 +71,26 @@ public class BuildManager : MonoBehaviour {
         }
     }
 
+    public void OnSellModuleButtonClicked() {
+        if (selectedGridObject != null) {
+            if (GameManager.Instance.CurrentGameState == GameManager.GameState.BuildPhase) {
+                if (selectedGridObject.GetNodeType() == GridMapObject.NodeType.BuiltModule) {
+                    RemoveModule();
+                
+                    GameManager.Instance.AddModuleCount(1); // Add the module back to the GameManager
+                
+                    GridSelection.Instance.TriggerSelectGridCell(selectedGridObject.x, selectedGridObject.y);
+                } else {
+                    Debug.LogWarning("Cannot sell module here.");
+                }
+            } else {
+                Debug.LogWarning("Can only sell in build phase");
+            }
+        } else {
+            Debug.LogWarning("No grid object selected.");
+        }
+    }
+
     public void OnBuildTurretButtonClicked(TurretSO turretSO) {
         if (selectedGridObject != null) {
             if (selectedGridObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.PermanentModule) {
@@ -101,11 +121,16 @@ public class BuildManager : MonoBehaviour {
     public void OnSellTurretButtonClicked() {
         if (selectedGridObject != null) {
             if (selectedGridObject.GetBuiltTurret()) {
-                // TODO: Give player money based on turret stuff
                 Turret builtTurret = selectedGridObject.GetBuiltTurret();
+                
+                GameManager.Instance.AddCredits(builtTurret.BaseCost);
+                
                 selectedGridObject.SetBuiltTurret(null);
+                
                 Destroy(builtTurret.gameObject);
+                
                 GridSelection.Instance.TriggerSelectGridCell(selectedGridObject.x, selectedGridObject.y);
+                
             } else {
                 Debug.LogWarning("No turret in this position.");
             }
