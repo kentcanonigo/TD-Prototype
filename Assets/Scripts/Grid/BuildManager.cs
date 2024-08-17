@@ -1,9 +1,13 @@
 using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class BuildManager : MonoBehaviour {
     public static BuildManager Instance { get; private set; }
 
+    [SerializeField] [Required] [SceneObjectsOnly]
+    private Transform turretParent;
+    
     private GridMapObject selectedGridObject;
 
     private void Awake() {
@@ -28,6 +32,7 @@ public class BuildManager : MonoBehaviour {
             case GridMapObject.NodeType.Vortex:
                 break;
         }
+        //Debug.Log("Selected Grid Cell: " + e.x + ", " + e.y);
     }
 
     public void OnBuildModuleButtonClicked() {
@@ -73,7 +78,7 @@ public class BuildManager : MonoBehaviour {
                     // TODO: Check if player has enough money
                     // If the selected object is a BuiltModule or PermanentModule
                     // Instantiate the turret prefab
-                    GameObject turretPrefab = Instantiate(turretSO.turretPrefab, GridManager.Instance.GetWorldPositionWithOffset(selectedGridObject), Quaternion.identity);
+                    GameObject turretPrefab = Instantiate(turretSO.turretPrefab, GridManager.Instance.GetWorldPositionWithOffset(selectedGridObject), Quaternion.identity, turretParent);
                     Turret turret = turretPrefab.GetComponent<Turret>();
 
                     // Link the turret to the grid system
@@ -118,6 +123,6 @@ public class BuildManager : MonoBehaviour {
     private void BuildModule(GridMapObject gridObject) {
         gridObject.SetNodeType(GridMapObject.NodeType.BuiltModule);
         GridManager.Instance.UpdatePathForVortexList(); //Update the vortex paths
-        Debug.Log("Module built!");
+        //Debug.Log("Module built!");
     }
 }

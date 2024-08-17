@@ -57,6 +57,7 @@ public class GameManagerUI : MonoBehaviour {
         GameManager.Instance.OnValueChanged += GameManager_OnValueChanged;
         GameManager.Instance.OnGameStateChanged += GameManager_OnGameStateChanged;
         debugCanvasGroup.gameObject.SetActive(GameManager.Instance.showDebugMenu);
+        UpdateVisual();
     }
 
     private void GameManager_OnGameStateChanged(object sender, EventArgs e) {

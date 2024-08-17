@@ -72,4 +72,8 @@ public class Turret : MonoBehaviour, IUpgradable {
         ApplyBaseStats();
         ApplyUpgrades();
     }
+
+    public override string ToString() {
+        return turretSO.turretName;
+    }
 }

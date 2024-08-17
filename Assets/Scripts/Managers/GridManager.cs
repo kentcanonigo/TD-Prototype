@@ -24,6 +24,8 @@ public class GridManager : MonoBehaviour {
     [SerializeField] private bool showDebugOnPlay;
     [ShowIf("showDebugOnPlay")] [EnableIf("showDebugOnPlay")]
     [SerializeField] private bool showGridIsBuildableGizmos;
+    [ShowIf("showDebugOnPlay")] [EnableIf("showDebugOnPlay")]
+    [SerializeField] private bool showCurrentTurretGizmos;
     [SerializeField] private bool showGridNumberGizmos;
     [SerializeField] private bool alwaysShowGridGizmos;
     private Grid<GridMapObject> mainGameGrid; // For camera stuff
@@ -35,13 +37,6 @@ public class GridManager : MonoBehaviour {
     private Vector3 CellOffset { get; set; }
     
     //Gizmos
-    
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.green; // Set the color for the grid lines
-        Gizmos.DrawLine(GetWorldPosition(0, gridHeight), GetWorldPosition(gridWidth, gridHeight));
-        Gizmos.DrawLine(GetWorldPosition(gridWidth, 0), GetWorldPosition(gridWidth, gridHeight));
-    }
 
     private void OnDrawGizmos() {
         if (alwaysShowGridGizmos) {
@@ -49,16 +44,20 @@ public class GridManager : MonoBehaviour {
 
             for (int x = 0; x < gridWidth; x++) {
                 for (int y = 0; y < gridHeight; y++) {
+#if UNITY_EDITOR
                     Gizmos.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y + 1));
                     Gizmos.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y));
                     
-#if UNITY_EDITOR
                     if (showGridNumberGizmos) {
                         Handles.Label(GetWorldPosition(x, y) + new Vector3(cellSize / 2 - .4f, cellSize / 2, 0), $"({x}, {y})");
                     }
 
                     if (showGridIsBuildableGizmos) {
                         Handles.Label(GetWorldPosition(x, y) + new Vector3(cellSize / 2 - .4f, cellSize / 2, 0), $"{gridMap?.GetGrid().GetGridObject(x, y)}");
+                    }
+                    
+                    if (showCurrentTurretGizmos) {
+                        Handles.Label(GetWorldPosition(x, y) + new Vector3(cellSize / 2 - .4f, cellSize / 2, 0), $"{gridMap?.GetGrid().GetGridObject(x, y).GetBuiltTurret()}");
                     }
 #endif
                 }
@@ -237,7 +236,7 @@ public class GridManager : MonoBehaviour {
                 List<GridMapObject> path = gridMap.FindPath(vortex.x, vortex.y, core.x, core.y);
                 if (path != null) {
                     tempVortexPaths[vortex] = path; // Store the temporary path
-                    Debug.Log($"Path found and updated from vortex at ({vortex.x}, {vortex.y}) to spiral.");
+                    //Debug.Log($"Path found and updated from vortex at ({vortex.x}, {vortex.y}) to spiral.");
                 } else {
                     Debug.LogWarning($"Failed to find a path from vortex at ({vortex.x}, {vortex.y}) to spiral.");
 
@@ -260,7 +259,7 @@ public class GridManager : MonoBehaviour {
         // Revert the test grid object to its original state
         testGridObject.SetIsWalkable(originalIsWalkable);
 
-        Debug.Log("All paths updated!");
+        //Debug.Log("All paths updated!");
         return true;
     }
     
