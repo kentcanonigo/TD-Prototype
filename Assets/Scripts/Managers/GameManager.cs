@@ -5,11 +5,12 @@ using UnityEngine;
 public class GameManager : MonoBehaviour {
 
     [SerializeField] public bool showDebugMenu;
+    [SerializeField] public bool mapEditMode;
     [SerializeField] public EnemySO testEnemySO;
     
     public static GameManager Instance { get; private set; }
 
-    public int CurrentMoney { get; private set; }
+    public int CurrentCredits { get; private set; }
     public int CurrentCoreHP { get; private set; }
     public int MaxCoreHP { get; private set; }
     public int CurrentWave { get; private set; }
@@ -43,6 +44,7 @@ public class GameManager : MonoBehaviour {
         MaxCoreHP = 25;
         CurrentModules = StartingModules;
         CurrentCoreHP = MaxCoreHP;
+        CurrentCredits = 0;
         OnValueChanged?.Invoke(this, EventArgs.Empty);
     }
 
@@ -51,6 +53,7 @@ public class GameManager : MonoBehaviour {
         StartingModules = levelDataSO.startingModules;
         ModuleRewardsList = levelDataSO.moduleRewards;
         MaxCoreHP = levelDataSO.totalCoreHP;
+        CurrentCredits = levelDataSO.startingCredits;
         CurrentModules = StartingModules;
         CurrentCoreHP = MaxCoreHP;
         OnValueChanged?.Invoke(this, EventArgs.Empty);
@@ -88,6 +91,7 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    // TODO : Add Module Count based on Wave
     public void AddModuleCount(int amount) {
         CurrentModules += amount;
         OnValueChanged?.Invoke(this, EventArgs.Empty);

@@ -6,9 +6,9 @@ public class GridSelection : MonoBehaviour {
     
     public static GridSelection Instance { get; private set; }
 
-    [SerializeField] private bool debugMode;
-    
-    public Grid<GridMapObject> grid;
+    [SerializeField] private bool debugMode = false;
+
+    private Grid<GridMapObject> grid;
     public LayerMask gridLayerMask; // Layer mask to identify the grid
     public Color highlightColor = Color.yellow;
     private Vector2Int selectedGridPosition;
@@ -26,10 +26,6 @@ public class GridSelection : MonoBehaviour {
     }
 
     private void Start() {
-        GridManager.Instance.OnGridMapInitialized += GridManager_OnGridMapInitialized;
-    }
-
-    private void GridManager_OnGridMapInitialized(object sender, EventArgs e) {
         grid = GridManager.Instance.TryGetMainGrid();
     }
 
@@ -81,5 +77,9 @@ public class GridSelection : MonoBehaviour {
         Vector3 cellCenter = grid.GetWorldPosition(x, y) + new Vector3(0.5f, 0.5f) * grid.GetCellSize();
         Debug.DrawLine(cellCenter - Vector3.right * 0.5f, cellCenter + Vector3.right * 0.5f, highlightColor, 0.1f);
         Debug.DrawLine(cellCenter - Vector3.up * 0.5f, cellCenter + Vector3.up * 0.5f, highlightColor, 0.1f);
+    }
+    
+    public void TriggerSelectGridCell(int x, int y) {
+        OnSelectGridCell?.Invoke(this, new OnSelectGridCellEventArgs { x = x, y = y });
     }
 }

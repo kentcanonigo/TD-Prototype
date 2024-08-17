@@ -1,9 +1,12 @@
 using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class EnemyWiggle : MonoBehaviour {
 
+    [Required]
     [SerializeField] private WiggleSO wiggleSO;
+    [Required]
     [SerializeField] private GameObject enemyVisuals;
     private Wiggle enemyWiggle;
 

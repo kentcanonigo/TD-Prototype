@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 [RequireComponent(typeof(TurretEnemyDetection))]
@@ -7,6 +8,7 @@ public class TurretTargetSelection : MonoBehaviour {
     public Transform SelectedTarget { get; private set; }
 
     // Enum for targeting preferences
+    [EnumToggleButtons]
     public enum TargetingPreference { Closest, Furthest, LowestHealth, HighestHealth, FirstEntered, LastEntered }
     public TargetingPreference targetingPreference = TargetingPreference.FirstEntered;
     

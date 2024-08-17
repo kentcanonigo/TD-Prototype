@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class TurretAiming : MonoBehaviour {
+    [Required] [ChildGameObjectsOnly]
     [SerializeField] private Transform pivotPoint; // Where to pivot the gun
 
     [SerializeField] private AimSmoothing aimSmoothing = AimSmoothing.Lerp; // The method of aim smoothing
@@ -85,7 +87,7 @@ public class TurretAiming : MonoBehaviour {
     private float idleRotationInterval = 10f; // Change direction every 3 seconds
     private Quaternion randomRotation;
 
-    protected virtual void IdleRotation() {
+    private void IdleRotation() {
         idleRotationTimer -= Time.deltaTime;
         if (idleRotationTimer <= 0f) {
             // Generate a new random rotation on the Z axis

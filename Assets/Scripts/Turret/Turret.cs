@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [SelectionBase]
 public class Turret : MonoBehaviour, IUpgradable {
-    [field: Header("Turret Stats SO")] [SerializeField]
+    [field: Header("Turret Stats SO")] [SerializeField] [Required]
     private TurretSO turretSO; // Backing field for the property
-
+    
     [SerializeField] private List<TurretUpgradeSO> appliedUpgrades;
 
     public TurretSO TurretSO {
@@ -61,6 +63,12 @@ public class Turret : MonoBehaviour, IUpgradable {
 
     public void RemoveUpgrade(TurretUpgradeSO upgrade) {
         appliedUpgrades.Remove(upgrade);
+        ApplyBaseStats();
+        ApplyUpgrades();
+    }
+
+    public void Initialize(TurretSO turretSO) {
+        this.turretSO = turretSO;
         ApplyBaseStats();
         ApplyUpgrades();
     }

@@ -1,26 +1,32 @@
 using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BuildUI : MonoBehaviour {
-    [Header("Building")]
-    [SerializeField] private CanvasGroup buildMenuCanvasGroup;
+    [Required]
+    [SceneObjectsOnly]
+    [Header("Module Building")]
+    [SerializeField] private GameObject buildModuleUI;
     [SerializeField] private Button buildModuleButton;
-    [SerializeField] private Button buildBlasterButton;
     
+    [Required]
+    [Header("Turret Building")]
+    [SerializeField] private GameObject buildTurretUI;
+    
+    [Required]
+    [SceneObjectsOnly]
     [Header("Turret Info")]
-    [SerializeField] private CanvasGroup turretInfoCanvasGroup;
+    [SerializeField] private GameObject turretInfoUI;
     [SerializeField] private Button turretInfoButton;
     [SerializeField] private Button turretUpgradeButton;
     [SerializeField] private Button turretSellButton;
 
+    private GridMapObject lastSelectedGridObject;
+
     private void Awake() {
         buildModuleButton.onClick.AddListener((() => {
-            ModuleBuilder.Instance.OnBuildModuleButtonClicked();
-        }));
-        
-        buildBlasterButton.onClick.AddListener((() => {
-            
+            BuildManager.Instance.OnBuildModuleButtonClicked();
         }));
         
         turretInfoButton.onClick.AddListener((() => {
@@ -32,30 +38,49 @@ public class BuildUI : MonoBehaviour {
         }));
         
         turretSellButton.onClick.AddListener((() => {
-            
+            BuildManager.Instance.OnSellTurretButtonClicked();
         }));
     }
 
     private void Start() {
         GridSelection.Instance.OnSelectGridCell += GridSelection_OnSelectGridCell;
         GridSelection.Instance.OnDeselectGridCell += GridSelection_OnDeselectGridCell;
-        Hide();
-    }
-
-    private void GridSelection_OnDeselectGridCell(object sender, EventArgs e) {
-        Hide();
+        HideAllUI();
     }
 
     private void GridSelection_OnSelectGridCell(object sender, GridSelection.OnSelectGridCellEventArgs e) {
-        buildModuleButton.Select();
+        GridMapObject selectedGridObject = GridManager.Instance.TryGetMainGrid().GetGridObject(e.x, e.y);
+        if (selectedGridObject == null) {
+            Debug.LogWarning("GridObject is null");
+            return;
+        }
         Show();
+
+        bool isTurretBuilt = selectedGridObject.GetBuiltTurret();
+        bool isValidModuleBuildLocation = selectedGridObject.GetNodeType() is GridMapObject.NodeType.None;
+        bool isValidTurretBuildLocation = selectedGridObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.PermanentModule;
+
+        buildModuleUI.SetActive(!isTurretBuilt && isValidModuleBuildLocation && !isValidTurretBuildLocation);
+        buildTurretUI.SetActive(!isTurretBuilt && isValidTurretBuildLocation && !isValidModuleBuildLocation);
+        turretInfoUI.SetActive(isTurretBuilt);
+        
+        if (!isTurretBuilt) {
+            buildModuleButton.Select();
+        }
+    }
+
+    private void GridSelection_OnDeselectGridCell(object sender, EventArgs e) {
+        HideAllUI();
     }
     
+    private void HideAllUI() {
+        buildModuleUI.SetActive(false);
+        buildTurretUI.SetActive(false);
+        turretInfoUI.SetActive(false);
+        gameObject.SetActive(false);
+    }
+
     private void Show() {
         gameObject.SetActive(true);
-    }
-    
-    private void Hide() {
-        gameObject.SetActive(false);
     }
 }

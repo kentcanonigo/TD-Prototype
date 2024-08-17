@@ -2,9 +2,9 @@ using System;
 using Unity.Cinemachine;
 using UnityEngine;
 
-// Note: I should really separate the game input from the game camera
-
 public class GameInput : MonoBehaviour {
+    
+    public static GameInput Instance { get; private set; }
     
     private CinemachineConfiner2D cinemachineConfiner2D;
     private CinemachineCamera cinemachineCamera;
@@ -16,15 +16,12 @@ public class GameInput : MonoBehaviour {
     private Vector3 lastMousePosition;
 
     private void Awake() {
+        Instance = this;
         cinemachineConfiner2D = GetComponent<CinemachineConfiner2D>();
         cinemachineCamera = GetComponent<CinemachineCamera>();
     }
 
-    private void Start() {
-        GridManager.Instance.OnGridMapInitialized += GridManager_OnGridMapInitialized;
-    }
-
-    private void GridManager_OnGridMapInitialized(object sender, EventArgs e) {
+    public void InitializeCamera() {
         // Calculate Camera Bounds
         Bounds gridBounds = GridManager.Instance.TryGetMainGrid().GetGridBounds();
         cameraBounds.size = new Vector2(gridBounds.size.x, gridBounds.size.y);

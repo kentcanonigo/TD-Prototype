@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 [SelectionBase]
 public class Enemy : MonoBehaviour, IHasHealth {
     [Header("Enemy")]
+    [Required]
     [SerializeField] private EnemySO enemySO; // Reference to the enemy stats ScriptableObject
 
     public int HealthPoints { get; private set; } // Health points of the enemy
