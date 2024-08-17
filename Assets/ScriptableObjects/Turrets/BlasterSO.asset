@@ -18,6 +18,6 @@ MonoBehaviour:
   baseDamage: 5
   baseRange: 3
   baseCost: 60
-  baseFireRate: 1
+  baseFireRate: 3
   baseRotationSpeed: 2
   baseProjectileSpeed: 5
