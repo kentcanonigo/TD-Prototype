@@ -1,7 +1,9 @@
 using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "TurretStats", menuName = "New Turret")]
+[InlineEditor]
 public class TurretSO : ScriptableObject {
     [Header("Turret Stats")] public string turretName;
     [TextArea(10, 5)] public string turretDescription;

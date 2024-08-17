@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using CodeMonkey;
 using CodeMonkey.Utils;
+using Sirenix.OdinInspector;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor; 
@@ -14,6 +15,7 @@ public class GridManager : MonoBehaviour {
     private int gridWidth = 18;
     private int gridHeight = 14;
     private float cellSize = 1f;
+    [Required]
     [SerializeField] private GridMapVisual gridMapVisual;
     [SerializeField] private bool showDebugOnPlay;
     [SerializeField] private bool showGridNumberGizmos;

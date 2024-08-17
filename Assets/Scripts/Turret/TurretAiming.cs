@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class TurretAiming : MonoBehaviour {
+    [Required]
     [SerializeField] private Transform pivotPoint; // Where to pivot the gun
 
     [SerializeField] private AimSmoothing aimSmoothing = AimSmoothing.Lerp; // The method of aim smoothing

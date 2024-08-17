@@ -1,12 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class TurretFiring : MonoBehaviour, IFireable {
+    [Required]
     [Header("Turret Physical Components")]
     [SerializeField] private Transform firePoint; // The point from where the projectile is fired
     
+    [Required]
     [field: Header("Projectile Info")]
     [SerializeField] private ProjectileSO projectileSO; // The projectile that will be fired
 

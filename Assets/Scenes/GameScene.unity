@@ -20,7 +20,7 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientSkyColor: {r: 0.24555987, g: 0.2629344, b: 0.3, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -549,7 +549,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -1621,7 +1621,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -2271,8 +2271,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_HighlightedColor: {r: 0.038701296, g: 1, b: 0, a: 1}
+    m_PressedColor: {r: 0.3283019, g: 0.3283019, b: 0.3283019, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -2450,8 +2450,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2045127363}
-  - {fileID: 814456476}
   - {fileID: 1521788304}
+  - {fileID: 814456476}
   - {fileID: 332059258}
   m_Father: {fileID: 1590679002}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2472,9 +2472,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbb2035d1ff75e64b819924eb6f90ccc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildMenuCanvasGroup: {fileID: 814456478}
+  buildModuleUI: {fileID: 814456475}
   buildModuleButton: {fileID: 1586689746}
-  turretInfoCanvasGroup: {fileID: 332059259}
+  buildTurretUI: {fileID: 1521788303}
+  turretInfoUI: {fileID: 332059257}
   turretInfoButton: {fileID: 769804992}
   turretUpgradeButton: {fileID: 369531546}
   turretSellButton: {fileID: 760527039}
@@ -2925,8 +2926,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1586689743}
   - {fileID: 1147270746}
+  - {fileID: 1586689743}
   m_Father: {fileID: 730044584}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
@@ -3685,7 +3686,7 @@ GameObject:
   - component: {fileID: 1028482040}
   - component: {fileID: 1028482042}
   m_Layer: 0
-  m_Name: BackgroundManager
+  m_Name: _BackgroundManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5599,8 +5600,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 650472600}
   - {fileID: 904133532}
+  - {fileID: 650472600}
   m_Father: {fileID: 730044584}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
@@ -5873,8 +5874,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_HighlightedColor: {r: 0.038701296, g: 1, b: 0, a: 1}
+    m_PressedColor: {r: 0.3283019, g: 0.3283019, b: 0.3283019, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -5968,7 +5969,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 503
 --- !u!114 &1590679000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7722,18 +7723,18 @@ MonoBehaviour:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1590679002}
   - {fileID: 118999485}
   - {fileID: 1342459960}
   - {fileID: 227274407}
   - {fileID: 1083971185}
-  - {fileID: 1590679002}
-  - {fileID: 619394802}
   - {fileID: 1028482041}
+  - {fileID: 1608719203}
+  - {fileID: 1622208591}
   - {fileID: 1762186395}
+  - {fileID: 619394802}
   - {fileID: 1996616617}
   - {fileID: 791991822}
   - {fileID: 707361779}
-  - {fileID: 1622208591}
   - {fileID: 365631001}
   - {fileID: 1260486960}
-  - {fileID: 1608719203}

@@ -1,6 +1,8 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewEnemyStats", menuName = "New Enemy Stats")]
+[InlineEditor]
 public class EnemySO : ScriptableObject {
     [Header("Enemy Stats")]
     public string enemyName; // Name of the enemy

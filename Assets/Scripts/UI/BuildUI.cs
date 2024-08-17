@@ -1,14 +1,23 @@
 using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BuildUI : MonoBehaviour {
-    [Header("Building")]
-    [SerializeField] private CanvasGroup buildMenuCanvasGroup;
+    [Required]
+    [SceneObjectsOnly]
+    [Header("Module Building")]
+    [SerializeField] private GameObject buildModuleUI;
     [SerializeField] private Button buildModuleButton;
     
+    [Required]
+    [Header("Turret Building")]
+    [SerializeField] private GameObject buildTurretUI;
+    
+    [Required]
+    [SceneObjectsOnly]
     [Header("Turret Info")]
-    [SerializeField] private CanvasGroup turretInfoCanvasGroup;
+    [SerializeField] private GameObject turretInfoUI;
     [SerializeField] private Button turretInfoButton;
     [SerializeField] private Button turretUpgradeButton;
     [SerializeField] private Button turretSellButton;
@@ -41,13 +50,19 @@ public class BuildUI : MonoBehaviour {
 
     private void GridSelection_OnSelectGridCell(object sender, GridSelection.OnSelectGridCellEventArgs e) {
         GridMapObject selectedGridObject = GridManager.Instance.TryGetMainGrid().GetGridObject(e.x, e.y);
+        if (selectedGridObject == null) {
+            Debug.LogWarning("GridObject is null");
+            return;
+        }
         Show();
 
         bool isTurretBuilt = selectedGridObject.GetBuiltTurret();
-        bool isValidBuildLocation = selectedGridObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.PermanentModule or GridMapObject.NodeType.None;
+        bool isValidModuleBuildLocation = selectedGridObject.GetNodeType() is GridMapObject.NodeType.None;
+        bool isValidTurretBuildLocation = selectedGridObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.PermanentModule;
 
-        buildMenuCanvasGroup.alpha = !isTurretBuilt && isValidBuildLocation ? 1f : 0f;
-        turretInfoCanvasGroup.alpha = isTurretBuilt ? 1f : 0f;
+        buildModuleUI.SetActive(!isTurretBuilt && isValidModuleBuildLocation && !isValidTurretBuildLocation);
+        buildTurretUI.SetActive(!isTurretBuilt && isValidTurretBuildLocation && !isValidModuleBuildLocation);
+        turretInfoUI.SetActive(isTurretBuilt);
         
         if (!isTurretBuilt) {
             buildModuleButton.Select();
@@ -59,8 +74,9 @@ public class BuildUI : MonoBehaviour {
     }
     
     private void HideAllUI() {
-        buildMenuCanvasGroup.alpha = 0f;
-        turretInfoCanvasGroup.alpha = 0f;
+        buildModuleUI.SetActive(false);
+        buildTurretUI.SetActive(false);
+        turretInfoUI.SetActive(false);
         gameObject.SetActive(false);
     }
 

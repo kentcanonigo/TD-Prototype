@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 [SelectionBase]
@@ -7,6 +8,7 @@ public class Turret : MonoBehaviour, IUpgradable {
     [field: Header("Turret Stats SO")] [SerializeField]
     private TurretSO turretSO; // Backing field for the property
 
+    [Required]
     [SerializeField] private List<TurretUpgradeSO> appliedUpgrades;
 
     public TurretSO TurretSO {
