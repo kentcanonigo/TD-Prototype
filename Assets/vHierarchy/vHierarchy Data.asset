@@ -34,7 +34,7 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-1184247833-0
         - globalObjectIdString: GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-1289809855-0
         values:
-        - colorIndex: 0
+        - colorIndex: 7
           iconNameOrGuid: Folder Icon
         - colorIndex: 0
           iconNameOrGuid: Light Icon

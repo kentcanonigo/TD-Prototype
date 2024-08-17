@@ -15,7 +15,6 @@ public class BuildUI : MonoBehaviour {
     [SerializeField] private GameObject buildTurretUI;
     [SerializeField] private Button sellModuleButton;
     
-    
     [Required]
     [SceneObjectsOnly]
     [Header("Turret Info")]
@@ -23,6 +22,7 @@ public class BuildUI : MonoBehaviour {
     [SerializeField] private Button turretInfoButton;
     [SerializeField] private Button turretUpgradeButton;
     [SerializeField] private Button turretSellButton;
+    [SerializeField] private Button turretTargetingButton;
 
     private GridMapObject lastSelectedGridObject;
 
@@ -32,7 +32,8 @@ public class BuildUI : MonoBehaviour {
         }));
         
         turretInfoButton.onClick.AddListener((() => {
-            
+            InfoUI.Instance.SetInfo(lastSelectedGridObject.GetBuiltTurret().GetTurretSO().turretName, lastSelectedGridObject.GetBuiltTurret().GetTurretSO().turretDescription);
+            InfoUI.Instance.Toggle();
         }));
         
         turretUpgradeButton.onClick.AddListener((() => {
@@ -46,6 +47,19 @@ public class BuildUI : MonoBehaviour {
         sellModuleButton.onClick.AddListener((() => {
             BuildManager.Instance.OnSellModuleButtonClicked();
         }));
+        
+        turretTargetingButton.onClick.AddListener((() => {
+            
+        }));
+    }
+
+    private void ShowTurretInfo() {
+        if (lastSelectedGridObject == null) {
+            Debug.LogWarning("lastSelectedGridObject is null");
+            return;
+        }
+        InfoUI.Instance.SetInfo(lastSelectedGridObject.GetBuiltTurret().GetTurretSO().turretName, lastSelectedGridObject.GetBuiltTurret().GetTurretSO().turretDescription);
+        
     }
 
     private void Start() {
@@ -60,12 +74,15 @@ public class BuildUI : MonoBehaviour {
             Debug.LogWarning("GridObject is null");
             return;
         }
+        lastSelectedGridObject = selectedGridObject;
         Show();
 
         bool isTurretBuilt = selectedGridObject.GetBuiltTurret();
         bool isValidModuleBuildLocation = selectedGridObject.GetNodeType() is GridMapObject.NodeType.None;
         bool isValidTurretBuildLocation = selectedGridObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.PermanentModule;
+        bool isPermanentModule = selectedGridObject.GetNodeType() is GridMapObject.NodeType.PermanentModule;
 
+        sellModuleButton.gameObject.SetActive(!isPermanentModule);
         buildModuleUI.SetActive(!isTurretBuilt && isValidModuleBuildLocation && !isValidTurretBuildLocation);
         buildTurretUI.SetActive(!isTurretBuilt && isValidTurretBuildLocation && !isValidModuleBuildLocation);
         turretInfoUI.SetActive(isTurretBuilt);

@@ -16,8 +16,7 @@ public class Turret : MonoBehaviour, IUpgradable {
         set => turretSO = value; // Allow setting in the class
     }
 
-    [field: Header("Turret Stats")] public string TurretName { get; set; }
-    public string TurretDescription { get; set; }
+    [field: Header("Turret Stats")]
     public int BaseDamage { get; set; }
     public float BaseRotationSpeed { get; set; }
     public float BaseRange { get; set; }
@@ -35,8 +34,6 @@ public class Turret : MonoBehaviour, IUpgradable {
     }
 
     void ApplyBaseStats() {
-        if (string.IsNullOrEmpty(TurretName)) TurretName = TurretSO.turretName;
-        if (string.IsNullOrEmpty(TurretDescription)) TurretDescription = TurretSO.turretDescription;
         if (BaseDamage == 0) BaseDamage = TurretSO.baseDamage;
         if (BaseRange == 0) BaseRange = TurretSO.baseRange;
         if (BaseCost == 0) BaseCost = TurretSO.baseCost;
@@ -75,5 +72,9 @@ public class Turret : MonoBehaviour, IUpgradable {
 
     public override string ToString() {
         return turretSO.turretName;
+    }
+
+    public TurretSO GetTurretSO() {
+        return turretSO;
     }
 }

@@ -102,6 +102,8 @@ public class GameManager : MonoBehaviour {
             CurrentCoreHP--;
             OnValueChanged?.Invoke(this, EventArgs.Empty);
         } else {
+            CurrentCoreHP--;
+            OnValueChanged?.Invoke(this, EventArgs.Empty);
             Debug.Log("Core HP is zero!");
             // TODO: Game over logic
         }
