@@ -35,17 +35,6 @@ public class GameManager : MonoBehaviour {
     private void Awake() {
         Instance = this;
         CurrentGameState = GameState.Loading;
-        
-        // Initialize default values in case level data does not have data
-        CurrentWave = 0;
-        waveSOList = null;
-        StartingModules = 0;
-        ModuleRewardsList = null;
-        MaxCoreHP = 25;
-        CurrentModules = StartingModules;
-        CurrentCoreHP = MaxCoreHP;
-        CurrentCredits = 0;
-        OnValueChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void LoadLevelData(LevelDataSO levelDataSO) {
@@ -56,9 +45,11 @@ public class GameManager : MonoBehaviour {
         CurrentCredits = levelDataSO.startingCredits;
         CurrentModules = StartingModules;
         CurrentCoreHP = MaxCoreHP;
-        OnValueChanged?.Invoke(this, EventArgs.Empty);
-        
+        Debug.Log("Loaded level data");
         CurrentGameState = GameState.BuildPhase;
+        OnValueChanged?.Invoke(this, EventArgs.Empty);
+        OnGameStateChanged?.Invoke(this, EventArgs.Empty);
+        
     }
 
     // Helper Functions
@@ -126,27 +117,29 @@ public class GameManager : MonoBehaviour {
     // Game State Functions
     
     public void StartWave() {
-        //Debug.Log("Start Wave called!");
+        Debug.Log("Start Wave called!");
         if (CurrentGameState == GameState.BuildPhase) {
-            //Debug.Log("Now in wave phase!");
+            Debug.Log("Now in wave phase!");
             CurrentGameState = GameState.WavePhase;
             OnGameStateChanged?.Invoke(this, EventArgs.Empty);
             // TODO: Start wave logic (e.g., spawn enemies)
         } else {
+            OnGameStateChanged?.Invoke(this, EventArgs.Empty);
             Debug.Log($"Cannot start wave. {CurrentGameState}");
         }
     }
     
     public void EndWave() {
-        //Debug.Log("End Wave called!");
+        Debug.Log("End Wave called!");
         if (CurrentGameState == GameState.WavePhase) {
-            //Debug.Log("Now in End Wave phase!");
+            Debug.Log("Now in End Wave phase!");
             CurrentGameState = GameState.EndWavePhase;
             OnGameStateChanged?.Invoke(this, EventArgs.Empty);
             // TODO: Handle end of wave logic (e.g., rewards, reset, etc.)
             CompleteEndWave();
         } else {
-            Debug.Log($"Cannot end wave. {CurrentGameState}");
+            OnGameStateChanged?.Invoke(this, EventArgs.Empty);
+            Debug.Log($"Cannot end wave: {CurrentGameState}");
         }
     }
 
@@ -164,6 +157,7 @@ public class GameManager : MonoBehaviour {
             // Last wave completed
             // TODO: Logic for completing the level
             CurrentGameState = GameState.Victory;
+            OnGameStateChanged?.Invoke(this, EventArgs.Empty);
             Debug.Log("Game Complete!");
         }
     }

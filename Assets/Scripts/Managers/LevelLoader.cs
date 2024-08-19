@@ -12,6 +12,9 @@ public class LevelLoader : MonoBehaviour {
 
     private void Awake() {
         Instance = this;
+    }
+
+    private void Start() {
         LoadLevelGrid(levelDataToLoad, OnLevelGridLoaded);
     }
 
@@ -37,7 +40,5 @@ public class LevelLoader : MonoBehaviour {
         Debug.Log($"Grid map initialized. Loading {levelDataToLoad.name}");
         GridManager.Instance.InitializeLevel(levelDataToLoad);
         GameManager.Instance.LoadLevelData(levelDataToLoad);
-        BackgroundManager.Instance.ScaleImage();
-        GameInput.Instance.InitializeCamera();
     }
 }

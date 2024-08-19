@@ -61,16 +61,18 @@ public class GameManagerUI : MonoBehaviour {
     }
 
     private void GameManager_OnGameStateChanged(object sender, EventArgs e) {
-        Debug.Log("Gamestate changed has changed");
+        //Debug.Log("Gamestate changed has changed");
         gameStateText.text = $"Gamestate: {GameManager.Instance.CurrentGameState}";
+        UpdateVisual();
     }
 
     private void GameManager_OnValueChanged(object sender, EventArgs e) {
+        //Debug.Log("Values in game has changed");
         UpdateVisual();
     }
 
     private void UpdateVisual() {
-        //Debug.Log($"Updating UI: Wave: {GameManager.Instance.CurrentWave}/{GameManager.Instance.NumberOfWaves}, Core HP: {GameManager.Instance.CurrentCoreHP}/{GameManager.Instance.MaxCoreHP}, Modules: {GameManager.Instance.CurrentModules}");
+        //Debug.Log($"Updating Visuals");
         waveUIText.text = $"Wave: {GameManager.Instance.CurrentWave}/{GameManager.Instance.GetTotalWaves()}";
         coreHPUIText.text = $"Core HP: {GameManager.Instance.CurrentCoreHP}/{GameManager.Instance.MaxCoreHP}";
         modulesUIText.text = $"Modules: {GameManager.Instance.CurrentModules}";

@@ -21,7 +21,7 @@ public class GameInput : MonoBehaviour {
         cinemachineCamera = GetComponent<CinemachineCamera>();
     }
 
-    public void InitializeCamera() {
+    public void Start() {
         // Calculate Camera Bounds
         Bounds gridBounds = GridManager.Instance.TryGetMainGrid().GetGridBounds();
         cameraBounds.size = new Vector2(gridBounds.size.x, gridBounds.size.y);

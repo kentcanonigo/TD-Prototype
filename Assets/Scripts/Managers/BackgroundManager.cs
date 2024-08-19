@@ -12,8 +12,7 @@ public class BackgroundManager : MonoBehaviour {
         backgroundSprite = GetComponent<SpriteRenderer>();
     }
 
-    public void ScaleImage()
-    {
+    private void Start() {
         // Get the grid bounds
         Bounds gridBounds = GridManager.Instance.TryGetMainGrid().GetGridBounds();
 

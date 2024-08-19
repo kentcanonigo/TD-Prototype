@@ -7,8 +7,7 @@ public class GridSelection : MonoBehaviour {
     public static GridSelection Instance { get; private set; }
 
     [SerializeField] private bool debugMode = false;
-
-    private Grid<GridMapObject> grid;
+    
     public LayerMask gridLayerMask; // Layer mask to identify the grid
     public Color highlightColor = Color.yellow;
     private Vector2Int selectedGridPosition;
@@ -25,10 +24,6 @@ public class GridSelection : MonoBehaviour {
         Instance = this;
     }
 
-    private void Start() {
-        grid = GridManager.Instance.TryGetMainGrid();
-    }
-
     private void Update() {
         // Handle mouse input
         if (Input.GetMouseButtonDown(0)) {
@@ -43,10 +38,10 @@ public class GridSelection : MonoBehaviour {
         }
         
         Vector3 mousePosition = UtilsClass.GetMouseWorldPosition();
-        grid.GetXY(mousePosition, out int x, out int y);
+        GridManager.Instance.TryGetMainGrid().GetXY(mousePosition, out int x, out int y);
 
         // Check if the selected cell is valid
-        GridMapObject selectedObject = grid.GetGridObject(x, y);
+        GridMapObject selectedObject = GridManager.Instance.TryGetMainGrid().GetGridObject(x, y);
         if (selectedObject != null) {
             Vector2Int newGridPosition = new Vector2Int(x, y);
 
@@ -74,7 +69,7 @@ public class GridSelection : MonoBehaviour {
 
     private void HighlightSelectedCell(int x, int y) {
         // Use Gizmos or another method to highlight the selected cell
-        Vector3 cellCenter = grid.GetWorldPosition(x, y) + new Vector3(0.5f, 0.5f) * grid.GetCellSize();
+        Vector3 cellCenter = GridManager.Instance.TryGetMainGrid().GetWorldPosition(x, y) + new Vector3(0.5f, 0.5f) * GridManager.Instance.TryGetMainGrid().GetCellSize();
         Debug.DrawLine(cellCenter - Vector3.right * 0.5f, cellCenter + Vector3.right * 0.5f, highlightColor, 0.1f);
         Debug.DrawLine(cellCenter - Vector3.up * 0.5f, cellCenter + Vector3.up * 0.5f, highlightColor, 0.1f);
     }

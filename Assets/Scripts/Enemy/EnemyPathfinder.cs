@@ -23,7 +23,10 @@ public class EnemyPathfinder : MonoBehaviour {
     }
     
     private void MoveAlongPath() {
-        if (path == null || path.Count == 0) return;
+        if (path == null || path.Count == 0) {
+            Debug.LogError("Path is not initialized or empty.");
+            return;
+        }
 
         // Move toward the current path position
         Vector3 targetPosition = path[currentPathIndex];
@@ -33,15 +36,14 @@ public class EnemyPathfinder : MonoBehaviour {
         if (Vector3.Distance(transform.position, targetPosition) < 0.1f) {
             currentPathIndex++; // Move to the next position in the path
             if (currentPathIndex >= path.Count) {
-                // Reached the end of the path (you can add logic for what happens next)
-
+                // Reached the end of the path
                 OnReachedSpiral();
             }
         }
     }
 
+
     private void OnReachedSpiral() {
-        
         GameManager.Instance.DecreaseCoreHP(enemy.DamageToCore);
         enemy.Kill();
     }

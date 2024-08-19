@@ -77,4 +77,9 @@ public class Turret : MonoBehaviour, IUpgradable {
     public TurretSO GetTurretSO() {
         return turretSO;
     }
+    
+    public bool TryGetTargetingSelection(out TurretTargetSelection targetingSelection) {
+        targetingSelection = GetComponent<TurretTargetSelection>();
+        return targetingSelection != null;
+    }
 }

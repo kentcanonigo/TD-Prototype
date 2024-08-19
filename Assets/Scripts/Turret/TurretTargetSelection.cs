@@ -19,6 +19,10 @@ public class TurretTargetSelection : MonoBehaviour {
     private void Update() {
         SelectTarget();
     }
+    
+    public void SetTargetingPreference(TargetingPreference newTargetingPreference) {
+        targetingPreference = newTargetingPreference;
+    }
 
     public void SelectTarget() {
         // Ensure the selected target is still valid
