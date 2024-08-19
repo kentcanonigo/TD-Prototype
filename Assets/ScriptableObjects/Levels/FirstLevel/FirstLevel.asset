@@ -13,16 +13,16 @@ MonoBehaviour:
   m_Name: FirstLevel
   m_EditorClassIdentifier: 
   levelName: First Level
-  levelSize: {x: 18, y: 16}
+  levelSize: {x: 18, y: 12}
   totalCoreHP: 50
   startingModules: 10
   startingCredits: 120
   moduleRewards: 010000000200000003000000
   levelFile: {fileID: 4900000, guid: 15da6d83e4d29e84a9b51225aa044bb8, type: 3}
-  spiralPosition: {x: 15, y: 11}
+  spiralPosition: {x: 15, y: 7}
   waveSOList:
   - {fileID: 11400000, guid: 3990e9752c28d7440bb4fed97ee73392, type: 2}
   - {fileID: 11400000, guid: b0b59e78c97ac4446b009b5bc07b2d25, type: 2}
   - {fileID: 11400000, guid: dfb252715638bae459c0abafe7ac4d87, type: 2}
   vortexPositions:
-  - {x: 2, y: 11}
+  - {x: 2, y: 7}

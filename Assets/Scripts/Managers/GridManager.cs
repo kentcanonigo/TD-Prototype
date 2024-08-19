@@ -5,29 +5,30 @@ using CodeMonkey.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
 #if UNITY_EDITOR
-using UnityEditor; 
+using UnityEditor;
 #endif
 
 public class GridManager : MonoBehaviour {
-    
     public static GridManager Instance { get; private set; }
 
-    private int gridWidth = 18;
-    private int gridHeight = 14;
+    private int gridWidth = 1;
+    private int gridHeight = 1;
     private float cellSize = 1f;
-    [Required]
-    [SerializeField] private GridMapVisual gridMapVisual;
-    [Required] [AssetsOnly]
-    [SerializeField] public GameObject corePrefab;
-    [Required] [AssetsOnly]
-    [SerializeField] public GameObject vortexPrefab;
+    [Required] [SerializeField] private GridMapVisual gridMapVisual;
+
+    [Required] [AssetsOnly] [SerializeField]
+    public GameObject corePrefab;
+
+    [Required] [AssetsOnly] [SerializeField]
+    public GameObject vortexPrefab;
+
     [SerializeField] private bool showDebugOnPlay;
-    [ShowIf("showDebugOnPlay")] [EnableIf("showDebugOnPlay")]
-    [SerializeField] private bool showGridIsBuildableGizmos;
-    [ShowIf("showDebugOnPlay")] [EnableIf("showDebugOnPlay")]
-    [SerializeField] private bool showCurrentTurretGizmos;
-    [SerializeField] private bool showGridNumberGizmos;
-    [SerializeField] private bool alwaysShowGridGizmos;
+
+    [ShowIf("showDebugOnPlay")] [EnableIf("showDebugOnPlay")] [SerializeField]
+    private bool showGridIsBuildableGizmos;
+
+    [ShowIf("showDebugOnPlay")] [EnableIf("showDebugOnPlay")] [SerializeField]
+    private bool showCurrentTurretGizmos;
     private Grid<GridMapObject> mainGameGrid; // For camera stuff
     private GridMapObject core; // The spiral
     private List<GridMapObject> vortexes; // A list of all the vortexes in the level
@@ -35,51 +36,39 @@ public class GridManager : MonoBehaviour {
     private GridMap gridMap; // THE gridmap
 
     private Vector3 CellOffset { get; set; }
-    
+
     //Gizmos
 
     private void OnDrawGizmos() {
-        if (alwaysShowGridGizmos) {
-            Gizmos.color = Color.white; // Set the color for the grid lines
+        Gizmos.color = Color.white; // Set the color for the grid lines
 
-            for (int x = 0; x < gridWidth; x++) {
-                for (int y = 0; y < gridHeight; y++) {
+        for (int x = 0; x < gridWidth; x++) {
+            for (int y = 0; y < gridHeight; y++) {
 #if UNITY_EDITOR
-                    Gizmos.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y + 1));
-                    Gizmos.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y));
-                    
-                    if (showGridNumberGizmos) {
-                        Handles.Label(GetWorldPosition(x, y) + new Vector3(cellSize / 2 - .4f, cellSize / 2, 0), $"({x}, {y})");
-                    }
-
-                    if (showGridIsBuildableGizmos) {
-                        Handles.Label(GetWorldPosition(x, y) + new Vector3(cellSize / 2 - .4f, cellSize / 2, 0), $"{gridMap?.GetGrid().GetGridObject(x, y)}");
-                    }
-                    
-                    if (showCurrentTurretGizmos) {
-                        Handles.Label(GetWorldPosition(x, y) + new Vector3(cellSize / 2 - .4f, cellSize / 2, 0), $"{gridMap?.GetGrid().GetGridObject(x, y).GetBuiltTurret()}");
-                    }
-#endif
+                if (showGridIsBuildableGizmos) {
+                    Handles.Label(GetWorldPosition(x, y) + new Vector3(cellSize / 2 - .4f, cellSize / 2, 0), $"{gridMap?.GetGrid().GetGridObject(x, y)}");
                 }
+
+                if (showCurrentTurretGizmos) {
+                    Handles.Label(GetWorldPosition(x, y) + new Vector3(cellSize / 2 - .4f, cellSize / 2, 0), $"{gridMap?.GetGrid().GetGridObject(x, y).GetBuiltTurret()}");
+                }
+#endif
             }
-            
-            Gizmos.DrawLine(GetWorldPosition(0, gridHeight), GetWorldPosition(gridWidth, gridHeight));
-            Gizmos.DrawLine(GetWorldPosition(gridWidth, 0), GetWorldPosition(gridWidth, gridHeight));
         }
     }
 
     public Vector3 GetWorldPosition(GridMapObject gridMapObject) {
         return GetWorldPosition(gridMapObject.x, gridMapObject.y);
     }
-    
+
     public Vector3 GetWorldPosition(int x, int y) {
         return new Vector3(x, y) * cellSize + Vector3.zero;
     }
-    
+
     public Vector3 GetWorldPositionWithOffset(GridMapObject gridMapObject) {
         return GetWorldPositionWithOffset(gridMapObject.x, gridMapObject.y);
     }
-    
+
     public Vector3 GetWorldPositionWithOffset(int x, int y) {
         return new Vector3(x, y) * cellSize + CellOffset;
     }
@@ -88,16 +77,17 @@ public class GridManager : MonoBehaviour {
         if (mainGameGrid != null) {
             return mainGameGrid;
         }
+
         Debug.LogError("Main Game Grid not initialized!");
         return null;
     }
 
     // Initialization
-    
+
     private void Awake() {
         Instance = this;
     }
-    
+
     public void InitializeGrid(int width, int height) {
         gridWidth = width;
         gridHeight = height;
@@ -119,7 +109,7 @@ public class GridManager : MonoBehaviour {
                         // Draw a line from the current node to the next node in the path
                         Vector3 start = GetWorldPosition(path[i].x, path[i].y);
                         Vector3 end = GetWorldPosition(path[i + 1].x, path[i + 1].y);
-                        Debug.DrawLine(start  * cellSize + CellOffset, end * cellSize + CellOffset, Color.red); // Change color as needed
+                        Debug.DrawLine(start * cellSize + CellOffset, end * cellSize + CellOffset, Color.red); // Change color as needed
                     }
                 }
             }
@@ -135,13 +125,14 @@ public class GridManager : MonoBehaviour {
                         Turret builtTurret = node.GetBuiltTurret();
                         node.SetBuiltTurret(null);
                         Destroy(builtTurret.gameObject);
-                    } else if (node.GetNodeType() == GridMapObject.NodeType.PermanentModule) {  // Check if the node is permanent (assuming you have a method to check that)
+                    } else if (node.GetNodeType() == GridMapObject.NodeType.PermanentModule) { // Check if the node is permanent (assuming you have a method to check that)
                         // Set the node type to None if it's permanent
                         node.SetNodeType(GridMapObject.NodeType.None); // Change NodeType.None to the appropriate value for no node type
                     } else {
                         // Otherwise, set the node to not walkable and change its type
                         gridMap.SetNodeType(mousePosition, currentNodeType);
                     }
+
                     UpdatePathForVortexList();
                 }
             }
@@ -150,28 +141,28 @@ public class GridManager : MonoBehaviour {
                 currentNodeType = GridMapObject.NodeType.PermanentModule;
                 CMDebug.TextPopupMouse(currentNodeType.ToString());
             }
-        
+
             if (Input.GetKeyDown(KeyCode.Y)) {
                 currentNodeType = GridMapObject.NodeType.BuiltModule;
                 CMDebug.TextPopupMouse(currentNodeType.ToString());
             }
-        
+
             if (Input.GetKeyDown(KeyCode.P)) {
                 gridMap.Save();
                 CMDebug.TextPopupMouse("SAVED!");
             }
         }
     }
-    
+
     // Level Initialization (Spiral and Vortex Logic)
 
     public void InitializeLevel(LevelDataSO levelDataSO) {
         // Load the saved map data
         gridMap.Load(levelDataSO);
-        
+
         vortexes = new List<GridMapObject>();
         vortexPaths = new Dictionary<GridMapObject, List<GridMapObject>>();
-    
+
         // Initialize spiral
         core = gridMap.GetGrid().GetGridObject(levelDataSO.spiralPosition.x, levelDataSO.spiralPosition.y);
         core.SetNodeType(GridMapObject.NodeType.Core);
@@ -187,6 +178,7 @@ public class GridManager : MonoBehaviour {
                 Debug.LogError("Vortex Node is null!");
                 continue; // Skip this iteration if the node is null
             }
+
             vortexNode.SetNodeType(GridMapObject.NodeType.Vortex);
             vortexes.Add(vortexNode);
 
@@ -196,7 +188,7 @@ public class GridManager : MonoBehaviour {
 
             // Mark surrounding tiles as non-buildable
             MarkSurroundingTilesAsNonBuildable(vortexNode);
-        
+
             // Calculate path for the vortex to the spiral
             List<GridMapObject> path = gridMap.FindPath(vortexNode.x, vortexNode.y, core.x, core.y);
             if (path != null) {
@@ -204,7 +196,7 @@ public class GridManager : MonoBehaviour {
             }
         }
     }
-    
+
     private void MarkSurroundingTilesAsNonBuildable(GridMapObject vortexNode) {
         for (int x = vortexNode.x - 1; x <= vortexNode.x + 1; x++) {
             for (int y = vortexNode.y - 1; y <= vortexNode.y + 1; y++) {
@@ -218,7 +210,7 @@ public class GridManager : MonoBehaviour {
             }
         }
     }
-    
+
     public bool TryUpdatePathForVortexList(GridMapObject testGridObject) {
         if (core == null) {
             Debug.LogError("Core has not been set.");
@@ -262,7 +254,7 @@ public class GridManager : MonoBehaviour {
         //Debug.Log("All paths updated!");
         return true;
     }
-    
+
     public void UpdatePathForVortexList() {
         if (core == null) {
             Debug.LogError("Core has not been set.");
@@ -297,6 +289,7 @@ public class GridManager : MonoBehaviour {
         if (vortexes[0] == null) {
             Debug.LogWarning("Main Vortex cannot be found!");
         }
+
         return gridMap.GetNode(vortexes[0].x, vortexes[0].y);
     }
 

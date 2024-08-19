@@ -79,6 +79,7 @@ public class BuildUI : MonoBehaviour {
         lastSelectedTurret.TryGetTargetingSelection(out TurretTargetSelection targetingSelection);
         targetingSelection.SetTargetingPreference(newTargetingPreference);
         currentTargetingText.text = newTargetingPreference.ToModeString();
+        turretTargetingUI.SetActive(false);
     }
 
     private void ShowTurretInfo() {
@@ -107,6 +108,7 @@ public class BuildUI : MonoBehaviour {
         lastSelectedTurret = selectedGridObject.GetBuiltTurret();
         
         //Update the current turret's targeting mode string
+        turretTargetingUI.SetActive(false);
         if (lastSelectedTurret) {
             lastSelectedTurret.TryGetTargetingSelection(out TurretTargetSelection targetingSelection);
             currentTargetingText.text = targetingSelection.targetingPreference.ToModeString();

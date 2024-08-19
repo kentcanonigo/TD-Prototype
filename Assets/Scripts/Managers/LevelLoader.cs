@@ -1,6 +1,7 @@
 using System;
 using CodeMonkey;
 using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 
 public class LevelLoader : MonoBehaviour {
@@ -8,8 +9,62 @@ public class LevelLoader : MonoBehaviour {
     public static LevelLoader Instance { get; private set; }
     
     [InlineEditor]
-    [SerializeField] private LevelDataSO levelDataToLoad;
+    [SerializeField] public LevelDataSO levelDataToLoad;
+    [SerializeField] private bool alwaysShowGridGizmos;
+    [SerializeField] private bool showGridNumberGizmos;
+    
+    private void OnDrawGizmos() {
+        if (alwaysShowGridGizmos) {
+            int gridHeight = levelDataToLoad.levelSize.y;
+            int gridWidth = levelDataToLoad.levelSize.x;
+            Gizmos.color = Color.white; // Set the color for the grid lines
+            
+            for (int x = 0; x < gridWidth; x++) {
+                for (int y = 0; y < gridHeight; y++) {
+#if UNITY_EDITOR
+                    if (showGridNumberGizmos) {
+                        Handles.Label(GetWorldPosition(x, y) + new Vector3(1f / 2 - .4f, 1f / 2, 0), $"({x}, {y})");
+                    }
+                    
+                    Gizmos.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y + 1));
+                    Gizmos.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y));
+#endif
+                }
+            }
 
+            Gizmos.DrawLine(GetWorldPosition(0, gridHeight), GetWorldPosition(gridWidth, gridHeight));
+            Gizmos.DrawLine(GetWorldPosition(gridWidth, 0), GetWorldPosition(gridWidth, gridHeight));
+        }
+    }
+
+    private void OnDrawGizmosSelected() {
+        if (!alwaysShowGridGizmos) {
+            int gridHeight = levelDataToLoad.levelSize.y;
+            int gridWidth = levelDataToLoad.levelSize.x;
+            Gizmos.color = Color.green; // Set the color for the grid lines
+            
+            for (int x = 0; x < gridWidth; x++) {
+                for (int y = 0; y < gridHeight; y++) {
+#if UNITY_EDITOR
+                    if (showGridNumberGizmos) {
+                        Handles.Label(GetWorldPosition(x, y) + new Vector3(1f / 2 - .4f, 1f / 2, 0), $"({x}, {y})");
+                    }
+                    
+                    Gizmos.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y + 1));
+                    Gizmos.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y));
+#endif
+                }
+            }
+
+            Gizmos.DrawLine(GetWorldPosition(0, gridHeight), GetWorldPosition(gridWidth, gridHeight));
+            Gizmos.DrawLine(GetWorldPosition(gridWidth, 0), GetWorldPosition(gridWidth, gridHeight));
+        }
+    }
+
+    public Vector3 GetWorldPosition(int x, int y) {
+        return new Vector3(x, y) * 1f + Vector3.zero;
+    }
+    
     private void Awake() {
         Instance = this;
     }

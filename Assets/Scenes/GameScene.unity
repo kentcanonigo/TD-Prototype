@@ -584,6 +584,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelDataToLoad: {fileID: 11400000, guid: 63a9d37e390424d48a20fc70bf2d7734, type: 2}
+  alwaysShowGridGizmos: 0
+  showGridNumberGizmos: 0
 --- !u!4 &118999485
 Transform:
   m_ObjectHideFlags: 0
@@ -3990,7 +3992,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraBounds: {fileID: 707361778}
   cameraMoveSpeed: 8
-  mouseDragMoveSpeed: 20
+  mouseDragMoveSpeed: 5
 --- !u!1 &814456475
 GameObject:
   m_ObjectHideFlags: 0
@@ -6850,8 +6852,6 @@ MonoBehaviour:
   showDebugOnPlay: 0
   showGridIsBuildableGizmos: 0
   showCurrentTurretGizmos: 0
-  showGridNumberGizmos: 0
-  alwaysShowGridGizmos: 0
 --- !u!4 &1342459960
 Transform:
   m_ObjectHideFlags: 0

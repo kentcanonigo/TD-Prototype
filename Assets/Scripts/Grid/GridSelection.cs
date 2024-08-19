@@ -1,6 +1,7 @@
 using System;
 using CodeMonkey.Utils;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GridSelection : MonoBehaviour {
     
@@ -26,7 +27,7 @@ public class GridSelection : MonoBehaviour {
 
     private void Update() {
         // Handle mouse input
-        if (Input.GetMouseButtonDown(0)) {
+        if (Mouse.current.leftButton.wasPressedThisFrame) {
             SelectGridCell();
         }
     }
@@ -47,6 +48,10 @@ public class GridSelection : MonoBehaviour {
 
             // Check if the clicked cell is the already selected cell
             if (isGridCellSelected && selectedGridPosition == newGridPosition) {
+                if (selectedObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.None) {
+                    // Remove the built module
+                    BuildManager.Instance.OnBuildModuleButtonClicked();
+                }
                 // Deselect the cell
                 isGridCellSelected = false;
                 selectedGridPosition = Vector2Int.zero;
