@@ -1,4 +1,6 @@
 using System;
+using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -7,8 +9,11 @@ public class BuildManager : MonoBehaviour {
 
     [SerializeField] [Required] [SceneObjectsOnly]
     private Transform turretParent;
-    
-    private GridMapObject selectedGridObject;
+
+    private GridMapObject lastSelectedGridObject;
+    private Turret previewTurret;
+    private TurretSO currentTurretSO;
+    public bool IsPreviewing { get; private set; }
 
     private void Awake() {
         Instance = this;
@@ -16,41 +21,78 @@ public class BuildManager : MonoBehaviour {
 
     private void Start() {
         GridSelection.Instance.OnSelectGridCell += GridSelection_OnSelectGridCell;
+        GridSelection.Instance.OnDeselectGridCell += GridSelection_OnDeselectGridCell;
+    }
+
+    private void GridSelection_OnDeselectGridCell(object sender, EventArgs e) {
+        if (lastSelectedGridObject.TryGetBuiltTurret(out Turret turret)) {
+            HideTurretRange(turret);
+        }
     }
 
     private void GridSelection_OnSelectGridCell(object sender, GridSelection.OnSelectGridCellEventArgs e) {
-        selectedGridObject = GridManager.Instance.TryGetMainGrid().GetGridObject(e.x, e.y);
-        switch (selectedGridObject.GetNodeType()) {
-            case GridMapObject.NodeType.None:
-                break;
-            case GridMapObject.NodeType.BuiltModule:
-                break;
-            case GridMapObject.NodeType.PermanentModule:
-                break;
-            case GridMapObject.NodeType.Core:
-                break;
-            case GridMapObject.NodeType.Vortex:
-                break;
+        GridMapObject selectedGridObject = GridManager.Instance.TryGetMainGrid().GetGridObject(e.x, e.y);
+        
+        if (selectedGridObject != null) {
+
+            if (lastSelectedGridObject != null) {
+                if (selectedGridObject != lastSelectedGridObject) {
+                    if (lastSelectedGridObject.TryGetBuiltTurret(out Turret lastTurret)) {
+                        HideTurretRange(lastTurret);
+                    }
+                }
+            }
+            
+            if (previewTurret) {
+                UpdateTurretPreviewPosition(selectedGridObject);
+            }
+        
+            //Show turret range
+            if (selectedGridObject.TryGetBuiltTurret(out Turret turret)) {
+                ShowTurretRange(turret);
+            }
+            
+            lastSelectedGridObject = selectedGridObject;
+        } else {
+            Debug.LogError("Last selected grid object is null");
+            return;
         }
-        //Debug.Log("Selected Grid Cell: " + e.x + ", " + e.y);
+    }
+
+    private static void ShowTurretRange(Turret turret) {
+        if (turret.TryGetRangeVisual(out TurretRangeVisual turretRangeVisual)) {
+            turretRangeVisual.ShowRange(turret.BaseRange);
+            //Debug.Log($"Showing range for {turret}");
+        } else {
+            Debug.LogWarning($"Couldn't display turret range for {turret}");
+        }
+    }
+    
+    private static void HideTurretRange(Turret turret) {
+        if (turret.TryGetRangeVisual(out TurretRangeVisual turretRangeVisual)) {
+            turretRangeVisual.HideRange();
+            //Debug.Log($"Hiding range for {turret}");
+        } else {
+            Debug.LogWarning($"Couldn't hide turret range for {turret}");
+        }
     }
 
     public void OnBuildModuleButtonClicked() {
-        if (selectedGridObject != null) {
+        if (lastSelectedGridObject != null) {
             if (GameManager.Instance.CurrentGameState == GameManager.GameState.BuildPhase) {
                 // In build phase
-                if (selectedGridObject.GetNodeType() == GridMapObject.NodeType.BuiltModule) {
+                if (lastSelectedGridObject.GetNodeType() == GridMapObject.NodeType.BuiltModule) {
                     // If the selected object is a BuiltModule, remove it
                     RemoveModule();
                     GameManager.Instance.AddModuleCount(1); // Add the module back to the GameManager
-                } else if (selectedGridObject.IsBuildable) {
+                } else if (lastSelectedGridObject.IsBuildable) {
                     // If the selected object is buildable
                     if (GameManager.Instance.CurrentModules > 0) {
                         // Player has enough modules to build
-                        if (GridManager.Instance.TryUpdatePathForVortexList(selectedGridObject)) {
+                        if (GridManager.Instance.TryUpdatePathForVortexList(lastSelectedGridObject)) {
                             // Building does not block the path
-                            BuildModule(selectedGridObject);
-                            GridSelection.Instance.TriggerSelectGridCell(selectedGridObject.x, selectedGridObject.y);
+                            BuildModule(lastSelectedGridObject);
+                            GridSelection.Instance.TriggerSelectGridCell(lastSelectedGridObject.x, lastSelectedGridObject.y);
                             GameManager.Instance.DecrementModuleCount(); // Decrement the module count after building
                         } else {
                             Debug.LogWarning("Building here would block the path to the core!");
@@ -58,7 +100,7 @@ public class BuildManager : MonoBehaviour {
                     } else {
                         Debug.LogWarning("Not enough modules to build.");
                     }
-                } else if (selectedGridObject.GetNodeType() == GridMapObject.NodeType.PermanentModule) {
+                } else if (lastSelectedGridObject.GetNodeType() == GridMapObject.NodeType.PermanentModule) {
                     Debug.LogWarning("Cannot remove a permanent module.");
                 } else {
                     Debug.LogWarning("Cannot build module here.");
@@ -72,14 +114,14 @@ public class BuildManager : MonoBehaviour {
     }
 
     public void OnSellModuleButtonClicked() {
-        if (selectedGridObject != null) {
+        if (lastSelectedGridObject != null) {
             if (GameManager.Instance.CurrentGameState == GameManager.GameState.BuildPhase) {
-                if (selectedGridObject.GetNodeType() == GridMapObject.NodeType.BuiltModule) {
+                if (lastSelectedGridObject.GetNodeType() == GridMapObject.NodeType.BuiltModule) {
                     RemoveModule();
                 
                     GameManager.Instance.AddModuleCount(1); // Add the module back to the GameManager
                 
-                    GridSelection.Instance.TriggerSelectGridCell(selectedGridObject.x, selectedGridObject.y);
+                    GridSelection.Instance.TriggerSelectGridCell(lastSelectedGridObject.x, lastSelectedGridObject.y);
                 } else {
                     Debug.LogWarning("Cannot sell module here.");
                 }
@@ -92,44 +134,51 @@ public class BuildManager : MonoBehaviour {
     }
 
     public void OnBuildTurretButtonClicked(TurretSO turretSO) {
-        if (selectedGridObject != null) {
-            if (selectedGridObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.PermanentModule) {
-                if (!selectedGridObject.GetBuiltTurret()) {
-                    // TODO: Check if player has enough money
-                    // If the selected object is a BuiltModule or PermanentModule
-                    // Instantiate the turret prefab
-                    GameObject turretPrefab = Instantiate(turretSO.turretPrefab, GridManager.Instance.GetWorldPositionWithOffset(selectedGridObject), Quaternion.identity, turretParent);
-                    Turret turret = turretPrefab.GetComponent<Turret>();
-
-                    // Link the turret to the grid system
-                    selectedGridObject.SetBuiltTurret(turret);
-
-                    // Additional setup (e.g., positioning, initialization)
-                    turret.Initialize(turretSO);
-                    GridSelection.Instance.TriggerSelectGridCell(selectedGridObject.x, selectedGridObject.y);
-                } else {
-                    Debug.LogWarning("Turret already exists here.");
-                }
-            } else {
-                Debug.LogWarning("Cannot build a turret here.");
+        currentTurretSO = turretSO;
+        if (previewTurret == null) {
+            // Instantiate the turret preview
+            GameObject turretPrefab = Instantiate(turretSO.turretPrefab, Vector3.zero, Quaternion.identity, turretParent);
+            previewTurret = turretPrefab.GetComponent<Turret>();
+            previewTurret.Initialize(turretSO);
+            ShowTurretRange(previewTurret);
+            previewTurret.DisableAllModules();
+            IsPreviewing = true;
+            GridSelection.Instance.TriggerSelectGridCell(lastSelectedGridObject.x, lastSelectedGridObject.y);
+        }
+        if (lastSelectedGridObject != null) {
+            UpdateTurretPreviewPosition(lastSelectedGridObject);
+        }
+    }
+    
+    private void UpdateTurretPreviewPosition(GridMapObject gridObject) {
+        if (previewTurret && gridObject != null) {
+            switch (gridObject.GetNodeType()) {
+                case GridMapObject.NodeType.BuiltModule:
+                case GridMapObject.NodeType.PermanentModule:
+                    previewTurret.gameObject.SetActive(true);
+                    break;
+                case GridMapObject.NodeType.None:
+                case GridMapObject.NodeType.Core:
+                case GridMapObject.NodeType.Vortex:
+                    previewTurret.gameObject.SetActive(false);
+                    break;
             }
-        } else {
-            Debug.LogWarning("No grid object selected.");
+            previewTurret.transform.position = GridManager.Instance.GetWorldPositionWithOffset(gridObject);
         }
     }
 
     public void OnSellTurretButtonClicked() {
-        if (selectedGridObject != null) {
-            if (selectedGridObject.GetBuiltTurret()) {
-                Turret builtTurret = selectedGridObject.GetBuiltTurret();
-                
+        if (lastSelectedGridObject != null) {
+            if (lastSelectedGridObject.TryGetBuiltTurret(out Turret builtTurret)) {
                 GameManager.Instance.AddCredits(builtTurret.BaseCost);
                 
-                selectedGridObject.SetBuiltTurret(null);
+                lastSelectedGridObject.SetBuiltTurret(null);
+                
+                HideTurretRange(builtTurret);
                 
                 Destroy(builtTurret.gameObject);
                 
-                GridSelection.Instance.TriggerSelectGridCell(selectedGridObject.x, selectedGridObject.y);
+                GridSelection.Instance.TriggerSelectGridCell(lastSelectedGridObject.x, lastSelectedGridObject.y);
                 
             } else {
                 Debug.LogWarning("No turret in this position.");
@@ -140,7 +189,7 @@ public class BuildManager : MonoBehaviour {
     }
 
     private void RemoveModule() {
-        selectedGridObject.SetNodeType(GridMapObject.NodeType.None);
+        lastSelectedGridObject.SetNodeType(GridMapObject.NodeType.None);
         GridManager.Instance.UpdatePathForVortexList(); //Update the vortex paths
         //Debug.Log("Module removed and added back to the inventory.");
     }
@@ -149,5 +198,30 @@ public class BuildManager : MonoBehaviour {
         gridObject.SetNodeType(GridMapObject.NodeType.BuiltModule);
         GridManager.Instance.UpdatePathForVortexList(); //Update the vortex paths
         //Debug.Log("Module built!");
+    }
+
+    public void OnConfirmBuildButtonClicked() {
+        if (previewTurret != null && lastSelectedGridObject != null) {
+            if (lastSelectedGridObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.PermanentModule) {
+                lastSelectedGridObject.SetBuiltTurret(previewTurret);
+                previewTurret.EnableAllModules();
+                previewTurret = null; // Clear the preview turret
+                IsPreviewing = false;
+            } else {
+                Debug.LogWarning("Cannot build a turret here.");
+            }
+            GridSelection.Instance.TriggerSelectGridCell(lastSelectedGridObject.x, lastSelectedGridObject.y);
+        }
+    }
+
+    public void OnCancelBuildButtonClicked() {
+        if (previewTurret != null) {
+            HideTurretRange(previewTurret);
+            Destroy(previewTurret.gameObject);
+            previewTurret = null;
+            currentTurretSO = null;
+            IsPreviewing = false;
+        }
+        GridSelection.Instance.TriggerSelectGridCell(lastSelectedGridObject.x, lastSelectedGridObject.y);
     }
 }

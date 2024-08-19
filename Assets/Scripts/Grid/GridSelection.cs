@@ -45,19 +45,25 @@ public class GridSelection : MonoBehaviour {
         GridMapObject selectedObject = GridManager.Instance.TryGetMainGrid().GetGridObject(x, y);
         if (selectedObject != null) {
             Vector2Int newGridPosition = new Vector2Int(x, y);
-
+            
             // Check if the clicked cell is the already selected cell
             if (isGridCellSelected && selectedGridPosition == newGridPosition) {
-                if (selectedObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.None) {
-                    // Remove the built module
-                    BuildManager.Instance.OnBuildModuleButtonClicked();
-                }
-                // Deselect the cell
-                isGridCellSelected = false;
-                selectedGridPosition = Vector2Int.zero;
-                OnDeselectGridCell?.Invoke(this, EventArgs.Empty); // Add an event for deselection if needed
-                if (debugMode) {
-                    Debug.Log($"Deselected grid cell at ({x}, {y})");
+                if (!BuildManager.Instance.IsPreviewing) {
+                    // Build manager is not currently in preview mode
+                    if (selectedObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.None) {
+                        // Act as if build module button was clicked
+                        BuildManager.Instance.OnBuildModuleButtonClicked();
+                    }
+                    // Deselect the cell
+                    isGridCellSelected = false;
+                    selectedGridPosition = Vector2Int.zero;
+                    OnDeselectGridCell?.Invoke(this, EventArgs.Empty); // Add an event for deselection if needed
+                    if (debugMode) {
+                        Debug.Log($"Deselected grid cell at ({x}, {y})");
+                    }
+                } else {
+                    // Build manager is in preview mode
+                    BuildManager.Instance.OnConfirmBuildButtonClicked();
                 }
             } else {
                 // Select the new cell

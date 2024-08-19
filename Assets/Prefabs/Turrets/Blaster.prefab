@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6473297854900932289}
   - component: {fileID: 8427924058008417009}
   - component: {fileID: 6925835890174874824}
+  - component: {fileID: 5229558295209599279}
   - component: {fileID: 5658559279772820044}
   m_Layer: 8
   m_Name: Blaster
@@ -109,6 +110,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetingPreference: 4
+--- !u!114 &5229558295209599279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 504774227951090818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c522b78bdeed9864c8446cd3d3825197, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rangeSpritePrefab: {fileID: 3378018477259486870, guid: f2580edd4ed2d1b43a9ab1f23ce8363c, type: 3}
 --- !u!58 &5658559279772820044
 CircleCollider2D:
   m_ObjectHideFlags: 0

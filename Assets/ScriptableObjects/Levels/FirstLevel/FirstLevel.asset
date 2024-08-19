@@ -19,7 +19,7 @@ MonoBehaviour:
   startingCredits: 120
   moduleRewards: 010000000200000003000000
   levelFile: {fileID: 4900000, guid: 15da6d83e4d29e84a9b51225aa044bb8, type: 3}
-  spiralPosition: {x: 15, y: 7}
+  corePosition: {x: 14, y: 7}
   waveSOList:
   - {fileID: 11400000, guid: 3990e9752c28d7440bb4fed97ee73392, type: 2}
   - {fileID: 11400000, guid: b0b59e78c97ac4446b009b5bc07b2d25, type: 2}

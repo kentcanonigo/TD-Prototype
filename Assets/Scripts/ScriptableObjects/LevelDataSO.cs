@@ -11,7 +11,7 @@ public class LevelDataSO : ScriptableObject {
     public int startingCredits;
     public List<int> moduleRewards;
     public TextAsset levelFile;
-    public Vector2Int spiralPosition;
+    public Vector2Int corePosition;
     public List<WaveSO> waveSOList;
     public List<Vector2Int> vortexPositions;
     

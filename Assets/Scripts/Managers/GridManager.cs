@@ -22,6 +22,9 @@ public class GridManager : MonoBehaviour {
     [Required] [AssetsOnly] [SerializeField]
     public GameObject vortexPrefab;
 
+    [AssetsOnly] [Required]
+    [SerializeField] private Material pathMaterial;
+
     [SerializeField] private bool showDebugOnPlay;
 
     [ShowIf("showDebugOnPlay")] [EnableIf("showDebugOnPlay")] [SerializeField]
@@ -30,9 +33,10 @@ public class GridManager : MonoBehaviour {
     [ShowIf("showDebugOnPlay")] [EnableIf("showDebugOnPlay")] [SerializeField]
     private bool showCurrentTurretGizmos;
     private Grid<GridMapObject> mainGameGrid; // For camera stuff
-    private GridMapObject core; // The spiral
+    private GridMapObject core; // The core
     private List<GridMapObject> vortexes; // A list of all the vortexes in the level
     private Dictionary<GridMapObject, List<GridMapObject>> vortexPaths; // Store paths for each vortex
+    private Dictionary<GridMapObject, LineRenderer> vortexLineRenderers; // Store LineRenderers for each vortex
     private GridMap gridMap; // THE gridmap
 
     private Vector3 CellOffset { get; set; }
@@ -86,6 +90,7 @@ public class GridManager : MonoBehaviour {
 
     private void Awake() {
         Instance = this;
+        vortexLineRenderers = new Dictionary<GridMapObject, LineRenderer>();
     }
 
     public void InitializeGrid(int width, int height) {
@@ -110,6 +115,7 @@ public class GridManager : MonoBehaviour {
                         Vector3 start = GetWorldPosition(path[i].x, path[i].y);
                         Vector3 end = GetWorldPosition(path[i + 1].x, path[i + 1].y);
                         Debug.DrawLine(start * cellSize + CellOffset, end * cellSize + CellOffset, Color.red); // Change color as needed
+                        UpdateLineRenderer(vortex, path);
                     }
                 }
             }
@@ -153,22 +159,43 @@ public class GridManager : MonoBehaviour {
             }
         }
     }
+    
+    void InitializeLineRenderer(LineRenderer lineRenderer) {
+        lineRenderer.positionCount = 0;
+        lineRenderer.startWidth = 1f;
+        lineRenderer.endWidth = 1f;
+        lineRenderer.alignment = LineAlignment.View;
+        lineRenderer.textureMode = LineTextureMode.Tile;
+        lineRenderer.material = pathMaterial;
+        lineRenderer.sortingOrder = 10;
+    }
+    
+    void UpdateLineRenderer(GridMapObject vortexNode, List<GridMapObject> path) {
+        if (vortexLineRenderers.TryGetValue(vortexNode, out LineRenderer lineRenderer)) {
+            lineRenderer.positionCount = path.Count;
+            for (int i = 0; i < path.Count; i++) {
+                lineRenderer.SetPosition(i, GetWorldPositionWithOffset(path[i]));
+            }
+        }
+    }
 
-    // Level Initialization (Spiral and Vortex Logic)
+    // Level Initialization (core and Vortex Logic)
 
     public void InitializeLevel(LevelDataSO levelDataSO) {
-        // Load the saved map data
-        gridMap.Load(levelDataSO);
+        // Load the saved map data if it exists
+        if (levelDataSO.levelFile) {
+            gridMap.Load(levelDataSO);
+        }
 
         vortexes = new List<GridMapObject>();
         vortexPaths = new Dictionary<GridMapObject, List<GridMapObject>>();
 
-        // Initialize spiral
-        core = gridMap.GetGrid().GetGridObject(levelDataSO.spiralPosition.x, levelDataSO.spiralPosition.y);
+        // Initialize core
+        core = gridMap.GetGrid().GetGridObject(levelDataSO.corePosition.x, levelDataSO.corePosition.y);
         core.SetNodeType(GridMapObject.NodeType.Core);
 
-        // Instantiate the spiral GameObject
-        // Instantiate(corePrefab, GetWorldPosition(spiral.x, spiral.y), Quaternion.identity);
+        // Instantiate the core GameObject
+        // Instantiate(corePrefab, GetWorldPosition(core.x, core.y), Quaternion.identity);
         GameObject coreGameObject = Instantiate(corePrefab, GetWorldPositionWithOffset(core.x, core.y), Quaternion.identity, transform);
 
         // Initialize vortexes
@@ -184,12 +211,20 @@ public class GridManager : MonoBehaviour {
 
             // Instantiate the vortex GameObject
             // Instantiate(vortexPrefab, GetWorldPosition(vortexNode.x, vortexNode.y), Quaternion.identity);
-            GameObject vortexGameObject = Instantiate(vortexPrefab, GetWorldPositionWithOffset(vortexNode.x, vortexNode.y), Quaternion.identity, transform);
+            Transform vortexTransform = Instantiate(vortexPrefab, GetWorldPositionWithOffset(vortexNode.x, vortexNode.y), Quaternion.identity, transform).transform;
+            GameObject lineRendererGO = Instantiate(new GameObject("LineRenderer"), vortexTransform.position, Quaternion.identity, vortexTransform);
+            LineRenderer lineRenderer = lineRendererGO.GetComponent<LineRenderer>();
+            if (!lineRenderer) {
+                lineRenderer = lineRendererGO.AddComponent<LineRenderer>();
+            }
+            
+            InitializeLineRenderer(lineRenderer);
+            vortexLineRenderers[vortexNode] = lineRenderer;
 
             // Mark surrounding tiles as non-buildable
             MarkSurroundingTilesAsNonBuildable(vortexNode);
 
-            // Calculate path for the vortex to the spiral
+            // Calculate path for the vortex to the core
             List<GridMapObject> path = gridMap.FindPath(vortexNode.x, vortexNode.y, core.x, core.y);
             if (path != null) {
                 vortexPaths[vortexNode] = path; // Store the path for the vortex
@@ -228,9 +263,9 @@ public class GridManager : MonoBehaviour {
                 List<GridMapObject> path = gridMap.FindPath(vortex.x, vortex.y, core.x, core.y);
                 if (path != null) {
                     tempVortexPaths[vortex] = path; // Store the temporary path
-                    //Debug.Log($"Path found and updated from vortex at ({vortex.x}, {vortex.y}) to spiral.");
+                    //Debug.Log($"Path found and updated from vortex at ({vortex.x}, {vortex.y}) to core.");
                 } else {
-                    Debug.LogWarning($"Failed to find a path from vortex at ({vortex.x}, {vortex.y}) to spiral.");
+                    Debug.LogWarning($"Failed to find a path from vortex at ({vortex.x}, {vortex.y}) to core.");
 
                     // Revert the test grid object to its original state
                     testGridObject.SetIsWalkable(originalIsWalkable);
@@ -262,15 +297,15 @@ public class GridManager : MonoBehaviour {
 
         vortexPaths.Clear(); // Clear previous paths to update with new ones
 
-        foreach (var vortex in vortexes) {
+        foreach (GridMapObject vortex in vortexes) {
             if (vortex != null) {
                 if (core != null) {
                     List<GridMapObject> path = gridMap.FindPath(vortex.x, vortex.y, core.x, core.y);
                     if (path != null) {
                         vortexPaths[vortex] = path; // Update the dictionary with the new path
-                        //Debug.Log($"Path found and updated from vortex at ({vortex.x}, {vortex.y}) to spiral.");
+                        //Debug.Log($"Path found and updated from vortex at ({vortex.x}, {vortex.y}) to core.");
                     } else {
-                        Debug.LogWarning($"Failed to find a path from vortex at ({vortex.x}, {vortex.y}) to spiral.");
+                        Debug.LogWarning($"Failed to find a path from vortex at ({vortex.x}, {vortex.y}) to core.");
                     }
                 } else {
                     Debug.LogWarning("Core has not been set.");
@@ -280,7 +315,7 @@ public class GridManager : MonoBehaviour {
             }
         }
     }
-
+    
     public List<GridMapObject> GetVortexList() {
         return vortexes;
     }

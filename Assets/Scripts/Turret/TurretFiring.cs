@@ -5,15 +5,14 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class TurretFiring : MonoBehaviour, IFireable {
-    [Required] [ChildGameObjectsOnly]
-    [Header("Turret Physical Components")]
-    [SerializeField] private Transform firePoint; // The point from where the projectile is fired
-    
-    [Required] [AssetsOnly]
-    [field: Header("Projectile Info")]
-    [SerializeField] private ProjectileSO projectileSO; // The projectile that will be fired
+    [Required] [ChildGameObjectsOnly] [Header("Turret Physical Components")] [SerializeField]
+    private Transform firePoint; // The point from where the projectile is fired
+
+    [Required] [AssetsOnly] [field: Header("Projectile Info")] [SerializeField]
+    private ProjectileSO projectileSO; // The projectile that will be fired
 
     [field: SerializeField] private bool shootAlways;
+
     [SerializeField] [HideIf("shootAlways")]
     private float angleThreshold = 20f;
 
@@ -22,7 +21,7 @@ public class TurretFiring : MonoBehaviour, IFireable {
     private TurretTargetSelection turretTargetSelection;
     private float fireCooldown;
     private bool isAutoAim;
-    
+
     private void Start() {
         turret = GetComponent<Turret>();
         turretAiming = GetComponent<TurretAiming>();

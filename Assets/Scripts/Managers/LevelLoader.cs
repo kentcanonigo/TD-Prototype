@@ -83,7 +83,9 @@ public class LevelLoader : MonoBehaviour {
     public void LoadLevelGrid(LevelDataSO levelDataSO, Action callback) {
         // Test if the level actually has a level file
         if (!levelDataSO || !levelDataSO.levelFile || string.IsNullOrEmpty(levelDataSO.levelFile.name)) {
-            Debug.LogError("No level data to load!");
+            Debug.LogWarning("No level data to load!");
+            GridManager.Instance.InitializeGrid(levelDataSO.levelSize.x, levelDataSO.levelSize.y);
+            callback?.Invoke();
         } else {
             // Trigger GridManager initialization
             GridManager.Instance.InitializeGrid(levelDataSO.levelSize.x, levelDataSO.levelSize.y);

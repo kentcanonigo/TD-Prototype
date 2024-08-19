@@ -80,6 +80,56 @@ public class Turret : MonoBehaviour, IUpgradable {
     
     public bool TryGetTargetingSelection(out TurretTargetSelection targetingSelection) {
         targetingSelection = GetComponent<TurretTargetSelection>();
-        return targetingSelection != null;
+        return targetingSelection;
+    }
+    
+    public bool TryGetEnemyDetection(out TurretEnemyDetection enemyDetection) {
+        enemyDetection = GetComponent<TurretEnemyDetection>();
+        return enemyDetection;
+    }
+    
+    public bool TryGetFiring(out TurretFiring turretFiring) {
+        turretFiring = GetComponent<TurretFiring>();
+        return turretFiring;
+    }
+    
+    public bool TryGetAiming(out TurretAiming turretAiming) {
+        turretAiming = GetComponent<TurretAiming>();
+        return turretAiming;
+    }
+    
+    public bool TryGetRangeVisual(out TurretRangeVisual rangeVisual) {
+        rangeVisual = GetComponent<TurretRangeVisual>();
+        return rangeVisual;
+    }
+
+    public void DisableAllModules() {
+        if (TryGetEnemyDetection(out TurretEnemyDetection enemyDetection)) {
+            enemyDetection.enabled = false;
+        }
+        if (TryGetTargetingSelection(out TurretTargetSelection targetingSelection)) {
+            targetingSelection.enabled = false;
+        }
+        if (TryGetFiring(out TurretFiring turretFiring)) {
+            turretFiring.enabled = false;
+        }
+        if (TryGetAiming(out TurretAiming turretAiming)) {
+            turretAiming.enabled = false;
+        }
+    }
+
+    public void EnableAllModules() {
+        if (TryGetEnemyDetection(out TurretEnemyDetection enemyDetection)) {
+            enemyDetection.enabled = true;
+        }
+        if (TryGetTargetingSelection(out TurretTargetSelection targetingSelection)) {
+            targetingSelection.enabled = true;
+        }
+        if (TryGetFiring(out TurretFiring turretFiring)) {
+            turretFiring.enabled = true;
+        }
+        if (TryGetAiming(out TurretAiming turretAiming)) {
+            turretAiming.enabled = true;
+        }
     }
 }

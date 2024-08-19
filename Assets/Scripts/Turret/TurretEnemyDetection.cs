@@ -1,15 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 [RequireComponent(typeof(Turret))] [RequireComponent(typeof(CircleCollider2D))]
 public class TurretEnemyDetection : MonoBehaviour {
     [field: Header("Enemy Detection List")]
     public List<Transform> EnemiesInRange { get; private set; }
-
+    
     private CircleCollider2D rangeCollider;
-    private float lastBaseRange; // Cache the last base range
+    public float LastBaseRange { get; private set; }
 
     private Turret turret;
 
@@ -48,18 +49,15 @@ public class TurretEnemyDetection : MonoBehaviour {
         turret = GetComponent<Turret>();
         rangeCollider = GetComponent<CircleCollider2D>();
         EnemiesInRange = new List<Transform>();
-    }
-
-    private void Start() {
         rangeCollider.isTrigger = true;
         rangeCollider.radius = turret.BaseRange;
     }
 
     private void Update() {
-        if (Mathf.Abs(turret.BaseRange - lastBaseRange) > Mathf.Epsilon) {
+        if (Mathf.Abs(turret.BaseRange - LastBaseRange) > Mathf.Epsilon) {
             rangeCollider.radius = turret.BaseRange; // Update the collider's radius
-            lastBaseRange = turret.BaseRange; // Cache the new value
-            detectionRangeGizmo = lastBaseRange;
+            LastBaseRange = turret.BaseRange; // Cache the new value
+            detectionRangeGizmo = LastBaseRange;
         }
     }
 
@@ -86,5 +84,5 @@ public class TurretEnemyDetection : MonoBehaviour {
             //enemy.OnEnemyDeath -= HandleEnemyDeath;
         }
     }
-
+    
 }

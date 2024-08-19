@@ -23,7 +23,7 @@ public class BuildUI : MonoBehaviour {
     [SerializeField] private Button turretSellButton;
     [SerializeField] private Button turretTargetingButton;
 
-    [Required] [SceneObjectsOnly] [Header("Turret Info")] [SerializeField]
+    [Required] [SceneObjectsOnly] [Header("Turret Targeting UI")] [SerializeField]
     private GameObject turretTargetingUI;
 
     [SerializeField] private TextMeshProUGUI currentTargetingText;
@@ -33,6 +33,11 @@ public class BuildUI : MonoBehaviour {
     [SerializeField] private Button furthestButton;
     [SerializeField] private Button highestHPButton;
     [SerializeField] private Button lowestHPButton;
+    
+    [Required] [SceneObjectsOnly] [Header("Confirm Build UI")] [SerializeField]
+    private GameObject confirmBuildUI;
+    [SerializeField] private Button confirmBuildButton;
+    [SerializeField] private Button cancelBuildButton;
 
     private GridMapObject lastSelectedGridObject;
     private Turret lastSelectedTurret;
@@ -41,7 +46,7 @@ public class BuildUI : MonoBehaviour {
         buildModuleButton.onClick.AddListener((() => { BuildManager.Instance.OnBuildModuleButtonClicked(); }));
 
         turretInfoButton.onClick.AddListener((() => {
-            InfoUI.Instance.SetInfo(lastSelectedGridObject.GetBuiltTurret().GetTurretSO().turretName, lastSelectedGridObject.GetBuiltTurret().GetTurretSO().turretDescription);
+            ShowTurretInfo();
             InfoUI.Instance.Toggle();
         }));
 
@@ -73,6 +78,12 @@ public class BuildUI : MonoBehaviour {
         highestHPButton.onClick.AddListener((() => { SetTurretTargeting(TurretTargetSelection.TargetingPreference.HighestHealth); }));
 
         lowestHPButton.onClick.AddListener((() => { SetTurretTargeting(TurretTargetSelection.TargetingPreference.LowestHealth); }));
+        
+        // Confirm Build
+        
+        confirmBuildButton.onClick.AddListener((() => { BuildManager.Instance.OnConfirmBuildButtonClicked(); }));
+        
+        cancelBuildButton.onClick.AddListener((() => { BuildManager.Instance.OnCancelBuildButtonClicked(); }));
     }
 
     private void SetTurretTargeting(TurretTargetSelection.TargetingPreference newTargetingPreference) {
@@ -121,10 +132,11 @@ public class BuildUI : MonoBehaviour {
         bool isValidTurretBuildLocation = selectedGridObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.PermanentModule;
         bool isPermanentModule = selectedGridObject.GetNodeType() is GridMapObject.NodeType.PermanentModule;
 
-        sellModuleButton.gameObject.SetActive(!isPermanentModule);
-        buildModuleUI.SetActive(!isTurretBuilt && isValidModuleBuildLocation && !isValidTurretBuildLocation);
-        buildTurretUI.SetActive(!isTurretBuilt && isValidTurretBuildLocation && !isValidModuleBuildLocation);
-        turretInfoUI.SetActive(isTurretBuilt);
+        sellModuleButton.gameObject.SetActive(!isPermanentModule && !BuildManager.Instance.IsPreviewing);
+        buildModuleUI.SetActive(!isTurretBuilt && isValidModuleBuildLocation && !isValidTurretBuildLocation && !BuildManager.Instance.IsPreviewing);
+        buildTurretUI.SetActive(!isTurretBuilt && isValidTurretBuildLocation && !isValidModuleBuildLocation && !BuildManager.Instance.IsPreviewing);
+        turretInfoUI.SetActive(isTurretBuilt && !BuildManager.Instance.IsPreviewing);
+        confirmBuildUI.SetActive(BuildManager.Instance.IsPreviewing);
 
         if (!isTurretBuilt) {
             buildModuleButton.Select();
@@ -136,6 +148,7 @@ public class BuildUI : MonoBehaviour {
     }
 
     private void HideAllUI() {
+        confirmBuildUI.SetActive(false);
         turretTargetingUI.SetActive(false);
         buildModuleUI.SetActive(false);
         buildTurretUI.SetActive(false);
