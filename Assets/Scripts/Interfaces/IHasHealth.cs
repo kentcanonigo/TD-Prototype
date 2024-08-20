@@ -4,7 +4,7 @@ using UnityEngine;
 public interface IHasHealth {
     int HealthPoints { get; }
     int Armor { get; }
-    void TakeDamage(int damage);
+    void TakeDamage(float damage);
     void Kill();
     bool IsDead { get; }
     event DeathHandler<Transform> OnDeath;

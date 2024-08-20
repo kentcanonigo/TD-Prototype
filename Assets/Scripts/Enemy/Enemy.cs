@@ -34,10 +34,10 @@ public class Enemy : MonoBehaviour, IHasHealth {
         transform.localScale *= SizeMultiplier;
     }
 
-    public void TakeDamage(int damage) {
+    public void TakeDamage(float damage) {
         // Calculate actual damage after considering armor
-        int actualDamage = Mathf.Max(damage - Armor, 0);
-        HealthPoints -= actualDamage;
+        float actualDamage = Mathf.Max(damage - Armor, 0);
+        HealthPoints -= (int)actualDamage;
 
         OnHealthChanged?.Invoke(this, new IHasHealth.OnHealthChangedEventArgs {
             healthNormalized = (float)HealthPoints / TotalHealthPoints

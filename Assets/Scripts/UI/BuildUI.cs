@@ -55,7 +55,7 @@ public class BuildUI : MonoBehaviour {
 
         turretSellButton.onClick.AddListener((() => { BuildManager.Instance.SellTurret(); }));
 
-        sellModuleButton.onClick.AddListener((() => { BuildManager.Instance.SellModule(); }));
+        sellModuleButton.onClick.AddListener((() => { BuildManager.Instance.RemoveModule(); }));
 
         // Turret Targeting
 

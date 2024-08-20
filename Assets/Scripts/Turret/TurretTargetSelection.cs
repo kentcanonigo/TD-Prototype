@@ -72,6 +72,9 @@ public class TurretTargetSelection : MonoBehaviour {
         float minDistance = Mathf.Infinity;
 
         foreach (Transform enemy in turretEnemyDetection.EnemiesInRange) {
+            if (enemy == null) {
+                turretEnemyDetection.EnemiesInRange.Remove(enemy);
+            }
             float distance = Vector3.Distance(transform.position, enemy.position);
             if (distance < minDistance) {
                 minDistance = distance;
@@ -87,6 +90,9 @@ public class TurretTargetSelection : MonoBehaviour {
         float maxDistance = 0f;
 
         foreach (Transform enemy in turretEnemyDetection.EnemiesInRange) {
+            if (enemy == null) {
+                turretEnemyDetection.EnemiesInRange.Remove(enemy);
+            }
             float distance = Vector3.Distance(transform.position, enemy.position);
             if (distance > maxDistance) {
                 maxDistance = distance;
@@ -102,6 +108,9 @@ public class TurretTargetSelection : MonoBehaviour {
         float minHealth = Mathf.Infinity;
 
         foreach (Transform enemy in turretEnemyDetection.EnemiesInRange) {
+            if (enemy == null) {
+                turretEnemyDetection.EnemiesInRange.Remove(enemy);
+            }
             IHasHealth healthComponent = enemy.GetComponent<IHasHealth>();
             if (healthComponent != null && healthComponent.HealthPoints < minHealth) {
                 minHealth = healthComponent.HealthPoints;
@@ -117,6 +126,9 @@ public class TurretTargetSelection : MonoBehaviour {
         int priorityThreshold = 10; // Larger margin to switch targets
 
         foreach (Transform enemy in turretEnemyDetection.EnemiesInRange) {
+            if (enemy == null) {
+                turretEnemyDetection.EnemiesInRange.Remove(enemy);
+            }
             IHasHealth healthComponent = enemy.GetComponent<IHasHealth>();
             if (healthComponent != null) {
                 int enemyHealth = healthComponent.HealthPoints;

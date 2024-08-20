@@ -9,12 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13430a01080a415b8ff548d95f97f36d, type: 3}
-  m_Name: BlasterUpgrade1SO
+  m_Script: {fileID: 11500000, guid: c544a1807ffd4482bab1050873a6dd88, type: 3}
+  m_Name: FireRateUpgradeSO
   m_EditorClassIdentifier: 
-  upgradeCost: 0
-  bonusDamage: 0
-  bonusRange: 0
-  bonusFireRate: 0
-  bonusRotationSpeed: 0
-  bonusProjectileSpeed: 0
+  upgradeSprite: {fileID: 2098937247, guid: 92433c83556d78648908fa03e2dd6302, type: 3}
+  fireRateMultiplier: 1.5

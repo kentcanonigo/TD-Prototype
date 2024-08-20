@@ -6,11 +6,11 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 [SelectionBase]
-public class Turret : MonoBehaviour, IUpgradable {
+public class Turret : MonoBehaviour {
     [field: Header("Turret Stats SO")] [SerializeField] [Required]
     private TurretSO turretSO; // Backing field for the property
-    
-    [SerializeField] private List<TurretUpgradeSO> appliedUpgrades;
+
+    private List<BaseTurretUpgradeSO> activeUpgrades;
 
     public TurretSO TurretSO {
         get => turretSO;
@@ -18,7 +18,7 @@ public class Turret : MonoBehaviour, IUpgradable {
     }
 
     [field: Header("Turret Stats")]
-    public int BaseDamage { get; set; }
+    public float BaseDamage { get; set; }
     public float BaseRotationSpeed { get; set; }
     public float BaseRange { get; set; }
     public int BaseCost { get; set; }
@@ -26,15 +26,14 @@ public class Turret : MonoBehaviour, IUpgradable {
     public float BaseProjectileSpeed { get; set; }
 
     private void Awake() {
-        appliedUpgrades = new List<TurretUpgradeSO>();
-    }
-    
-    void Start() {
-        ApplyBaseStats();
-        ApplyUpgrades();
+        activeUpgrades = new List<BaseTurretUpgradeSO>();
     }
 
-    void ApplyBaseStats() {
+    private void Start() {
+        ApplyBaseStats();
+    }
+
+    private void ApplyBaseStats() {
         if (BaseDamage == 0) BaseDamage = TurretSO.baseDamage;
         if (BaseRange == 0) BaseRange = TurretSO.baseRange;
         if (BaseCost == 0) BaseCost = TurretSO.baseCost;
@@ -42,33 +41,27 @@ public class Turret : MonoBehaviour, IUpgradable {
         if (BaseRotationSpeed == 0) BaseRotationSpeed = TurretSO.baseRotationSpeed;
         if (BaseProjectileSpeed == 0) BaseProjectileSpeed = TurretSO.baseProjectileSpeed;
     }
-
-    void ApplyUpgrades() {
-        foreach (TurretUpgradeSO upgrade in appliedUpgrades) {
-            BaseDamage += upgrade.bonusDamage;
-            BaseRange += upgrade.bonusRange;
-            BaseFireRate += upgrade.bonusFireRate;
-            BaseRotationSpeed += upgrade.bonusRotationSpeed;
-            BaseProjectileSpeed += upgrade.bonusProjectileSpeed;
-            // Apply other upgrade effects
-        }
-    }
-
-    public void AddUpgrade(TurretUpgradeSO upgrade) {
-        appliedUpgrades.Add(upgrade);
-        ApplyUpgrades();
-    }
-
-    public void RemoveUpgrade(TurretUpgradeSO upgrade) {
-        appliedUpgrades.Remove(upgrade);
-        ApplyBaseStats();
-        ApplyUpgrades();
-    }
-
+    
     public void Initialize(TurretSO turretSO) {
         this.turretSO = turretSO;
         ApplyBaseStats();
-        ApplyUpgrades();
+    }
+    
+    public void AddUpgrade(BaseTurretUpgradeSO upgrade) {
+        upgrade.ApplyUpgrade(this);
+        activeUpgrades.Add(upgrade);
+    }
+
+    public void RemoveUpgrade(BaseTurretUpgradeSO upgrade) {
+        upgrade.RevertUpgrade(this);
+        activeUpgrades.Remove(upgrade);
+    }
+
+    public void ClearUpgrades() {
+        foreach (var upgrade in activeUpgrades) {
+            upgrade.RevertUpgrade(this);
+        }
+        activeUpgrades.Clear();
     }
 
     public override string ToString() {

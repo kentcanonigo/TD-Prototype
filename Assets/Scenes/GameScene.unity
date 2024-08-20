@@ -3756,7 +3756,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1289809857}
         m_TargetAssemblyTypeName: BuildManager, Assembly-CSharp
-        m_MethodName: BuildTurret
+        m_MethodName: PreviewBuildTurret
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: d53bd7d8d8c7acd428b661abdee51265, type: 2}
