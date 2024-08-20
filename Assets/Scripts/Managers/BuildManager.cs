@@ -191,9 +191,13 @@ public class BuildManager : MonoBehaviour {
             return;
         }
         
-        if (GameManager.Instance.CanAfford(upgrade.creditsCost)) {
+        int applicationCount = turret.ActiveUpgrades.ContainsKey(upgrade) 
+            ? turret.ActiveUpgrades[upgrade] 
+            : 0;
+        
+        if (GameManager.Instance.CanAfford(upgrade.GetCurrentCost(applicationCount))) {
             if (turret.TryAddUpgrade(upgrade)) {
-                GameManager.Instance.SubtractCredits(upgrade.creditsCost);
+                GameManager.Instance.SubtractCredits(upgrade.GetCurrentCost(applicationCount));
             }
         } else {
             Debug.LogWarning("Cannot afford upgrade.");

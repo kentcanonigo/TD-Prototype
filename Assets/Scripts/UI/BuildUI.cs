@@ -209,9 +209,17 @@ public class BuildUI : MonoBehaviour {
             button.image.sprite = baseTurretUpgradeSO.upgradeSprite;
             button.image.color = baseTurretUpgradeSO.upgradeColor;
             TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
-            buttonText.text = baseTurretUpgradeSO.upgradeName + " (" + baseTurretUpgradeSO.creditsCost + ")";
 
-            bool canAfford = GameManager.Instance.CanAfford(baseTurretUpgradeSO.creditsCost);
+            // Get the application count for the current upgrade
+            int applicationCount = lastSelectedTurret.ActiveUpgrades.ContainsKey(baseTurretUpgradeSO) 
+                ? lastSelectedTurret.ActiveUpgrades[baseTurretUpgradeSO] 
+                : 0;
+        
+            // Calculate the current cost of the upgrade
+            int currentCost = baseTurretUpgradeSO.GetCurrentCost(applicationCount);
+            buttonText.text = baseTurretUpgradeSO.upgradeName + " (" + currentCost + ")";
+
+            bool canAfford = GameManager.Instance.CanAfford(currentCost);
             button.interactable = canAfford; // Set button interactability based on player's credits
 
             // Clear any existing listeners on the confirm and cancel buttons
