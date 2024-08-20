@@ -114,6 +114,15 @@ public class GameManager : MonoBehaviour {
         OnValueChanged?.Invoke(this, EventArgs.Empty);
     }
     
+    public void SubtractCredits(int amount) {
+        CurrentCredits -= amount;
+        OnValueChanged?.Invoke(this, EventArgs.Empty);
+    }
+    
+    public bool CanAffordTurret(TurretSO turretSO) {
+        return CurrentCredits >= turretSO.baseCost;
+    }
+    
     // Game State Functions
     
     public void StartWave() {

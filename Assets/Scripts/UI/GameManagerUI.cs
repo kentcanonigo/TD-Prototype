@@ -14,12 +14,15 @@ public class GameManagerUI : MonoBehaviour {
     [SerializeField] private Button toggleDebugMenuButton;
     [SerializeField] private Toggle toggleMapEditModeButton;
     
+    [Header("Debug Fields")]
     [SerializeField] private CanvasGroup debugCanvasGroup;
     [SerializeField] private Button decrementHPButton;
     [SerializeField] private Button incrementHPButton;
     [SerializeField] private Button startWaveButton;
     [SerializeField] private Button endWaveButton;
     [SerializeField] private Button spawnEnemyButton;
+    [SerializeField] private Button addCreditsButton;
+    [SerializeField] private Button subtractCreditsButton;
     [SerializeField] private TextMeshProUGUI gameStateText;
     private static readonly int IsOpen = Animator.StringToHash("isOpen");
 
@@ -42,6 +45,14 @@ public class GameManagerUI : MonoBehaviour {
         
         spawnEnemyButton.onClick.AddListener((() => {
             GameManager.Instance.SpawnTestEnemy();
+        }));
+        
+        addCreditsButton.onClick.AddListener((() => {
+            GameManager.Instance.AddCredits(10);
+        }));
+        
+        subtractCreditsButton.onClick.AddListener((() => {
+            GameManager.Instance.SubtractCredits(10);
         }));
         
         toggleDebugMenuButton.onClick.AddListener((() => {

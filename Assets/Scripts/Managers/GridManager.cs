@@ -93,6 +93,28 @@ public class GridManager : MonoBehaviour {
         vortexLineRenderers = new Dictionary<GridMapObject, LineRenderer>();
     }
 
+    private void Start() {
+        GameManager.Instance.OnGameStateChanged += GameManager_OnGameStateChanged;
+    }
+
+    private void GameManager_OnGameStateChanged(object sender, EventArgs e) {
+        if (GameManager.Instance.CurrentGameState == GameManager.GameState.BuildPhase) {
+            // Turn on the line renderer visuals
+            foreach (GridMapObject vortex in vortexes) {
+                if (vortexLineRenderers.TryGetValue(vortex, out LineRenderer lineRenderer)) {
+                    lineRenderer.enabled = true;
+                }
+            }
+        } else if (GameManager.Instance.CurrentGameState == GameManager.GameState.WavePhase) {
+            // Turn off the line renderer visuals
+            foreach (GridMapObject vortex in vortexes) {
+                if (vortexLineRenderers.TryGetValue(vortex, out LineRenderer lineRenderer)) {
+                    lineRenderer.enabled = false;
+                }
+            }
+        }
+    }
+
     public void InitializeGrid(int width, int height) {
         gridWidth = width;
         gridHeight = height;
@@ -162,8 +184,11 @@ public class GridManager : MonoBehaviour {
     
     void InitializeLineRenderer(LineRenderer lineRenderer) {
         lineRenderer.positionCount = 0;
-        lineRenderer.startWidth = 1f;
-        lineRenderer.endWidth = 1f;
+        lineRenderer.endColor = new Color(0.6f, 0f, 0f, 1f);
+        lineRenderer.startColor = new Color(0.1f, 0.5f, 0.7f, 1f);
+        lineRenderer.numCornerVertices = 90;
+        lineRenderer.startWidth = 0.1f;
+        lineRenderer.endWidth = 0.1f;
         lineRenderer.alignment = LineAlignment.View;
         lineRenderer.textureMode = LineTextureMode.Tile;
         lineRenderer.material = pathMaterial;
@@ -212,10 +237,9 @@ public class GridManager : MonoBehaviour {
             // Instantiate the vortex GameObject
             // Instantiate(vortexPrefab, GetWorldPosition(vortexNode.x, vortexNode.y), Quaternion.identity);
             Transform vortexTransform = Instantiate(vortexPrefab, GetWorldPositionWithOffset(vortexNode.x, vortexNode.y), Quaternion.identity, transform).transform;
-            GameObject lineRendererGO = Instantiate(new GameObject("LineRenderer"), vortexTransform.position, Quaternion.identity, vortexTransform);
-            LineRenderer lineRenderer = lineRendererGO.GetComponent<LineRenderer>();
+            LineRenderer lineRenderer = vortexTransform.gameObject.GetComponent<LineRenderer>();
             if (!lineRenderer) {
-                lineRenderer = lineRendererGO.AddComponent<LineRenderer>();
+                lineRenderer = vortexTransform.gameObject.AddComponent<LineRenderer>();
             }
             
             InitializeLineRenderer(lineRenderer);
@@ -265,7 +289,7 @@ public class GridManager : MonoBehaviour {
                     tempVortexPaths[vortex] = path; // Store the temporary path
                     //Debug.Log($"Path found and updated from vortex at ({vortex.x}, {vortex.y}) to core.");
                 } else {
-                    Debug.LogWarning($"Failed to find a path from vortex at ({vortex.x}, {vortex.y}) to core.");
+                    //Debug.LogWarning($"Failed to find a path from vortex at ({vortex.x}, {vortex.y}) to core.");
 
                     // Revert the test grid object to its original state
                     testGridObject.SetIsWalkable(originalIsWalkable);

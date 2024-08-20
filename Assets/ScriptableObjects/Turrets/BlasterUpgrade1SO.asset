@@ -9,8 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2aa06dd303ea7714cbb58442a7b39f10, type: 3}
-  m_Name: Glorplax_5
+  m_Script: {fileID: 11500000, guid: 13430a01080a415b8ff548d95f97f36d, type: 3}
+  m_Name: BlasterUpgrade1SO
   m_EditorClassIdentifier: 
-  enemySO: {fileID: 11400000, guid: 8696eb502a9531c47b2f123289708550, type: 2}
-  amountToSpawn: 5
+  upgradeCost: 0
+  bonusDamage: 0
+  bonusRange: 0
+  bonusFireRate: 0
+  bonusRotationSpeed: 0
+  bonusProjectileSpeed: 0

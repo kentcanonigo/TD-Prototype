@@ -52,7 +52,7 @@ public class GridSelection : MonoBehaviour {
                     // Build manager is not currently in preview mode
                     if (selectedObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.None) {
                         // Act as if build module button was clicked
-                        BuildManager.Instance.OnBuildModuleButtonClicked();
+                        BuildManager.Instance.BuildModule();
                     }
                     // Deselect the cell
                     isGridCellSelected = false;
@@ -63,7 +63,7 @@ public class GridSelection : MonoBehaviour {
                     }
                 } else {
                     // Build manager is in preview mode
-                    BuildManager.Instance.OnConfirmBuildButtonClicked();
+                    BuildManager.Instance.ConfirmBuild();
                 }
             } else {
                 // Select the new cell
@@ -87,5 +87,11 @@ public class GridSelection : MonoBehaviour {
     
     public void TriggerSelectGridCell(int x, int y) {
         OnSelectGridCell?.Invoke(this, new OnSelectGridCellEventArgs { x = x, y = y });
+    }
+    
+    public void TriggerDeselectGridCell() {
+        isGridCellSelected = false;
+        selectedGridPosition = Vector2Int.zero;
+        OnDeselectGridCell?.Invoke(this, EventArgs.Empty);
     }
 }
