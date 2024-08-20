@@ -131,7 +131,7 @@ public class TurretTargetSelection : MonoBehaviour {
             }
             IHasHealth healthComponent = enemy.GetComponent<IHasHealth>();
             if (healthComponent != null) {
-                int enemyHealth = healthComponent.HealthPoints;
+                float enemyHealth = healthComponent.HealthPoints;
 
                 // If current target is valid and within tolerance, keep it
                 if (highestHealthTarget && enemy == highestHealthTarget) {

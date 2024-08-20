@@ -9,7 +9,7 @@ public class Enemy : MonoBehaviour, IHasHealth {
     [Required] [AssetSelector(Paths = "Assets/Prefabs/Enemies")]
     [SerializeField] private EnemySO enemySO; // Reference to the enemy stats ScriptableObject
 
-    public int HealthPoints { get; private set; } // Health points of the enemy
+    public float HealthPoints { get; private set; } // Health points of the enemy
     public int TotalHealthPoints { get; private set; } // Total HP of the enemy
     public int Armor { get; private set; } // Armor value that reduces incoming damage
     public float Speed { get; private set; } // Speed at which the enemy moves
@@ -20,7 +20,7 @@ public class Enemy : MonoBehaviour, IHasHealth {
     public event IHasHealth.DeathHandler<Transform> OnDeath;
     public event EventHandler<IHasHealth.OnHealthChangedEventArgs> OnHealthChanged;
 
-    private void Awake() {
+    private void Start() {
         TotalHealthPoints = enemySO.healthPoints; // Set stats from the ScriptableObject
         Armor = enemySO.armor;
         Speed = enemySO.speed;
@@ -28,19 +28,16 @@ public class Enemy : MonoBehaviour, IHasHealth {
         DamageToCore = enemySO.damageToCore;
         CreditValue = enemySO.creditValue;
         HealthPoints = TotalHealthPoints;
-    }
-
-    private void Start() {
         transform.localScale *= SizeMultiplier;
     }
 
     public void TakeDamage(float damage) {
         // Calculate actual damage after considering armor
         float actualDamage = Mathf.Max(damage - Armor, 0);
-        HealthPoints -= (int)actualDamage;
+        HealthPoints -= actualDamage;
 
         OnHealthChanged?.Invoke(this, new IHasHealth.OnHealthChangedEventArgs {
-            healthNormalized = (float)HealthPoints / TotalHealthPoints
+            healthNormalized = HealthPoints / TotalHealthPoints
         });
         
         // Check if the enemy is dead

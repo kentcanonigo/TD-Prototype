@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 public interface IHasHealth {
-    int HealthPoints { get; }
+    float HealthPoints { get; }
     int Armor { get; }
     void TakeDamage(float damage);
     void Kill();

@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e513be1e71334fa0a8108fca327828cb, type: 3}
   m_Name: DamageUpgradeSO
   m_EditorClassIdentifier: 
+  upgradeName: Damage
+  upgradeDescription: +10% Damage
   upgradeSprite: {fileID: -1712831447, guid: 92433c83556d78648908fa03e2dd6302, type: 3}
-  creditsCost: 60
-  damageMultiplier: 1.25
+  creditsCost: 80
+  damageMultiplier: 1.1

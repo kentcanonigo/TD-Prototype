@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c544a1807ffd4482bab1050873a6dd88, type: 3}
   m_Name: FireRateUpgradeSO
   m_EditorClassIdentifier: 
+  upgradeName: Fire Rate
+  upgradeDescription: +15% Fire Rate
   upgradeSprite: {fileID: 2098937247, guid: 92433c83556d78648908fa03e2dd6302, type: 3}
   creditsCost: 60
-  fireRateMultiplier: 1.5
+  fireRateMultiplier: 1.15

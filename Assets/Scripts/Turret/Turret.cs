@@ -47,9 +47,15 @@ public class Turret : MonoBehaviour {
         ApplyBaseStats();
     }
     
-    public void AddUpgrade(BaseTurretUpgradeSO upgrade) {
+    public bool TryAddUpgrade(BaseTurretUpgradeSO upgrade) {
+        if (activeUpgrades.Count >= MaxActiveUpgrades) {
+            Debug.LogWarning("Max upgrades reached!");
+            return false;
+        }
         upgrade.ApplyUpgrade(this);
         activeUpgrades.Add(upgrade);
+        Debug.Log(activeUpgrades.Count);
+        return true;
     }
 
     public void RemoveUpgrade(BaseTurretUpgradeSO upgrade) {

@@ -172,6 +172,7 @@ public class BuildManager : MonoBehaviour {
     public void ConfirmBuild() {
         if (previewTurret == null || lastSelectedGridObject == null || !IsValidBuildLocation(lastSelectedGridObject)) return;
         
+        GameManager.Instance.SubtractCredits(previewTurret.Cost);
         BuildTurretOnGridObject(lastSelectedGridObject, previewTurret);
         ResetPreviewState();
     }
@@ -184,14 +185,22 @@ public class BuildManager : MonoBehaviour {
         ResetPreviewState();
     }
 
-    public void UpgradeTurret(Turret turret) {
-        if (lastSelectedGridObject == null || !lastSelectedGridObject.TryGetBuiltTurret(out Turret builtTurret)) {
+    public void UpgradeTurret(Turret turret, BaseTurretUpgradeSO upgrade) {
+        if (lastSelectedGridObject == null) {
             Debug.LogWarning("No turret in this position.");
             return;
-        } else {
-            // Upgrade the current turret
-            GridSelection.Instance.TriggerSelectGridCell(lastSelectedGridObject.x, lastSelectedGridObject.y);
         }
+        
+        if (GameManager.Instance.CanAfford(upgrade.creditsCost)) {
+            if (turret.TryAddUpgrade(upgrade)) {
+                GameManager.Instance.SubtractCredits(upgrade.creditsCost);
+            }
+        } else {
+            Debug.LogWarning("Cannot afford upgrade.");
+            return;
+        }
+        // Upgrade the current turret
+        GridSelection.Instance.TriggerSelectGridCell(lastSelectedGridObject.x, lastSelectedGridObject.y);
     }
 
     private bool IsValidBuildLocation(GridMapObject gridObject) {
@@ -200,7 +209,6 @@ public class BuildManager : MonoBehaviour {
 
     private void BuildTurretOnGridObject(GridMapObject gridObject, Turret turret) {
         gridObject.SetBuiltTurret(turret);
-        GameManager.Instance.SubtractCredits(turret.Cost);
         turret.EnableAllModules();
         GridSelection.Instance.TriggerDeselectGridCell();
     }

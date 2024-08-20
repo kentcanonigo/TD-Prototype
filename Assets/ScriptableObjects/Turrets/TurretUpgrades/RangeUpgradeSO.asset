@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fc09562e8d14482b818f4decba0ed0d, type: 3}
   m_Name: RangeUpgradeSO
   m_EditorClassIdentifier: 
+  upgradeName: Range
+  upgradeDescription: +12% Range
   upgradeSprite: {fileID: 543716811, guid: 92433c83556d78648908fa03e2dd6302, type: 3}
-  creditsCost: 60
-  rangeMultiplier: 1.2
+  creditsCost: 40
+  rangeMultiplier: 1.12
