@@ -15,8 +15,9 @@ MonoBehaviour:
   enemyName: Glorplax
   enemyDescription: A cute lil boi
   enemyPrefab: {fileID: 511332154934885617, guid: 3802f198f5bccdc48ac888c4204912b0, type: 3}
-  healthPoints: 50
+  healthPoints: 100
   armor: 0
   speed: 1
   damageToCore: 1
   sizeMultiplier: 1
+  creditValue: 5

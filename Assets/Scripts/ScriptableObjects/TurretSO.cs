@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -9,8 +10,11 @@ public class TurretSO : ScriptableObject {
     public string turretName;
     [BoxGroup("Basic Info")] [TextArea]
     public string turretDescription;
-    [Required] [AssetsOnly]
+    [Required] [AssetsOnly] [AssetSelector(Paths = "Assets/Prefabs/Turrets")]
     public GameObject turretPrefab;
+    [InfoBox("The ScriptableObject that contains the Turret's possible upgrades")]
+    [AssetSelector(Paths = "Assets/ScriptableObjects/Turrets/TurretUpgradeLists")]
+    [field: SerializeField] public TurretUpgradeListSO turretUpgradeListSO;
     [Range(0, 1000)]
     public int baseDamage = 10;
     [Range(0, 10)]

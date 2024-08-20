@@ -1,6 +1,7 @@
 using System;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameInput : MonoBehaviour {
     
@@ -8,10 +9,11 @@ public class GameInput : MonoBehaviour {
     
     private CinemachineConfiner2D cinemachineConfiner2D;
     private CinemachineCamera cinemachineCamera;
+    public PlayerInputActions playerInputActions;
 
     [SerializeField] private BoxCollider2D cameraBounds;
     [SerializeField] private float cameraMoveSpeed = 5f;
-    [SerializeField] private float mouseDragMoveSpeed = 100f;
+    [SerializeField] private float mouseDragMoveSpeed = 20f;
 
     private Vector3 lastMousePosition;
 
@@ -19,9 +21,11 @@ public class GameInput : MonoBehaviour {
         Instance = this;
         cinemachineConfiner2D = GetComponent<CinemachineConfiner2D>();
         cinemachineCamera = GetComponent<CinemachineCamera>();
+        playerInputActions = new PlayerInputActions();
+        playerInputActions.Default.Enable();
     }
 
-    public void InitializeCamera() {
+    public void Start() {
         // Calculate Camera Bounds
         Bounds gridBounds = GridManager.Instance.TryGetMainGrid().GetGridBounds();
         cameraBounds.size = new Vector2(gridBounds.size.x, gridBounds.size.y);
@@ -64,33 +68,30 @@ public class GameInput : MonoBehaviour {
         }
 
         // Apply the adjusted movement
-        transform.position += moveDir * cameraMoveSpeed * Time.deltaTime;
+        transform.position += moveDir * (cameraMoveSpeed * Time.deltaTime);
     }
 
     private Vector2 GetKeyboardInputVectorNormalized() {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-
-        Vector2 inputVector = new Vector2(horizontal, vertical);
+        Vector2 inputVector = playerInputActions.Default.MoveCamera.ReadValue<Vector2>();
         inputVector = inputVector.normalized;
 
         return inputVector;
     }
 
     private void HandleMouseDragCameraMovement() {
-        if (Input.GetMouseButtonDown(0)) {
+        if (Mouse.current.leftButton.wasPressedThisFrame) {
             // Store the last mouse position when the left mouse button is pressed
             lastMousePosition = Input.mousePosition;
         }
 
-        if (Input.GetMouseButton(0)) {
+        if (Mouse.current.leftButton.isPressed) {
             // Calculate the mouse movement delta
             Vector3 mouseDelta = lastMousePosition - Input.mousePosition;
             lastMousePosition = Input.mousePosition;
 
             // Move the camera based on the mouse delta
             float dragSensitivity = 10f;
-            Vector3 moveDir = (new Vector3(mouseDelta.x, mouseDelta.y, 0f) * dragSensitivity * mouseDragMoveSpeed) * Time.deltaTime;
+            Vector3 moveDir = new Vector3(mouseDelta.x, mouseDelta.y, 0f) * (dragSensitivity * mouseDragMoveSpeed * Time.deltaTime);
 
             // Adjust the movement direction to be compatible with the world space
             moveDir = Camera.main.ScreenToWorldPoint(moveDir) - Camera.main.ScreenToWorldPoint(Vector3.zero);
@@ -122,7 +123,7 @@ public class GameInput : MonoBehaviour {
     }
 
     private Bounds GetConfinerBounds() {
-        if (cinemachineConfiner2D.BoundingShape2D != null) {
+        if (cinemachineConfiner2D.BoundingShape2D) {
             return cinemachineConfiner2D.BoundingShape2D.bounds;
         }
 

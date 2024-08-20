@@ -2,13 +2,13 @@ using System;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour {
-    private int damage;
+    private float damage;
     private float speed;
     [SerializeField] public ProjectileSO projectileSO;
     private float timer;
 
     // Set up the projectile's damage
-    public void SetBaseData(int damage, float speed) {
+    public void SetBaseData(float damage, float speed) {
         this.damage = damage;
         this.speed = speed;
     }

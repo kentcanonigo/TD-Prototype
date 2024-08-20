@@ -1,75 +1,135 @@
 using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using Unity.VisualScripting;
 using UnityEngine;
 
 [SelectionBase]
-public class Turret : MonoBehaviour, IUpgradable {
+public class Turret : MonoBehaviour {
     [field: Header("Turret Stats SO")] [SerializeField] [Required]
     private TurretSO turretSO; // Backing field for the property
-    
-    [SerializeField] private List<TurretUpgradeSO> appliedUpgrades;
+    private List<BaseTurretUpgradeSO> activeUpgrades;
+    public int MaxActiveUpgrades { get; private set; } = 4;
 
     public TurretSO TurretSO {
         get => turretSO;
         set => turretSO = value; // Allow setting in the class
     }
 
-    [field: Header("Turret Stats")] public string TurretName { get; set; }
-    public string TurretDescription { get; set; }
-    public int BaseDamage { get; set; }
-    public float BaseRotationSpeed { get; set; }
-    public float BaseRange { get; set; }
-    public int BaseCost { get; set; }
-    public float BaseFireRate { get; set; }
-    public float BaseProjectileSpeed { get; set; }
+    [field: Header("Turret Stats")]
+    [ReadOnly, ShowInInspector] public float Damage { get; set; }
+    [ReadOnly, ShowInInspector] public float RotationSpeed { get; set; }
+    [ReadOnly, ShowInInspector] public float Range { get; set; }
+    [ReadOnly, ShowInInspector] public int Cost { get; set; }
+    [ReadOnly, ShowInInspector] public float FireRate { get; set; }
+    [ReadOnly, ShowInInspector] public float ProjectileSpeed { get; set; }
 
     private void Awake() {
-        appliedUpgrades = new List<TurretUpgradeSO>();
+        activeUpgrades = new List<BaseTurretUpgradeSO>();
+    }
+
+    private void Start() {
+        ApplyBaseStats();
+    }
+
+    private void ApplyBaseStats() {
+        if (Damage == 0) Damage = TurretSO.baseDamage;
+        if (Range == 0) Range = TurretSO.baseRange;
+        if (Cost == 0) Cost = TurretSO.baseCost;
+        if (FireRate == 0) FireRate = TurretSO.baseFireRate;
+        if (RotationSpeed == 0) RotationSpeed = TurretSO.baseRotationSpeed;
+        if (ProjectileSpeed == 0) ProjectileSpeed = TurretSO.baseProjectileSpeed;
     }
     
-    void Start() {
-        ApplyBaseStats();
-        ApplyUpgrades();
-    }
-
-    void ApplyBaseStats() {
-        if (string.IsNullOrEmpty(TurretName)) TurretName = TurretSO.turretName;
-        if (string.IsNullOrEmpty(TurretDescription)) TurretDescription = TurretSO.turretDescription;
-        if (BaseDamage == 0) BaseDamage = TurretSO.baseDamage;
-        if (BaseRange == 0) BaseRange = TurretSO.baseRange;
-        if (BaseCost == 0) BaseCost = TurretSO.baseCost;
-        if (BaseFireRate == 0) BaseFireRate = TurretSO.baseFireRate;
-        if (BaseRotationSpeed == 0) BaseRotationSpeed = TurretSO.baseRotationSpeed;
-        if (BaseProjectileSpeed == 0) BaseProjectileSpeed = TurretSO.baseProjectileSpeed;
-    }
-
-    void ApplyUpgrades() {
-        foreach (TurretUpgradeSO upgrade in appliedUpgrades) {
-            BaseDamage += upgrade.bonusDamage;
-            BaseRange += upgrade.bonusRange;
-            BaseFireRate += upgrade.bonusFireRate;
-            BaseRotationSpeed += upgrade.bonusRotationSpeed;
-            BaseProjectileSpeed += upgrade.bonusProjectileSpeed;
-            // Apply other upgrade effects
-        }
-    }
-
-    public void AddUpgrade(TurretUpgradeSO upgrade) {
-        appliedUpgrades.Add(upgrade);
-        ApplyUpgrades();
-    }
-
-    public void RemoveUpgrade(TurretUpgradeSO upgrade) {
-        appliedUpgrades.Remove(upgrade);
-        ApplyBaseStats();
-        ApplyUpgrades();
-    }
-
     public void Initialize(TurretSO turretSO) {
         this.turretSO = turretSO;
         ApplyBaseStats();
-        ApplyUpgrades();
+    }
+    
+    public bool TryAddUpgrade(BaseTurretUpgradeSO upgrade) {
+        if (activeUpgrades.Count >= MaxActiveUpgrades) {
+            Debug.LogWarning("Max upgrades reached!");
+            return false;
+        }
+        upgrade.ApplyUpgrade(this);
+        activeUpgrades.Add(upgrade);
+        Debug.Log(activeUpgrades.Count);
+        return true;
+    }
+
+    public void RemoveUpgrade(BaseTurretUpgradeSO upgrade) {
+        upgrade.RevertUpgrade(this);
+        activeUpgrades.Remove(upgrade);
+    }
+
+    public void ClearUpgrades() {
+        foreach (var upgrade in activeUpgrades) {
+            upgrade.RevertUpgrade(this);
+        }
+        activeUpgrades.Clear();
+    }
+
+    public override string ToString() {
+        return turretSO.turretName;
+    }
+
+    public TurretSO GetTurretSO() {
+        return turretSO;
+    }
+    
+    public bool TryGetTargetingSelection(out TurretTargetSelection targetingSelection) {
+        targetingSelection = GetComponent<TurretTargetSelection>();
+        return targetingSelection;
+    }
+    
+    public bool TryGetEnemyDetection(out TurretEnemyDetection enemyDetection) {
+        enemyDetection = GetComponent<TurretEnemyDetection>();
+        return enemyDetection;
+    }
+    
+    public bool TryGetFiring(out TurretFiring turretFiring) {
+        turretFiring = GetComponent<TurretFiring>();
+        return turretFiring;
+    }
+    
+    public bool TryGetAiming(out TurretAiming turretAiming) {
+        turretAiming = GetComponent<TurretAiming>();
+        return turretAiming;
+    }
+    
+    public bool TryGetRangeVisual(out TurretRangeVisual rangeVisual) {
+        rangeVisual = GetComponent<TurretRangeVisual>();
+        return rangeVisual;
+    }
+
+    public void DisableAllModules() {
+        if (TryGetEnemyDetection(out TurretEnemyDetection enemyDetection)) {
+            enemyDetection.enabled = false;
+        }
+        if (TryGetTargetingSelection(out TurretTargetSelection targetingSelection)) {
+            targetingSelection.enabled = false;
+        }
+        if (TryGetFiring(out TurretFiring turretFiring)) {
+            turretFiring.enabled = false;
+        }
+        if (TryGetAiming(out TurretAiming turretAiming)) {
+            turretAiming.enabled = false;
+        }
+    }
+
+    public void EnableAllModules() {
+        if (TryGetEnemyDetection(out TurretEnemyDetection enemyDetection)) {
+            enemyDetection.enabled = true;
+        }
+        if (TryGetTargetingSelection(out TurretTargetSelection targetingSelection)) {
+            targetingSelection.enabled = true;
+        }
+        if (TryGetFiring(out TurretFiring turretFiring)) {
+            turretFiring.enabled = true;
+        }
+        if (TryGetAiming(out TurretAiming turretAiming)) {
+            turretAiming.enabled = true;
+        }
     }
 }

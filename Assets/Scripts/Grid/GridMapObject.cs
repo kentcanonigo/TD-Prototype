@@ -71,6 +71,11 @@ public class GridMapObject {
         return builtTurret;
     }
     
+    public bool TryGetBuiltTurret(out Turret turret) {
+        turret = builtTurret;
+        return builtTurret;
+    }
+    
     public void SetBuiltTurret(Turret turret) => builtTurret = turret;
 
     public void CalculateFCost() {

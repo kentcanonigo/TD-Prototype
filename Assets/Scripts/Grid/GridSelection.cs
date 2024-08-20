@@ -1,14 +1,14 @@
 using System;
 using CodeMonkey.Utils;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GridSelection : MonoBehaviour {
     
     public static GridSelection Instance { get; private set; }
 
     [SerializeField] private bool debugMode = false;
-
-    private Grid<GridMapObject> grid;
+    
     public LayerMask gridLayerMask; // Layer mask to identify the grid
     public Color highlightColor = Color.yellow;
     private Vector2Int selectedGridPosition;
@@ -25,13 +25,9 @@ public class GridSelection : MonoBehaviour {
         Instance = this;
     }
 
-    private void Start() {
-        grid = GridManager.Instance.TryGetMainGrid();
-    }
-
     private void Update() {
         // Handle mouse input
-        if (Input.GetMouseButtonDown(0)) {
+        if (Mouse.current.leftButton.wasPressedThisFrame) {
             SelectGridCell();
         }
     }
@@ -43,21 +39,31 @@ public class GridSelection : MonoBehaviour {
         }
         
         Vector3 mousePosition = UtilsClass.GetMouseWorldPosition();
-        grid.GetXY(mousePosition, out int x, out int y);
+        GridManager.Instance.TryGetMainGrid().GetXY(mousePosition, out int x, out int y);
 
         // Check if the selected cell is valid
-        GridMapObject selectedObject = grid.GetGridObject(x, y);
+        GridMapObject selectedObject = GridManager.Instance.TryGetMainGrid().GetGridObject(x, y);
         if (selectedObject != null) {
             Vector2Int newGridPosition = new Vector2Int(x, y);
-
+            
             // Check if the clicked cell is the already selected cell
             if (isGridCellSelected && selectedGridPosition == newGridPosition) {
-                // Deselect the cell
-                isGridCellSelected = false;
-                selectedGridPosition = Vector2Int.zero;
-                OnDeselectGridCell?.Invoke(this, EventArgs.Empty); // Add an event for deselection if needed
-                if (debugMode) {
-                    Debug.Log($"Deselected grid cell at ({x}, {y})");
+                if (!BuildManager.Instance.IsPreviewing) {
+                    // Build manager is not currently in preview mode
+                    if (selectedObject.GetNodeType() is GridMapObject.NodeType.BuiltModule or GridMapObject.NodeType.None) {
+                        // Act as if build module button was clicked
+                        BuildManager.Instance.BuildModule();
+                    }
+                    // Deselect the cell
+                    isGridCellSelected = false;
+                    selectedGridPosition = Vector2Int.zero;
+                    OnDeselectGridCell?.Invoke(this, EventArgs.Empty); // Add an event for deselection if needed
+                    if (debugMode) {
+                        Debug.Log($"Deselected grid cell at ({x}, {y})");
+                    }
+                } else {
+                    // Build manager is in preview mode
+                    BuildManager.Instance.ConfirmBuild();
                 }
             } else {
                 // Select the new cell
@@ -74,12 +80,18 @@ public class GridSelection : MonoBehaviour {
 
     private void HighlightSelectedCell(int x, int y) {
         // Use Gizmos or another method to highlight the selected cell
-        Vector3 cellCenter = grid.GetWorldPosition(x, y) + new Vector3(0.5f, 0.5f) * grid.GetCellSize();
+        Vector3 cellCenter = GridManager.Instance.TryGetMainGrid().GetWorldPosition(x, y) + new Vector3(0.5f, 0.5f) * GridManager.Instance.TryGetMainGrid().GetCellSize();
         Debug.DrawLine(cellCenter - Vector3.right * 0.5f, cellCenter + Vector3.right * 0.5f, highlightColor, 0.1f);
         Debug.DrawLine(cellCenter - Vector3.up * 0.5f, cellCenter + Vector3.up * 0.5f, highlightColor, 0.1f);
     }
     
     public void TriggerSelectGridCell(int x, int y) {
         OnSelectGridCell?.Invoke(this, new OnSelectGridCellEventArgs { x = x, y = y });
+    }
+    
+    public void TriggerDeselectGridCell() {
+        isGridCellSelected = false;
+        selectedGridPosition = Vector2Int.zero;
+        OnDeselectGridCell?.Invoke(this, EventArgs.Empty);
     }
 }

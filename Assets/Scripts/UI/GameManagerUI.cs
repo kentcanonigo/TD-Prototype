@@ -14,12 +14,15 @@ public class GameManagerUI : MonoBehaviour {
     [SerializeField] private Button toggleDebugMenuButton;
     [SerializeField] private Toggle toggleMapEditModeButton;
     
+    [Header("Debug Fields")]
     [SerializeField] private CanvasGroup debugCanvasGroup;
     [SerializeField] private Button decrementHPButton;
     [SerializeField] private Button incrementHPButton;
     [SerializeField] private Button startWaveButton;
     [SerializeField] private Button endWaveButton;
     [SerializeField] private Button spawnEnemyButton;
+    [SerializeField] private Button addCreditsButton;
+    [SerializeField] private Button subtractCreditsButton;
     [SerializeField] private TextMeshProUGUI gameStateText;
     private static readonly int IsOpen = Animator.StringToHash("isOpen");
 
@@ -44,6 +47,14 @@ public class GameManagerUI : MonoBehaviour {
             GameManager.Instance.SpawnTestEnemy();
         }));
         
+        addCreditsButton.onClick.AddListener((() => {
+            GameManager.Instance.AddCredits(10);
+        }));
+        
+        subtractCreditsButton.onClick.AddListener((() => {
+            GameManager.Instance.SubtractCredits(10);
+        }));
+        
         toggleDebugMenuButton.onClick.AddListener((() => {
             debugMenuAnimator.SetBool(IsOpen, !debugMenuAnimator.GetBool(IsOpen));
         }));
@@ -57,19 +68,22 @@ public class GameManagerUI : MonoBehaviour {
         GameManager.Instance.OnValueChanged += GameManager_OnValueChanged;
         GameManager.Instance.OnGameStateChanged += GameManager_OnGameStateChanged;
         debugCanvasGroup.gameObject.SetActive(GameManager.Instance.showDebugMenu);
+        UpdateVisual();
     }
 
     private void GameManager_OnGameStateChanged(object sender, EventArgs e) {
-        Debug.Log("Gamestate changed has changed");
+        //Debug.Log("Gamestate changed has changed");
         gameStateText.text = $"Gamestate: {GameManager.Instance.CurrentGameState}";
+        UpdateVisual();
     }
 
     private void GameManager_OnValueChanged(object sender, EventArgs e) {
+        //Debug.Log("Values in game has changed");
         UpdateVisual();
     }
 
     private void UpdateVisual() {
-        //Debug.Log($"Updating UI: Wave: {GameManager.Instance.CurrentWave}/{GameManager.Instance.NumberOfWaves}, Core HP: {GameManager.Instance.CurrentCoreHP}/{GameManager.Instance.MaxCoreHP}, Modules: {GameManager.Instance.CurrentModules}");
+        //Debug.Log($"Updating Visuals");
         waveUIText.text = $"Wave: {GameManager.Instance.CurrentWave}/{GameManager.Instance.GetTotalWaves()}";
         coreHPUIText.text = $"Core HP: {GameManager.Instance.CurrentCoreHP}/{GameManager.Instance.MaxCoreHP}";
         modulesUIText.text = $"Modules: {GameManager.Instance.CurrentModules}";

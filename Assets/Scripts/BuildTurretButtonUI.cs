@@ -1,6 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
 
-public class BuildTurretButtonUI : Button {
-    [SerializeField] private TurretSO turretSO; //The turret to build
+public class BuildTurretButtonUI : MonoBehaviour {
+    [SerializeField] public TurretSO turretSO; //The turret to build
 }

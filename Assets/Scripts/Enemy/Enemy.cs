@@ -6,39 +6,38 @@ using UnityEngine;
 [SelectionBase]
 public class Enemy : MonoBehaviour, IHasHealth {
     [Header("Enemy")]
-    [Required]
+    [Required] [AssetSelector(Paths = "Assets/Prefabs/Enemies")]
     [SerializeField] private EnemySO enemySO; // Reference to the enemy stats ScriptableObject
 
-    public int HealthPoints { get; private set; } // Health points of the enemy
+    public float HealthPoints { get; private set; } // Health points of the enemy
     public int TotalHealthPoints { get; private set; } // Total HP of the enemy
     public int Armor { get; private set; } // Armor value that reduces incoming damage
     public float Speed { get; private set; } // Speed at which the enemy moves
     public float SizeMultiplier { get; private set; } // SizeMultiplier; // Size multiplier of the enemy
     public int DamageToCore { get; private set; } // Damage that the enemy deals to the core
+    public int CreditValue { get; private set; } // Credits dropped when the enemy dies
     public bool IsDead => HealthPoints <= 0; // Implementing IsDead property
     public event IHasHealth.DeathHandler<Transform> OnDeath;
     public event EventHandler<IHasHealth.OnHealthChangedEventArgs> OnHealthChanged;
 
-    private void Awake() {
+    private void Start() {
         TotalHealthPoints = enemySO.healthPoints; // Set stats from the ScriptableObject
         Armor = enemySO.armor;
         Speed = enemySO.speed;
         SizeMultiplier = enemySO.sizeMultiplier;
         DamageToCore = enemySO.damageToCore;
+        CreditValue = enemySO.creditValue;
         HealthPoints = TotalHealthPoints;
-    }
-
-    private void Start() {
         transform.localScale *= SizeMultiplier;
     }
 
-    public void TakeDamage(int damage) {
+    public void TakeDamage(float damage) {
         // Calculate actual damage after considering armor
-        int actualDamage = Mathf.Max(damage - Armor, 0);
+        float actualDamage = Mathf.Max(damage - Armor, 0);
         HealthPoints -= actualDamage;
 
         OnHealthChanged?.Invoke(this, new IHasHealth.OnHealthChangedEventArgs {
-            healthNormalized = (float)HealthPoints / TotalHealthPoints
+            healthNormalized = HealthPoints / TotalHealthPoints
         });
         
         // Check if the enemy is dead
@@ -51,6 +50,7 @@ public class Enemy : MonoBehaviour, IHasHealth {
         // Handle enemy death (e.g., play death animation, destroy the object)
         //Debug.Log($"{gameObject.name} died!");
         OnDeath?.Invoke(transform, EventArgs.Empty);
+        GameManager.Instance.AddCredits(CreditValue);
         Destroy(gameObject); // Destroy the enemy GameObject
     }
     
@@ -60,22 +60,5 @@ public class Enemy : MonoBehaviour, IHasHealth {
         OnHealthChanged?.Invoke(this, new IHasHealth.OnHealthChangedEventArgs {
             healthNormalized = (float)HealthPoints / TotalHealthPoints
         });
-    }
-    
-    public void SetArmor(int armor) {
-        Armor = armor;
-    }
-    
-    public void SetSpeed(float speed) {
-        Speed = speed;
-    }
-    
-    public void SetSizeMultiplier(float sizeMultiplier) {
-        SizeMultiplier = sizeMultiplier;
-        transform.localScale *= SizeMultiplier;
-    }
-    
-    public void SetDamageToCore(int damageToCore) {
-        DamageToCore = damageToCore;
     }
 }

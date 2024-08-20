@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb07fa42a50946cf97c30b181bafa7d1, type: 3}
+  m_Name: BlasterUpgradeListSO
+  m_EditorClassIdentifier: 
+  possibleUpgradesListSO:
+  - {fileID: 11400000, guid: 71160f00efd4a6c4aa2644736971c656, type: 2}
+  - {fileID: 11400000, guid: cd2d6a9424b84e8438cdefae92a297b9, type: 2}
+  - {fileID: 11400000, guid: ee5884b516610f446bbf2bbf72c2574f, type: 2}
