@@ -43,6 +43,7 @@ public class BuildUI : MonoBehaviour {
 
     [Required] [SceneObjectsOnly] [Header("Turret Upgrade UI")] [SerializeField]
     private GameObject turretUpgradeUI;
+    [SerializeField] private TextMeshProUGUI pickAnUpgradeText;
 
     [SerializeField] private GameObject turretUpgradeInfoUI;
     [SerializeField] private TextMeshProUGUI turretUpgradeInfoTitleText;
@@ -118,7 +119,7 @@ public class BuildUI : MonoBehaviour {
     }
 
     private void SetTurretTargetingText(TurretTargetSelection.TargetingPreference newTargetingPreference) {
-        lastSelectedTurret.TryGetTargetingSelection(out TurretTargetSelection targetingSelection);
+        lastSelectedTurret.TryGetComponent(out TurretTargetSelection targetingSelection);
         targetingSelection.SetTargetingPreference(newTargetingPreference);
         currentTargetingText.text = newTargetingPreference.ToModeString();
         turretTargetingUI.SetActive(false);
@@ -210,7 +211,7 @@ public class BuildUI : MonoBehaviour {
     }
 
     private void SetTargetingModeText(Turret turret) {
-        turret.TryGetTargetingSelection(out TurretTargetSelection targetingSelection);
+        turret.TryGetComponent(out TurretTargetSelection targetingSelection);
         currentTargetingText.text = targetingSelection.targetingPreference.ToModeString();
     }
 
@@ -222,7 +223,8 @@ public class BuildUI : MonoBehaviour {
             Button button = Instantiate(upgradeButtonTemplate, upgradeButtonContainer.transform).GetComponent<Button>();
             button.image.sprite = baseTurretUpgradeSO.upgradeSprite;
             button.image.color = baseTurretUpgradeSO.upgradeColor;
-            button.GetComponentInChildren<TextMeshProUGUI>().text = baseTurretUpgradeSO.upgradeName + " (" + baseTurretUpgradeSO.creditsCost + ")";
+            TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
+            buttonText.text = baseTurretUpgradeSO.upgradeName + " (" + baseTurretUpgradeSO.creditsCost + ")";
 
             bool canAfford = GameManager.Instance.CanAfford(baseTurretUpgradeSO.creditsCost);
             button.interactable = canAfford; // Set button interactability based on player's credits
@@ -235,9 +237,17 @@ public class BuildUI : MonoBehaviour {
             button.onClick.AddListener(() => {
                 if (turretUpgradeInfoUI.activeSelf) {
                     turretUpgradeInfoUI.SetActive(false);
+                    turretInfoUI.SetActive(false);
                 } else {
                     turretUpgradeInfoTitleText.text = "Upgrade " + baseTurretUpgradeSO.upgradeName + "?";
-                    turretUpgradeInfoDescriptionText.text = baseTurretUpgradeSO.upgradeDescription;
+                    
+                    // Update the description to display the percentage with diminishing returns applied
+                    int applicationCount = lastSelectedTurret.ActiveUpgrades.ContainsKey(baseTurretUpgradeSO) 
+                        ? lastSelectedTurret.ActiveUpgrades[baseTurretUpgradeSO] 
+                        : 0;
+                    
+                    float diminishingReturnValue = (baseTurretUpgradeSO.CalculateDiminishingReturn(baseTurretUpgradeSO.GetBaseMultiplier(), applicationCount + 1, baseTurretUpgradeSO.diminishingFactor) - 1f) * 100f;
+                    turretUpgradeInfoDescriptionText.text = $"({diminishingReturnValue:F2}% Increase)";
                     turretUpgradeInfoUI.SetActive(true);
 
                     // Assign the correct listener for the confirm button for this upgrade
@@ -252,28 +262,49 @@ public class BuildUI : MonoBehaviour {
             cancelUpgradeButton.onClick.AddListener(() => { turretUpgradeInfoUI.SetActive(false); });
 
             button.gameObject.SetActive(true);
+
+            if (lastSelectedTurret.CurrentTotalUpgrades >= lastSelectedTurret.MaxActiveUpgrades) {
+                pickAnUpgradeText.text = "Maxed out!";
+                pickAnUpgradeText.color = new Color(buttonText.color.r, buttonText.color.g, buttonText.color.b, 0.05f);
+                SetInteractable(button, false);
+            } else {
+                pickAnUpgradeText.text = "Pick an upgrade!";
+                pickAnUpgradeText.color = new Color(buttonText.color.r, buttonText.color.g, buttonText.color.b, 0.5f);
+            }
         }
     }
 
     private void UpdateUpgradePips(Turret turret) {
         ClearUpgradePips();
-        
-        for (int i = 0; i < 4; i++) {
-            if (i < turret.ActiveUpgrades.Count) {
-                BaseTurretUpgradeSO upgrade = turret.ActiveUpgrades[i];
-                Image upgradePip = Instantiate(upgradeCounterPipTemplate, upgradeCounterContainerUI.transform).GetComponent<Image>();
-                upgradePip.sprite = upgrade.upgradeSprite;
-                upgradePip.color = upgrade.upgradeColor;
-                upgradePip.gameObject.SetActive(true);
-            } else {
-                Image upgradePip = Instantiate(upgradeCounterPipTemplate, upgradeCounterContainerUI.transform).GetComponent<Image>();
-                upgradePip.color = new Color(0.2f, 0.2f, 0.2f);
-                upgradePip.gameObject.SetActive(true);
+
+        int totalPips = 0;
+    
+        // Iterate through each upgrade in the dictionary
+        foreach (var upgradeEntry in turret.ActiveUpgrades) {
+            BaseTurretUpgradeSO upgrade = upgradeEntry.Key;
+            int count = upgradeEntry.Value;
+
+            // Create pips for the current upgrade
+            for (int i = 0; i < count; i++) {
+                if (totalPips < 4) {
+                    Image upgradePip = Instantiate(upgradeCounterPipTemplate, upgradeCounterContainerUI.transform).GetComponent<Image>();
+                    upgradePip.sprite = upgrade.upgradeSprite;
+                    upgradePip.color = upgrade.upgradeColor;
+                    upgradePip.gameObject.SetActive(true);
+                    totalPips++;
+                }
             }
         }
+
+        // Fill remaining pips with inactive color if needed
+        while (totalPips < 4) {
+            Image upgradePip = Instantiate(upgradeCounterPipTemplate, upgradeCounterContainerUI.transform).GetComponent<Image>();
+            upgradePip.color = new Color(0.2f, 0.2f, 0.2f); // Inactive color
+            upgradePip.gameObject.SetActive(true);
+            totalPips++;
+        }
     }
-
-
+    
     private void ClearUpgradeButtons() {
         foreach (Transform child in upgradeButtonContainer.transform) {
             if (child == upgradeButtonTemplate.transform)

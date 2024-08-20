@@ -55,7 +55,7 @@ public class BuildManager : MonoBehaviour {
     }
 
     private static void ShowTurretRange(Turret turret) {
-        if (turret.TryGetRangeVisual(out TurretRangeVisual turretRangeVisual)) {
+        if (turret.TryGetComponent(out TurretRangeVisual turretRangeVisual)) {
             turretRangeVisual.ShowRange(turret.Range);
         } else {
             Debug.LogWarning($"Couldn't display turret range for {turret}");
@@ -63,7 +63,7 @@ public class BuildManager : MonoBehaviour {
     }
 
     private static void HideTurretRange(Turret turret) {
-        if (turret.TryGetRangeVisual(out TurretRangeVisual turretRangeVisual)) {
+        if (turret.TryGetComponent(out TurretRangeVisual turretRangeVisual)) {
             turretRangeVisual.HideRange();
         } else {
             Debug.LogWarning($"Couldn't hide turret range for {turret}");

@@ -6,11 +6,14 @@ public abstract class BaseTurretUpgradeSO : ScriptableObject {
     public Sprite upgradeSprite;
     public Color upgradeColor;
     public int creditsCost;
+    public float diminishingFactor;
 
     public abstract void ApplyUpgrade(Turret turret, int applicationCount);
     public abstract void RevertUpgrade(Turret turret, int applicationCount);
 
-    protected float CalculateDiminishingReturn(float baseValue, int applicationCount, float diminishingFactor) {
-        return baseValue * Mathf.Pow(diminishingFactor, applicationCount - 1);
+    public abstract float GetBaseMultiplier();
+
+    public float CalculateDiminishingReturn(float baseMultiplier, int applicationCount, float diminishingFactor) {
+        return 1.0f + (baseMultiplier - 1.0f) * Mathf.Pow(diminishingFactor, applicationCount - 1);
     }
 }

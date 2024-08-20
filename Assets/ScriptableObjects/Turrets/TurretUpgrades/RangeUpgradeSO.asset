@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: RangeUpgradeSO
   m_EditorClassIdentifier: 
   upgradeName: Range
-  upgradeDescription: +12% Range
+  upgradeDescription: +15% Range
   upgradeSprite: {fileID: 543716811, guid: 92433c83556d78648908fa03e2dd6302, type: 3}
   upgradeColor: {r: 0.17068703, g: 0.4943396, b: 0.21400703, a: 1}
   creditsCost: 40
-  rangeMultiplier: 1.12
+  rangeMultiplier: 1.15
+  diminishingFactor: 0.8

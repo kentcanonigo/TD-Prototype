@@ -5,15 +5,14 @@ using UnityEngine;
 
 [SelectionBase]
 public class Turret : MonoBehaviour {
-    [field: Header("Turret Stats SO")] [SerializeField] [Required]
-    private TurretSO turretSO; // Backing field for the property
-    public List<BaseTurretUpgradeSO> ActiveUpgrades { get; private set; }
-    private int MaxActiveUpgrades { get; set; } = 4;
+    [field: Header("Turret Stats SO")]
+    [field: SerializeField]
+    [field: Required]
+    public TurretSO TurretSO { get; private set; }
 
-    public TurretSO TurretSO {
-        get => turretSO;
-        set => turretSO = value; // Allow setting in the class
-    }
+    public Dictionary<BaseTurretUpgradeSO, int> ActiveUpgrades { get; private set; }
+    public int CurrentTotalUpgrades { get; private set; }
+    public int MaxActiveUpgrades { get; private set; } = 4;
 
     [field: Header("Turret Stats")]
     [ReadOnly, ShowInInspector] public float Damage { get; set; }
@@ -24,7 +23,7 @@ public class Turret : MonoBehaviour {
     [ReadOnly, ShowInInspector] public float ProjectileSpeed { get; set; }
 
     private void Awake() {
-        ActiveUpgrades = new List<BaseTurretUpgradeSO>();
+        ActiveUpgrades = new Dictionary<BaseTurretUpgradeSO, int>();
     }
 
     private void Start() {
@@ -41,93 +40,87 @@ public class Turret : MonoBehaviour {
     }
     
     public void Initialize(TurretSO turretSO) {
-        this.turretSO = turretSO;
+        this.TurretSO = turretSO;
         ApplyBaseStats();
     }
-    
+
     public bool TryAddUpgrade(BaseTurretUpgradeSO upgrade) {
-        if (ActiveUpgrades.Count >= MaxActiveUpgrades) {
-            Debug.LogWarning("Max upgrades reached!");
+        // Calculate the current total upgrades
+        CurrentTotalUpgrades = 0;
+        foreach (var entry in ActiveUpgrades) {
+            CurrentTotalUpgrades += entry.Value;
+        }
+
+        if (CurrentTotalUpgrades >= MaxActiveUpgrades) {
+            Debug.LogWarning("Max total upgrades reached!");
             return false;
         }
-        //upgrade.ApplyUpgrade(this);
-        ActiveUpgrades.Add(upgrade);
-        Debug.Log(ActiveUpgrades.Count);
+
+        int applicationCount = ActiveUpgrades.ContainsKey(upgrade) ? ActiveUpgrades[upgrade] : 0;
+        applicationCount++;
+
+        // Apply the upgrade
+        upgrade.ApplyUpgrade(this, applicationCount);
+        ActiveUpgrades[upgrade] = applicationCount;
+
+        // Increment the current total upgrades after successfully adding an upgrade
+        CurrentTotalUpgrades++;
+
+        Debug.Log($"Applied {upgrade.upgradeName} ({applicationCount} times). Active Upgrades: {CurrentTotalUpgrades}");
         return true;
     }
 
     public void RemoveUpgrade(BaseTurretUpgradeSO upgrade) {
-        //upgrade.RevertUpgrade(this);
-        ActiveUpgrades.Remove(upgrade);
+        if (ActiveUpgrades.TryGetValue(upgrade, out int applicationCount) && applicationCount > 0) {
+            upgrade.RevertUpgrade(this, applicationCount);
+            applicationCount--;
+
+            if (applicationCount > 0) {
+                ActiveUpgrades[upgrade] = applicationCount;
+            } else {
+                ActiveUpgrades.Remove(upgrade);
+            }
+
+            // Decrement the current total upgrades after successfully removing an upgrade
+            CurrentTotalUpgrades--;
+        }
     }
+
 
     public void ClearUpgrades() {
         foreach (var upgrade in ActiveUpgrades) {
-            //upgrade.RevertUpgrade(this);
+            upgrade.Key.RevertUpgrade(this, upgrade.Value);
         }
         ActiveUpgrades.Clear();
     }
 
     public override string ToString() {
-        return turretSO.turretName;
+        return TurretSO.turretName;
     }
 
     public TurretSO GetTurretSO() {
-        return turretSO;
-    }
-    
-    public bool TryGetTargetingSelection(out TurretTargetSelection targetingSelection) {
-        targetingSelection = GetComponent<TurretTargetSelection>();
-        return targetingSelection;
-    }
-    
-    public bool TryGetEnemyDetection(out TurretEnemyDetection enemyDetection) {
-        enemyDetection = GetComponent<TurretEnemyDetection>();
-        return enemyDetection;
-    }
-    
-    public bool TryGetFiring(out TurretFiring turretFiring) {
-        turretFiring = GetComponent<TurretFiring>();
-        return turretFiring;
-    }
-    
-    public bool TryGetAiming(out TurretAiming turretAiming) {
-        turretAiming = GetComponent<TurretAiming>();
-        return turretAiming;
-    }
-    
-    public bool TryGetRangeVisual(out TurretRangeVisual rangeVisual) {
-        rangeVisual = GetComponent<TurretRangeVisual>();
-        return rangeVisual;
+        return TurretSO;
     }
 
     public void DisableAllModules() {
-        if (TryGetEnemyDetection(out TurretEnemyDetection enemyDetection)) {
-            enemyDetection.enabled = false;
-        }
-        if (TryGetTargetingSelection(out TurretTargetSelection targetingSelection)) {
-            targetingSelection.enabled = false;
-        }
-        if (TryGetFiring(out TurretFiring turretFiring)) {
-            turretFiring.enabled = false;
-        }
-        if (TryGetAiming(out TurretAiming turretAiming)) {
-            turretAiming.enabled = false;
-        }
+        ToggleAllModules(false);
     }
 
     public void EnableAllModules() {
-        if (TryGetEnemyDetection(out TurretEnemyDetection enemyDetection)) {
-            enemyDetection.enabled = true;
-        }
-        if (TryGetTargetingSelection(out TurretTargetSelection targetingSelection)) {
-            targetingSelection.enabled = true;
-        }
-        if (TryGetFiring(out TurretFiring turretFiring)) {
-            turretFiring.enabled = true;
-        }
-        if (TryGetAiming(out TurretAiming turretAiming)) {
-            turretAiming.enabled = true;
-        }
+        ToggleAllModules(true);
+    }
+
+    private void ToggleAllModules(bool enable) {
+        TryGetComponent(out TurretEnemyDetection enemyDetection);
+        if (enemyDetection != null) enemyDetection.enabled = enable;
+
+        TryGetComponent(out TurretTargetSelection targetingSelection);
+        if (targetingSelection != null) targetingSelection.enabled = enable;
+
+        TryGetComponent(out TurretFiring turretFiring);
+        if (turretFiring != null) turretFiring.enabled = enable;
+
+        TryGetComponent(out TurretAiming turretAiming);
+        if (turretAiming != null) turretAiming.enabled = enable;
     }
 }

@@ -18,3 +18,4 @@ MonoBehaviour:
   upgradeColor: {r: 0.17739409, g: 0.325026, b: 0.6226415, a: 1}
   creditsCost: 60
   fireRateMultiplier: 1.15
+  diminishingFactor: 0.9
