@@ -18,8 +18,7 @@ public class BuildUI : MonoBehaviour {
 
     [InfoBox("Turret Buttons should be set in the inspector! (For the respective TurretSO Object)")] [Required] [SceneObjectsOnly] [Header("Turret Info")] [SerializeField]
     private GameObject turretInfoUI;
-
-    [SerializeField] private Button turretInfoButton;
+    
     [SerializeField] private Button turretUpgradeButton;
     [SerializeField] private Button turretSellButton;
     [SerializeField] private Button turretTargetingButton;
@@ -62,11 +61,6 @@ public class BuildUI : MonoBehaviour {
 
     private void Awake() {
         buildModuleButton.onClick.AddListener((() => { BuildManager.Instance.BuildModule(); }));
-
-        turretInfoButton.onClick.AddListener((() => {
-            ShowTurretInfo();
-            InfoUI.Instance.Toggle();
-        }));
 
         turretSellButton.onClick.AddListener((() => { BuildManager.Instance.SellTurret(); }));
 
@@ -123,15 +117,6 @@ public class BuildUI : MonoBehaviour {
         targetingSelection.SetTargetingPreference(newTargetingPreference);
         currentTargetingText.text = newTargetingPreference.ToModeString();
         turretTargetingUI.SetActive(false);
-    }
-
-    private void ShowTurretInfo() {
-        if (lastSelectedGridObject == null) {
-            Debug.LogWarning("lastSelectedGridObject is null");
-            return;
-        }
-
-        InfoUI.Instance.SetInfo(lastSelectedGridObject.GetBuiltTurret().GetTurretSO().turretName, lastSelectedGridObject.GetBuiltTurret().GetTurretSO().turretDescription);
     }
 
     private void Start() {
@@ -199,7 +184,7 @@ public class BuildUI : MonoBehaviour {
         SetInteractable(sellModuleButton, !isPermanentModule && !BuildManager.Instance.IsPreviewing);
 
         // UI
-        buildModuleUI.SetActive(!isTurretBuilt && isValidModuleBuildLocation && !isValidTurretBuildLocation && !BuildManager.Instance.IsPreviewing);
+        buildModuleUI.SetActive(!isTurretBuilt && !isValidTurretBuildLocation && !BuildManager.Instance.IsPreviewing);
         buildTurretUI.SetActive(!isTurretBuilt && isValidTurretBuildLocation && !isValidModuleBuildLocation && !BuildManager.Instance.IsPreviewing);
         turretInfoUI.SetActive(isTurretBuilt && !BuildManager.Instance.IsPreviewing);
         upgradeCounterContainerUI.SetActive(isTurretBuilt && !BuildManager.Instance.IsPreviewing);

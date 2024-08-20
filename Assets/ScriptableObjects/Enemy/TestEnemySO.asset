@@ -15,7 +15,7 @@ MonoBehaviour:
   enemyName: Test Enemy
   enemyDescription: Yes, this is a test
   enemyPrefab: {fileID: 511332154934885617, guid: 42498fd3a5dc8144b994ab3bfd4d424a, type: 3}
-  healthPoints: 500
+  healthPoints: 50
   armor: 0
   speed: 1
   damageToCore: 1

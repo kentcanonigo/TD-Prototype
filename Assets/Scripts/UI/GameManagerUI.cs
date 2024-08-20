@@ -48,11 +48,11 @@ public class GameManagerUI : MonoBehaviour {
         }));
         
         addCreditsButton.onClick.AddListener((() => {
-            GameManager.Instance.AddCredits(10);
+            GameManager.Instance.AddCredits(100);
         }));
         
         subtractCreditsButton.onClick.AddListener((() => {
-            GameManager.Instance.SubtractCredits(10);
+            GameManager.Instance.SubtractCredits(100);
         }));
         
         toggleDebugMenuButton.onClick.AddListener((() => {

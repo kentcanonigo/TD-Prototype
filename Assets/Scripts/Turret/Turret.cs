@@ -39,6 +39,10 @@ public class Turret : MonoBehaviour {
         if (ProjectileSpeed == 0) ProjectileSpeed = TurretSO.baseProjectileSpeed;
     }
     
+    public float CalculateDPS() {
+        return Damage * FireRate;
+    }
+    
     public void Initialize(TurretSO turretSO) {
         this.TurretSO = turretSO;
         ApplyBaseStats();

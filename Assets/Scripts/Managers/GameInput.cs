@@ -1,12 +1,12 @@
 using System;
+using CodeMonkey.Utils;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class GameInput : MonoBehaviour {
-    
     public static GameInput Instance { get; private set; }
-    
+
     private CinemachineConfiner2D cinemachineConfiner2D;
     private CinemachineCamera cinemachineCamera;
     public PlayerInputActions playerInputActions;
@@ -14,7 +14,8 @@ public class GameInput : MonoBehaviour {
     [SerializeField] private BoxCollider2D cameraBounds;
     [SerializeField] private float cameraMoveSpeed = 5f;
     [SerializeField] private float mouseDragMoveSpeed = 20f;
-
+    
+    private bool wasMousePressedOverUI = false;
     private Vector3 lastMousePosition;
 
     private void Awake() {
@@ -57,12 +58,15 @@ public class GameInput : MonoBehaviour {
         if (cameraBounds.min.x < confinerBounds.min.x && moveDir.x < 0) {
             moveDir.x = 0; // Stop leftward movement
         }
+
         if (cameraBounds.max.x > confinerBounds.max.x && moveDir.x > 0) {
             moveDir.x = 0; // Stop rightward movement
         }
+
         if (cameraBounds.min.y < confinerBounds.min.y && moveDir.y < 0) {
             moveDir.y = 0; // Stop downward movement
         }
+
         if (cameraBounds.max.y > confinerBounds.max.y && moveDir.y > 0) {
             moveDir.y = 0; // Stop upward movement
         }
@@ -80,11 +84,13 @@ public class GameInput : MonoBehaviour {
 
     private void HandleMouseDragCameraMovement() {
         if (Mouse.current.leftButton.wasPressedThisFrame) {
+            // Check if the pointer was over a UI element when the mouse button was pressed
+            wasMousePressedOverUI = UtilsClass.IsPointerOverUI();
             // Store the last mouse position when the left mouse button is pressed
             lastMousePosition = Input.mousePosition;
         }
 
-        if (Mouse.current.leftButton.isPressed) {
+        if (Mouse.current.leftButton.isPressed && !wasMousePressedOverUI) {
             // Calculate the mouse movement delta
             Vector3 mouseDelta = lastMousePosition - Input.mousePosition;
             lastMousePosition = Input.mousePosition;
@@ -136,7 +142,7 @@ public class GameInput : MonoBehaviour {
         Camera mainCamera = Camera.main;
         float verticalSize = mainCamera.orthographicSize * 2f;
         float horizontalSize = verticalSize * mainCamera.aspect;
-        
+
         Vector3 cameraSize = new Vector3(horizontalSize, verticalSize, 0f);
         return new Bounds(transform.position, cameraSize);
     }

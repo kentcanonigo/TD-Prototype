@@ -183,11 +183,12 @@ public class GridManager : MonoBehaviour {
     }
     
     void InitializeLineRenderer(LineRenderer lineRenderer) {
-        lineRenderer.positionCount = 0;
-        lineRenderer.endColor = new Color(0.6f, 0f, 0f, 1f);
-        lineRenderer.startColor = new Color(0.1f, 0.5f, 0.7f, 1f);
+        lineRenderer.positionCount = 0; 
+        lineRenderer.endColor = new Color(0.2f, 0.6f, 0.75f, 1f);
+        lineRenderer.startColor = new Color(0.6f, 0f, 0f, 0f);
         lineRenderer.numCornerVertices = 90;
         lineRenderer.startWidth = 0.1f;
+        lineRenderer.widthCurve = AnimationCurve.EaseInOut(0f, 0.2f, 1f, 0.1f);
         lineRenderer.endWidth = 0.1f;
         lineRenderer.alignment = LineAlignment.View;
         lineRenderer.textureMode = LineTextureMode.Tile;
