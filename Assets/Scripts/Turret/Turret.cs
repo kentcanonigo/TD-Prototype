@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using Sirenix.Serialization;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [SelectionBase]
 public class Turret : MonoBehaviour {
     [field: Header("Turret Stats SO")] [SerializeField] [Required]
     private TurretSO turretSO; // Backing field for the property
-    private List<BaseTurretUpgradeSO> activeUpgrades;
-    public int MaxActiveUpgrades { get; private set; } = 4;
+    public List<BaseTurretUpgradeSO> ActiveUpgrades { get; private set; }
+    private int MaxActiveUpgrades { get; set; } = 4;
 
     public TurretSO TurretSO {
         get => turretSO;
@@ -26,7 +24,7 @@ public class Turret : MonoBehaviour {
     [ReadOnly, ShowInInspector] public float ProjectileSpeed { get; set; }
 
     private void Awake() {
-        activeUpgrades = new List<BaseTurretUpgradeSO>();
+        ActiveUpgrades = new List<BaseTurretUpgradeSO>();
     }
 
     private void Start() {
@@ -48,26 +46,26 @@ public class Turret : MonoBehaviour {
     }
     
     public bool TryAddUpgrade(BaseTurretUpgradeSO upgrade) {
-        if (activeUpgrades.Count >= MaxActiveUpgrades) {
+        if (ActiveUpgrades.Count >= MaxActiveUpgrades) {
             Debug.LogWarning("Max upgrades reached!");
             return false;
         }
-        upgrade.ApplyUpgrade(this);
-        activeUpgrades.Add(upgrade);
-        Debug.Log(activeUpgrades.Count);
+        //upgrade.ApplyUpgrade(this);
+        ActiveUpgrades.Add(upgrade);
+        Debug.Log(ActiveUpgrades.Count);
         return true;
     }
 
     public void RemoveUpgrade(BaseTurretUpgradeSO upgrade) {
-        upgrade.RevertUpgrade(this);
-        activeUpgrades.Remove(upgrade);
+        //upgrade.RevertUpgrade(this);
+        ActiveUpgrades.Remove(upgrade);
     }
 
     public void ClearUpgrades() {
-        foreach (var upgrade in activeUpgrades) {
-            upgrade.RevertUpgrade(this);
+        foreach (var upgrade in ActiveUpgrades) {
+            //upgrade.RevertUpgrade(this);
         }
-        activeUpgrades.Clear();
+        ActiveUpgrades.Clear();
     }
 
     public override string ToString() {

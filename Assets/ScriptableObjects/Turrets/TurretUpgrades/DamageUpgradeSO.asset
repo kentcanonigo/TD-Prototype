@@ -15,5 +15,6 @@ MonoBehaviour:
   upgradeName: Damage
   upgradeDescription: +10% Damage
   upgradeSprite: {fileID: -1712831447, guid: 92433c83556d78648908fa03e2dd6302, type: 3}
+  upgradeColor: {r: 0.5018867, g: 0.1543538, b: 0.1543538, a: 1}
   creditsCost: 80
   damageMultiplier: 1.1

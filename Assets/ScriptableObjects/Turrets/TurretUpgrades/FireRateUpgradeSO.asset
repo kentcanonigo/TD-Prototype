@@ -15,5 +15,6 @@ MonoBehaviour:
   upgradeName: Fire Rate
   upgradeDescription: +15% Fire Rate
   upgradeSprite: {fileID: 2098937247, guid: 92433c83556d78648908fa03e2dd6302, type: 3}
+  upgradeColor: {r: 0.17739409, g: 0.325026, b: 0.6226415, a: 1}
   creditsCost: 60
   fireRateMultiplier: 1.15

@@ -52,6 +52,10 @@ public class BuildUI : MonoBehaviour {
     [SerializeField] private Button confirmUpgradeButton;
     [SerializeField] private Button cancelUpgradeButton;
 
+    [Required] [SceneObjectsOnly] [Header("Turret Upgrade UI")] [SerializeField]
+    private GameObject upgradeCounterContainerUI;
+    [SerializeField] private GameObject upgradeCounterPipTemplate;
+
     private GridMapObject lastSelectedGridObject;
     private Turret lastSelectedTurret;
 
@@ -98,6 +102,7 @@ public class BuildUI : MonoBehaviour {
                 turretUpgradeUI.gameObject.SetActive(false);
             } else {
                 turretUpgradeUI.gameObject.SetActive(true);
+                turretTargetingUI.gameObject.SetActive(false);
             }
         }));
 
@@ -172,16 +177,13 @@ public class BuildUI : MonoBehaviour {
         lastSelectedGridObject = selectedGridObject;
         lastSelectedTurret = selectedGridObject.GetBuiltTurret();
 
-        if (lastSelectedTurret) {
-            UpdateUpgradeButtons(lastSelectedTurret.GetTurretSO());
-        }
-
         //Update the current turret's targeting mode string
         turretTargetingUI.SetActive(false);
         turretUpgradeInfoUI.SetActive(false);
         if (lastSelectedTurret) {
-            lastSelectedTurret.TryGetTargetingSelection(out TurretTargetSelection targetingSelection);
-            currentTargetingText.text = targetingSelection.targetingPreference.ToModeString();
+            SetTargetingModeText(lastSelectedTurret);
+            UpdateUpgradeButtons(lastSelectedTurret.GetTurretSO());
+            UpdateUpgradePips(lastSelectedTurret);
         }
 
         // Show the appropriate UI
@@ -199,11 +201,17 @@ public class BuildUI : MonoBehaviour {
         buildModuleUI.SetActive(!isTurretBuilt && isValidModuleBuildLocation && !isValidTurretBuildLocation && !BuildManager.Instance.IsPreviewing);
         buildTurretUI.SetActive(!isTurretBuilt && isValidTurretBuildLocation && !isValidModuleBuildLocation && !BuildManager.Instance.IsPreviewing);
         turretInfoUI.SetActive(isTurretBuilt && !BuildManager.Instance.IsPreviewing);
+        upgradeCounterContainerUI.SetActive(isTurretBuilt && !BuildManager.Instance.IsPreviewing);
         confirmBuildUI.SetActive(BuildManager.Instance.IsPreviewing);
 
         if (!isTurretBuilt) {
             buildModuleButton.Select();
         }
+    }
+
+    private void SetTargetingModeText(Turret turret) {
+        turret.TryGetTargetingSelection(out TurretTargetSelection targetingSelection);
+        currentTargetingText.text = targetingSelection.targetingPreference.ToModeString();
     }
 
     private void UpdateUpgradeButtons(TurretSO turretSO) {
@@ -213,6 +221,7 @@ public class BuildUI : MonoBehaviour {
             // Create the button and set its properties
             Button button = Instantiate(upgradeButtonTemplate, upgradeButtonContainer.transform).GetComponent<Button>();
             button.image.sprite = baseTurretUpgradeSO.upgradeSprite;
+            button.image.color = baseTurretUpgradeSO.upgradeColor;
             button.GetComponentInChildren<TextMeshProUGUI>().text = baseTurretUpgradeSO.upgradeName + " (" + baseTurretUpgradeSO.creditsCost + ")";
 
             bool canAfford = GameManager.Instance.CanAfford(baseTurretUpgradeSO.creditsCost);
@@ -246,10 +255,36 @@ public class BuildUI : MonoBehaviour {
         }
     }
 
+    private void UpdateUpgradePips(Turret turret) {
+        ClearUpgradePips();
+        
+        for (int i = 0; i < 4; i++) {
+            if (i < turret.ActiveUpgrades.Count) {
+                BaseTurretUpgradeSO upgrade = turret.ActiveUpgrades[i];
+                Image upgradePip = Instantiate(upgradeCounterPipTemplate, upgradeCounterContainerUI.transform).GetComponent<Image>();
+                upgradePip.sprite = upgrade.upgradeSprite;
+                upgradePip.color = upgrade.upgradeColor;
+                upgradePip.gameObject.SetActive(true);
+            } else {
+                Image upgradePip = Instantiate(upgradeCounterPipTemplate, upgradeCounterContainerUI.transform).GetComponent<Image>();
+                upgradePip.color = new Color(0.2f, 0.2f, 0.2f);
+                upgradePip.gameObject.SetActive(true);
+            }
+        }
+    }
+
 
     private void ClearUpgradeButtons() {
         foreach (Transform child in upgradeButtonContainer.transform) {
             if (child == upgradeButtonTemplate.transform)
+                continue;
+            Destroy(child.gameObject);
+        }
+    }
+    
+    private void ClearUpgradePips() {
+        foreach (Transform child in upgradeCounterContainerUI.transform) {
+            if (child == upgradeCounterPipTemplate.transform)
                 continue;
             Destroy(child.gameObject);
         }
@@ -260,6 +295,7 @@ public class BuildUI : MonoBehaviour {
     }
 
     private void HideAllUI() {
+        upgradeCounterContainerUI.SetActive(false);
         turretUpgradeInfoUI.SetActive(false);
         turretUpgradeUI.SetActive(false);
         confirmBuildUI.SetActive(false);
