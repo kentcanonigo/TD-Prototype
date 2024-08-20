@@ -56,7 +56,7 @@ public class BuildManager : MonoBehaviour {
 
     private static void ShowTurretRange(Turret turret) {
         if (turret.TryGetRangeVisual(out TurretRangeVisual turretRangeVisual)) {
-            turretRangeVisual.ShowRange(turret.BaseRange);
+            turretRangeVisual.ShowRange(turret.Range);
         } else {
             Debug.LogWarning($"Couldn't display turret range for {turret}");
         }
@@ -162,7 +162,7 @@ public class BuildManager : MonoBehaviour {
             return;
         }
 
-        GameManager.Instance.AddCredits(builtTurret.BaseCost);
+        GameManager.Instance.AddCredits(builtTurret.Cost);
         lastSelectedGridObject.SetBuiltTurret(null);
         HideTurretRange(builtTurret);
         Destroy(builtTurret.gameObject);
@@ -184,7 +184,7 @@ public class BuildManager : MonoBehaviour {
         ResetPreviewState();
     }
 
-    public void UpgradeTurret() {
+    public void UpgradeTurret(Turret turret) {
         if (lastSelectedGridObject == null || !lastSelectedGridObject.TryGetBuiltTurret(out Turret builtTurret)) {
             Debug.LogWarning("No turret in this position.");
             return;
@@ -200,7 +200,7 @@ public class BuildManager : MonoBehaviour {
 
     private void BuildTurretOnGridObject(GridMapObject gridObject, Turret turret) {
         gridObject.SetBuiltTurret(turret);
-        GameManager.Instance.SubtractCredits(turret.BaseCost);
+        GameManager.Instance.SubtractCredits(turret.Cost);
         turret.EnableAllModules();
         GridSelection.Instance.TriggerDeselectGridCell();
     }

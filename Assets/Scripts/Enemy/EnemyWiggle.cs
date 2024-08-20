@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class EnemyWiggle : MonoBehaviour {
 
-    [Required]
+    [Required] [AssetSelector(Paths = "Assets/ScriptableObjects/EnemyWiggle")]
     [SerializeField] private WiggleSO wiggleSO;
-    [Required]
+    [Required] [AssetSelector(Paths = "Assets/Prefabs/PrefabVisuals")]
     [SerializeField] private GameObject enemyVisuals;
     private Wiggle enemyWiggle;
 

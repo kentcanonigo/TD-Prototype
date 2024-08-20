@@ -50,13 +50,13 @@ public class TurretEnemyDetection : MonoBehaviour {
         rangeCollider = GetComponent<CircleCollider2D>();
         EnemiesInRange = new List<Transform>();
         rangeCollider.isTrigger = true;
-        rangeCollider.radius = turret.BaseRange;
+        rangeCollider.radius = turret.Range;
     }
 
     private void Update() {
-        if (Mathf.Abs(turret.BaseRange - LastBaseRange) > Mathf.Epsilon) {
-            rangeCollider.radius = turret.BaseRange; // Update the collider's radius
-            LastBaseRange = turret.BaseRange; // Cache the new value
+        if (Mathf.Abs(turret.Range - LastBaseRange) > Mathf.Epsilon) {
+            rangeCollider.radius = turret.Range; // Update the collider's radius
+            LastBaseRange = turret.Range; // Cache the new value
             detectionRangeGizmo = LastBaseRange;
         }
     }

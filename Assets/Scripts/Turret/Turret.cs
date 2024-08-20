@@ -9,8 +9,8 @@ using UnityEngine;
 public class Turret : MonoBehaviour {
     [field: Header("Turret Stats SO")] [SerializeField] [Required]
     private TurretSO turretSO; // Backing field for the property
-
     private List<BaseTurretUpgradeSO> activeUpgrades;
+    public int MaxActiveUpgrades { get; private set; } = 4;
 
     public TurretSO TurretSO {
         get => turretSO;
@@ -18,12 +18,12 @@ public class Turret : MonoBehaviour {
     }
 
     [field: Header("Turret Stats")]
-    public float BaseDamage { get; set; }
-    public float BaseRotationSpeed { get; set; }
-    public float BaseRange { get; set; }
-    public int BaseCost { get; set; }
-    public float BaseFireRate { get; set; }
-    public float BaseProjectileSpeed { get; set; }
+    [ReadOnly, ShowInInspector] public float Damage { get; set; }
+    [ReadOnly, ShowInInspector] public float RotationSpeed { get; set; }
+    [ReadOnly, ShowInInspector] public float Range { get; set; }
+    [ReadOnly, ShowInInspector] public int Cost { get; set; }
+    [ReadOnly, ShowInInspector] public float FireRate { get; set; }
+    [ReadOnly, ShowInInspector] public float ProjectileSpeed { get; set; }
 
     private void Awake() {
         activeUpgrades = new List<BaseTurretUpgradeSO>();
@@ -34,12 +34,12 @@ public class Turret : MonoBehaviour {
     }
 
     private void ApplyBaseStats() {
-        if (BaseDamage == 0) BaseDamage = TurretSO.baseDamage;
-        if (BaseRange == 0) BaseRange = TurretSO.baseRange;
-        if (BaseCost == 0) BaseCost = TurretSO.baseCost;
-        if (BaseFireRate == 0) BaseFireRate = TurretSO.baseFireRate;
-        if (BaseRotationSpeed == 0) BaseRotationSpeed = TurretSO.baseRotationSpeed;
-        if (BaseProjectileSpeed == 0) BaseProjectileSpeed = TurretSO.baseProjectileSpeed;
+        if (Damage == 0) Damage = TurretSO.baseDamage;
+        if (Range == 0) Range = TurretSO.baseRange;
+        if (Cost == 0) Cost = TurretSO.baseCost;
+        if (FireRate == 0) FireRate = TurretSO.baseFireRate;
+        if (RotationSpeed == 0) RotationSpeed = TurretSO.baseRotationSpeed;
+        if (ProjectileSpeed == 0) ProjectileSpeed = TurretSO.baseProjectileSpeed;
     }
     
     public void Initialize(TurretSO turretSO) {

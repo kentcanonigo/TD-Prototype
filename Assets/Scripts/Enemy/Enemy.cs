@@ -6,7 +6,7 @@ using UnityEngine;
 [SelectionBase]
 public class Enemy : MonoBehaviour, IHasHealth {
     [Header("Enemy")]
-    [Required]
+    [Required] [AssetSelector(Paths = "Assets/Prefabs/Enemies")]
     [SerializeField] private EnemySO enemySO; // Reference to the enemy stats ScriptableObject
 
     public int HealthPoints { get; private set; } // Health points of the enemy

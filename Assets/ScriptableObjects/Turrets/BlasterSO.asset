@@ -15,7 +15,7 @@ MonoBehaviour:
   turretName: Blaster
   turretDescription: Pew pew
   turretPrefab: {fileID: 504774227951090818, guid: 9831e98d5cc0ce740beab635701bd64c, type: 3}
-  turretVisualPrefab: {fileID: 8789813099416169583, guid: 066529f21b42cc24cab7c170d3ad9e7d, type: 3}
+  turretUpgradeListSO: {fileID: 11400000, guid: 7c9687c95a6896448a0ab896c829d532, type: 2}
   baseDamage: 5
   baseRange: 3
   baseCost: 60

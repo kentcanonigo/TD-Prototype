@@ -5,10 +5,10 @@ public class DamageUpgradeSO : BaseTurretUpgradeSO {
     public float damageMultiplier;
 
     public override void ApplyUpgrade(Turret turret) {
-        turret.BaseDamage *= damageMultiplier;
+        turret.Damage *= damageMultiplier;
     }
 
     public override void RevertUpgrade(Turret turret) {
-        turret.BaseDamage /= damageMultiplier;
+        turret.Damage /= damageMultiplier;
     }
 }

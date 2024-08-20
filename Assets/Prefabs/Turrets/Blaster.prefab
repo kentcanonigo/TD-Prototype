@@ -52,7 +52,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turretSO: {fileID: 11400000, guid: d53bd7d8d8c7acd428b661abdee51265, type: 2}
-  appliedUpgrades: []
+  <PossibleUpgrades>k__BackingField:
+  - {fileID: 11400000, guid: cd2d6a9424b84e8438cdefae92a297b9, type: 2}
+  - {fileID: 11400000, guid: 71160f00efd4a6c4aa2644736971c656, type: 2}
+  - {fileID: 11400000, guid: ee5884b516610f446bbf2bbf72c2574f, type: 2}
 --- !u!114 &7863552034139277022
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c544a1807ffd4482bab1050873a6dd88, type: 3}
-  m_Name: FireRateUpgradeSO
+  m_Script: {fileID: 11500000, guid: 6fc09562e8d14482b818f4decba0ed0d, type: 3}
+  m_Name: RangeUpgradeSO
   m_EditorClassIdentifier: 
-  upgradeSprite: {fileID: 2098937247, guid: 92433c83556d78648908fa03e2dd6302, type: 3}
+  upgradeSprite: {fileID: 543716811, guid: 92433c83556d78648908fa03e2dd6302, type: 3}
   creditsCost: 60
-  fireRateMultiplier: 1.5
+  rangeMultiplier: 1.2

@@ -32,7 +32,7 @@ public class TurretAiming : MonoBehaviour {
             // Aim at the selected target
             if (turretTargetSelection.SelectedTarget) {
                 // Turret has a target
-                AimAtEnemy(turretTargetSelection.SelectedTarget, turret.BaseRotationSpeed);
+                AimAtEnemy(turretTargetSelection.SelectedTarget, turret.RotationSpeed);
             } else {
                 // Turret has not target, idle around
                 IdleRotation();

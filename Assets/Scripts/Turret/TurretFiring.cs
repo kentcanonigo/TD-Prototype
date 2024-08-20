@@ -26,7 +26,7 @@ public class TurretFiring : MonoBehaviour, IFireable {
         turret = GetComponent<Turret>();
         turretAiming = GetComponent<TurretAiming>();
         turretTargetSelection = GetComponent<TurretTargetSelection>();
-        fireCooldown = turret.BaseFireRate;
+        fireCooldown = turret.FireRate;
 
         if (turretAiming) {
             isAutoAim = turretAiming.IsAutoAim;
@@ -72,7 +72,7 @@ public class TurretFiring : MonoBehaviour, IFireable {
                 GameObject projectileGO = Instantiate(projectileSO.projectilePrefab, firePoint.position, firePoint.rotation);
                 Projectile projectile = projectileGO.GetComponent<Projectile>();
                 if (projectile != null) {
-                    projectile.SetBaseData(turret.BaseDamage, turret.BaseProjectileSpeed);
+                    projectile.SetBaseData(turret.Damage, turret.ProjectileSpeed);
                 } else {
                     Debug.LogError("Projectile prefab does not have a Projectile component.");
                 }
@@ -80,7 +80,7 @@ public class TurretFiring : MonoBehaviour, IFireable {
                 Debug.LogError("FirePoint or ProjectilePrefab is not set.");
             }
 
-            fireCooldown = 1f / turret.BaseFireRate; // Reset the cooldown timer based on the rateOfFire
+            fireCooldown = 1f / turret.FireRate; // Reset the cooldown timer based on the rateOfFire
         }
     }
 }

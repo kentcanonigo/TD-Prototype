@@ -16,6 +16,7 @@ public class BuildUI : MonoBehaviour {
     [SerializeField] private Button buildBlasterButton;
     [SerializeField] private Button sellModuleButton;
 
+    [InfoBox("Turret Buttons should be set in the inspector! (For the respective TurretSO Object)")]
     [Required] [SceneObjectsOnly] [Header("Turret Info")] [SerializeField]
     private GameObject turretInfoUI;
 
@@ -40,6 +41,15 @@ public class BuildUI : MonoBehaviour {
     [SerializeField] private Button confirmBuildButton;
     [SerializeField] private Button cancelBuildButton;
 
+    [Required] [SceneObjectsOnly] [Header("Turret Upgrade UI")] [SerializeField]
+    private GameObject turretUpgradeUI;
+    [SerializeField]private GameObject turretUpgradeInfoUI;
+    [SerializeField]private Button confirmUpgradeButton;
+    [SerializeField]private Button cancelUpgradeButton;
+    [SerializeField]private Button upgradeDamageButton;
+    [SerializeField]private Button upgradeFireRateButton;
+    [SerializeField]private Button upgradeRangeButton;
+    
     private GridMapObject lastSelectedGridObject;
     private Turret lastSelectedTurret;
 
@@ -50,8 +60,6 @@ public class BuildUI : MonoBehaviour {
             ShowTurretInfo();
             InfoUI.Instance.Toggle();
         }));
-
-        turretUpgradeButton.onClick.AddListener((() => { }));
 
         turretSellButton.onClick.AddListener((() => { BuildManager.Instance.SellTurret(); }));
 
@@ -79,6 +87,26 @@ public class BuildUI : MonoBehaviour {
         highestHPButton.onClick.AddListener((() => { SetTurretTargetingText(TurretTargetSelection.TargetingPreference.HighestHealth); }));
 
         lowestHPButton.onClick.AddListener((() => { SetTurretTargetingText(TurretTargetSelection.TargetingPreference.LowestHealth); }));
+        
+        // Turret Upgrade
+        
+        turretUpgradeButton.onClick.AddListener((() => {
+            if (turretUpgradeUI.activeSelf) {
+                turretUpgradeUI.gameObject.SetActive(false);
+            } else {
+                turretUpgradeUI.gameObject.SetActive(true);
+            }
+        }));
+        
+        upgradeDamageButton.onClick.AddListener((() => { BuildManager.Instance.UpgradeTurret(lastSelectedTurret); }));
+        
+        upgradeFireRateButton.onClick.AddListener((() => { }));
+        
+        upgradeRangeButton.onClick.AddListener((() => { }));
+        
+        confirmUpgradeButton.onClick.AddListener((() => { }));
+        
+        cancelUpgradeButton.onClick.AddListener((() => { }));
         
         // Confirm Build
         
@@ -137,6 +165,10 @@ public class BuildUI : MonoBehaviour {
             return;
         }
 
+        if (lastSelectedGridObject != selectedGridObject) {
+            HideAllUI();
+        }
+        
         lastSelectedGridObject = selectedGridObject;
         lastSelectedTurret = selectedGridObject.GetBuiltTurret();
         
@@ -174,6 +206,8 @@ public class BuildUI : MonoBehaviour {
     }
 
     private void HideAllUI() {
+        turretUpgradeInfoUI.SetActive(false);
+        turretUpgradeUI.SetActive(false);
         confirmBuildUI.SetActive(false);
         turretTargetingUI.SetActive(false);
         buildModuleUI.SetActive(false);
