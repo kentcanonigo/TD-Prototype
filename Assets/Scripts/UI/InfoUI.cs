@@ -52,8 +52,10 @@ public class InfoUI : MonoBehaviour {
             float dps = turret.CalculateDPS();
             string description = $"{turret.GetTurretSO().turretDescription}\n\n" +
                 $"Damage: {turret.Damage}\n" +
+                $"Rotation Speed: {turret.RotationSpeed}\n" +
                 $"Range: {turret.Range}\n" +
                 $"Fire Rate: {turret.FireRate}\n" +
+                $"Projectile Speed: {turret.ProjectileSpeed}\n" +
                 $"DPS: {dps:F2}\n";
             SetInfo(turret.GetTurretSO().turretName, description);
         } else {

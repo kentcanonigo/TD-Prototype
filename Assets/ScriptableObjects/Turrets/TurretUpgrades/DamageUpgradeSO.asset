@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: DamageUpgradeSO
   m_EditorClassIdentifier: 
   upgradeName: Damage
-  upgradeDescription: +25% Damage
+  upgradeDescription: 
   upgradeSprite: {fileID: -1712831447, guid: 92433c83556d78648908fa03e2dd6302, type: 3}
   upgradeColor: {r: 0.5018867, g: 0.1543538, b: 0.1543538, a: 1}
-  baseCreditsCost: 10
-  diminishingFactor: 1.5
-  costScalingFactor: 1.25
-  damageMultiplier: 1.25
+  baseCreditsCost: 50
+  isMultiplier: 0
+  effectScalingFactor: 1.2
+  flatBonusScalingFactor: 0.666
+  costScalingFactor: 1.5
+  damageValue: 3

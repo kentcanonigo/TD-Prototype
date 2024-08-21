@@ -16,7 +16,7 @@ MonoBehaviour:
   levelSize: {x: 18, y: 12}
   totalCoreHP: 50
   startingModules: 10
-  startingCredits: 600
+  startingCredits: 120
   moduleRewards: 010000000200000003000000
   levelFile: {fileID: 4900000, guid: 15da6d83e4d29e84a9b51225aa044bb8, type: 3}
   corePosition: {x: 14, y: 7}

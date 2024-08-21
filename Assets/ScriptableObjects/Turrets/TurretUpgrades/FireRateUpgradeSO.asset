@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: FireRateUpgradeSO
   m_EditorClassIdentifier: 
   upgradeName: Fire Rate
-  upgradeDescription: +20% Fire Rate
+  upgradeDescription: 
   upgradeSprite: {fileID: 2098937247, guid: 92433c83556d78648908fa03e2dd6302, type: 3}
   upgradeColor: {r: 0.17739409, g: 0.325026, b: 0.6226415, a: 1}
-  baseCreditsCost: 10
-  diminishingFactor: 1.5
-  costScalingFactor: 1.2
-  fireRateMultiplier: 1.2
+  baseCreditsCost: 40
+  isMultiplier: 0
+  effectScalingFactor: 0
+  flatBonusScalingFactor: 0.333
+  costScalingFactor: 1.5
+  fireRateValue: 1

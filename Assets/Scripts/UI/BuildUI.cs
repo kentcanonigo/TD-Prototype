@@ -62,7 +62,11 @@ public class BuildUI : MonoBehaviour {
     private void Awake() {
         buildModuleButton.onClick.AddListener((() => { BuildManager.Instance.BuildModule(); }));
 
-        turretSellButton.onClick.AddListener((() => { BuildManager.Instance.SellTurret(); }));
+        turretSellButton.onClick.AddListener((() => {
+            BuildManager.Instance.SellTurret();
+            turretUpgradeUI.SetActive(false);
+            turretUpgradeInfoUI.SetActive(false);
+        }));
 
         sellModuleButton.onClick.AddListener((() => { BuildManager.Instance.RemoveModule(); }));
 
@@ -217,10 +221,10 @@ public class BuildUI : MonoBehaviour {
         
             // Calculate the current cost of the upgrade
             int currentCost = baseTurretUpgradeSO.GetCurrentCost(applicationCount);
-            buttonText.text = baseTurretUpgradeSO.upgradeName + " (" + currentCost + ")";
+            buttonText.text = baseTurretUpgradeSO.upgradeName + " (" + baseTurretUpgradeSO.GetCurrentCost(applicationCount) + ")";
 
-            bool canAfford = GameManager.Instance.CanAfford(currentCost);
-            button.interactable = canAfford; // Set button interactability based on player's credits
+            /*bool canAfford = GameManager.Instance.CanAfford(currentCost);
+            button.interactable = canAfford; // Set button interactability based on player's credits*/
 
             // Clear any existing listeners on the confirm and cancel buttons
             confirmUpgradeButton.onClick.RemoveAllListeners();
@@ -230,7 +234,6 @@ public class BuildUI : MonoBehaviour {
             button.onClick.AddListener(() => {
                 if (turretUpgradeInfoUI.activeSelf) {
                     turretUpgradeInfoUI.SetActive(false);
-                    turretInfoUI.SetActive(false);
                 } else {
                     turretUpgradeInfoTitleText.text = "Upgrade " + baseTurretUpgradeSO.upgradeName + "?";
                     
@@ -239,8 +242,21 @@ public class BuildUI : MonoBehaviour {
                         ? lastSelectedTurret.ActiveUpgrades[baseTurretUpgradeSO] 
                         : 0;
                     
-                    float diminishingReturnValue = (baseTurretUpgradeSO.CalculateDiminishingReturn(baseTurretUpgradeSO.GetBaseMultiplier(), applicationCount + 1, baseTurretUpgradeSO.diminishingFactor) - 1f) * 100f;
-                    turretUpgradeInfoDescriptionText.text = $"({diminishingReturnValue:F2}% Increase)";
+                    if (baseTurretUpgradeSO.isMultiplier) {
+                        // Multiplier case
+                        float baseMultiplier = baseTurretUpgradeSO.GetBaseValue();
+                        float effectScalingFactor = baseTurretUpgradeSO.effectScalingFactor;
+                        float diminishingReturnValue = baseTurretUpgradeSO.CalculateDiminishingReturn(baseMultiplier, applicationCount + 1, effectScalingFactor);
+                        turretUpgradeInfoDescriptionText.text = $"({diminishingReturnValue:F2}% Increase)";
+                    } else {
+                        // Flat bonus case
+                        float baseFlatBonus = baseTurretUpgradeSO.GetBaseValue(); // Assuming this method gives the base flat bonus value
+                        float flatBonusScalingFactor = baseTurretUpgradeSO.flatBonusScalingFactor;
+                        // Assuming the flat bonus is added rather than multiplied
+                        float bonusValue = baseTurretUpgradeSO.CalculateFlatBonus(baseFlatBonus, applicationCount + 1, flatBonusScalingFactor);
+                        turretUpgradeInfoDescriptionText.text = $"(+{bonusValue} Flat Bonus)";
+                    }
+                    
                     turretUpgradeInfoUI.SetActive(true);
 
                     // Assign the correct listener for the confirm button for this upgrade
@@ -254,8 +270,9 @@ public class BuildUI : MonoBehaviour {
 
             cancelUpgradeButton.onClick.AddListener(() => { turretUpgradeInfoUI.SetActive(false); });
 
-            button.gameObject.SetActive(true);
-
+            bool canAfford = GameManager.Instance.CanAfford(currentCost);
+            SetInteractable(button, canAfford);
+            
             if (lastSelectedTurret.CurrentTotalUpgrades >= lastSelectedTurret.MaxActiveUpgrades) {
                 pickAnUpgradeText.text = "Maxed out!";
                 pickAnUpgradeText.color = new Color(buttonText.color.r, buttonText.color.g, buttonText.color.b, 0.05f);
@@ -264,6 +281,7 @@ public class BuildUI : MonoBehaviour {
                 pickAnUpgradeText.text = "Pick an upgrade!";
                 pickAnUpgradeText.color = new Color(buttonText.color.r, buttonText.color.g, buttonText.color.b, 0.5f);
             }
+            button.gameObject.SetActive(true);
         }
     }
 
