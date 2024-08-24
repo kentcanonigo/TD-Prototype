@@ -13,6 +13,9 @@ public class Turret : MonoBehaviour {
     public Dictionary<BaseTurretUpgradeSO, int> ActiveUpgrades { get; private set; }
     public int CurrentTotalUpgrades { get; private set; }
     public int MaxActiveUpgrades { get; private set; } = 4;
+    
+    // List to track the order of applied upgrades
+    private List<BaseTurretUpgradeSO> appliedUpgradesOrder = new List<BaseTurretUpgradeSO>();
 
     [field: Header("Turret Stats")]
     [ReadOnly, ShowInInspector] public float Damage { get; set; }
@@ -67,11 +70,28 @@ public class Turret : MonoBehaviour {
         upgrade.ApplyUpgrade(this, applicationCount);
         ActiveUpgrades[upgrade] = applicationCount;
 
+        // Track the order of applied upgrades
+        appliedUpgradesOrder.Add(upgrade);
+        
         // Increment the current total upgrades after successfully adding an upgrade
         CurrentTotalUpgrades++;
 
-        Debug.Log($"Applied {upgrade.upgradeName} ({applicationCount} times). Active Upgrades: {CurrentTotalUpgrades}");
+        //Debug.Log($"Applied {upgrade.upgradeName} ({applicationCount} times). Active Upgrades: {CurrentTotalUpgrades}");
         return true;
+    }
+    
+    // Method to remove the most recent upgrade
+    public void RemoveMostRecentUpgrade() {
+        if (appliedUpgradesOrder.Count > 0) {
+            // Get the most recent upgrade
+            BaseTurretUpgradeSO mostRecentUpgrade = appliedUpgradesOrder[appliedUpgradesOrder.Count - 1];
+
+            // Remove the upgrade using the method you provided
+            RemoveUpgrade(mostRecentUpgrade);
+
+            // Remove it from the tracking list
+            appliedUpgradesOrder.RemoveAt(appliedUpgradesOrder.Count - 1);
+        }
     }
 
     public void RemoveUpgrade(BaseTurretUpgradeSO upgrade) {

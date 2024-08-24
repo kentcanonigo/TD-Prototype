@@ -18,7 +18,7 @@ public class BuildUI : MonoBehaviour {
 
     [InfoBox("Turret Buttons should be set in the inspector! (For the respective TurretSO Object)")] [Required] [SceneObjectsOnly] [Header("Turret Info")] [SerializeField]
     private GameObject turretInfoUI;
-    
+
     [SerializeField] private Button turretUpgradeButton;
     [SerializeField] private Button turretSellButton;
     [SerializeField] private Button turretTargetingButton;
@@ -42,6 +42,7 @@ public class BuildUI : MonoBehaviour {
 
     [Required] [SceneObjectsOnly] [Header("Turret Upgrade UI")] [SerializeField]
     private GameObject turretUpgradeUI;
+
     [SerializeField] private TextMeshProUGUI pickAnUpgradeText;
 
     [SerializeField] private GameObject turretUpgradeInfoUI;
@@ -54,6 +55,7 @@ public class BuildUI : MonoBehaviour {
 
     [Required] [SceneObjectsOnly] [Header("Turret Upgrade UI")] [SerializeField]
     private GameObject upgradeCounterContainerUI;
+
     [SerializeField] private GameObject upgradeCounterPipTemplate;
 
     private GridMapObject lastSelectedGridObject;
@@ -188,6 +190,7 @@ public class BuildUI : MonoBehaviour {
         SetInteractable(sellModuleButton, !isPermanentModule && !BuildManager.Instance.IsPreviewing);
 
         // UI
+        buildModuleButton.gameObject.SetActive((isValidModuleBuildLocation || isValidTurretBuildLocation) && !BuildManager.Instance.IsPreviewing);
         buildModuleUI.SetActive(!isTurretBuilt && !isValidTurretBuildLocation && !BuildManager.Instance.IsPreviewing);
         buildTurretUI.SetActive(!isTurretBuilt && isValidTurretBuildLocation && !isValidModuleBuildLocation && !BuildManager.Instance.IsPreviewing);
         turretInfoUI.SetActive(isTurretBuilt && !BuildManager.Instance.IsPreviewing);
@@ -208,88 +211,173 @@ public class BuildUI : MonoBehaviour {
         ClearUpgradeButtons(); // Clear existing buttons before populating new ones
 
         foreach (BaseTurretUpgradeSO baseTurretUpgradeSO in turretSO.turretUpgradeListSO.possibleUpgradesListSO) {
-            // Create the button and set its properties
-            Button button = Instantiate(upgradeButtonTemplate, upgradeButtonContainer.transform).GetComponent<Button>();
-            button.image.sprite = baseTurretUpgradeSO.upgradeSprite;
-            button.image.color = baseTurretUpgradeSO.upgradeColor;
-            TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
+            Button button = CreateUpgradeButton(baseTurretUpgradeSO);
+            UpdateUpgradeButtonText(button, baseTurretUpgradeSO);
+            SetupUpgradeButtonListeners(button, baseTurretUpgradeSO);
 
-            // Get the application count for the current upgrade
-            int applicationCount = lastSelectedTurret.ActiveUpgrades.ContainsKey(baseTurretUpgradeSO) 
-                ? lastSelectedTurret.ActiveUpgrades[baseTurretUpgradeSO] 
-                : 0;
-        
-            // Calculate the current cost of the upgrade
-            int currentCost = baseTurretUpgradeSO.GetCurrentCost(applicationCount);
-            buttonText.text = baseTurretUpgradeSO.upgradeName + " (" + baseTurretUpgradeSO.GetCurrentCost(applicationCount) + ")";
-
-            /*bool canAfford = GameManager.Instance.CanAfford(currentCost);
-            button.interactable = canAfford; // Set button interactability based on player's credits*/
-
-            // Clear any existing listeners on the confirm and cancel buttons
-            confirmUpgradeButton.onClick.RemoveAllListeners();
-            cancelUpgradeButton.onClick.RemoveAllListeners();
-
-            // Add listener to the upgrade button
-            button.onClick.AddListener(() => {
-                if (turretUpgradeInfoUI.activeSelf) {
-                    turretUpgradeInfoUI.SetActive(false);
-                } else {
-                    turretUpgradeInfoTitleText.text = "Upgrade " + baseTurretUpgradeSO.upgradeName + "?";
-                    
-                    // Update the description to display the percentage with diminishing returns applied
-                    int applicationCount = lastSelectedTurret.ActiveUpgrades.ContainsKey(baseTurretUpgradeSO) 
-                        ? lastSelectedTurret.ActiveUpgrades[baseTurretUpgradeSO] 
-                        : 0;
-                    
-                    if (baseTurretUpgradeSO.isMultiplier) {
-                        // Multiplier case
-                        float baseMultiplier = baseTurretUpgradeSO.GetBaseValue();
-                        float effectScalingFactor = baseTurretUpgradeSO.effectScalingFactor;
-                        float diminishingReturnValue = baseTurretUpgradeSO.CalculateDiminishingReturn(baseMultiplier, applicationCount + 1, effectScalingFactor);
-                        turretUpgradeInfoDescriptionText.text = $"({diminishingReturnValue:F2}% Increase)";
-                    } else {
-                        // Flat bonus case
-                        float baseFlatBonus = baseTurretUpgradeSO.GetBaseValue(); // Assuming this method gives the base flat bonus value
-                        float flatBonusScalingFactor = baseTurretUpgradeSO.flatBonusScalingFactor;
-                        // Assuming the flat bonus is added rather than multiplied
-                        float bonusValue = baseTurretUpgradeSO.CalculateFlatBonus(baseFlatBonus, applicationCount + 1, flatBonusScalingFactor);
-                        turretUpgradeInfoDescriptionText.text = $"(+{bonusValue} Flat Bonus)";
-                    }
-                    
-                    turretUpgradeInfoUI.SetActive(true);
-
-                    // Assign the correct listener for the confirm button for this upgrade
-                    confirmUpgradeButton.onClick.RemoveAllListeners();
-                    confirmUpgradeButton.onClick.AddListener(() => {
-                        BuildManager.Instance.UpgradeTurret(lastSelectedTurret, baseTurretUpgradeSO);
-                        turretUpgradeInfoUI.SetActive(false); // Hide upgrade info after confirming
-                    });
-                }
-            });
-
-            cancelUpgradeButton.onClick.AddListener(() => { turretUpgradeInfoUI.SetActive(false); });
-
-            bool canAfford = GameManager.Instance.CanAfford(currentCost);
+            bool canAfford = CanAffordUpgrade(baseTurretUpgradeSO);
             SetInteractable(button, canAfford);
-            
-            if (lastSelectedTurret.CurrentTotalUpgrades >= lastSelectedTurret.MaxActiveUpgrades) {
-                pickAnUpgradeText.text = "Maxed out!";
-                pickAnUpgradeText.color = new Color(buttonText.color.r, buttonText.color.g, buttonText.color.b, 0.05f);
+
+            if (IsMaxedOutUpgrades()) {
+                ShowMaxedOutMessage();
                 SetInteractable(button, false);
             } else {
-                pickAnUpgradeText.text = "Pick an upgrade!";
-                pickAnUpgradeText.color = new Color(buttonText.color.r, buttonText.color.g, buttonText.color.b, 0.5f);
+                ShowPickUpgradeMessage();
             }
+
             button.gameObject.SetActive(true);
         }
     }
+
+    private Button CreateUpgradeButton(BaseTurretUpgradeSO upgrade) {
+        Button button = Instantiate(upgradeButtonTemplate, upgradeButtonContainer.transform).GetComponent<Button>();
+        button.image.sprite = upgrade.upgradeSprite;
+        button.image.color = upgrade.upgradeColor;
+        return button;
+    }
+
+    private void UpdateUpgradeButtonText(Button button, BaseTurretUpgradeSO upgrade) {
+        int applicationCount = GetApplicationCount(upgrade);
+        int currentCost = upgrade.GetCurrentCost(applicationCount);
+        TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
+
+        // Determine the color based on the application count
+        string color;
+        switch (applicationCount) {
+            case 0:
+                color = "green";
+                break;
+            case 1:
+                color = "yellow";
+                break;
+            case 2:
+                color = "orange";
+                break;
+            case 3:
+                color = "red";
+                break;
+            default:
+                color = "white"; // Default color if application count is outside the expected range
+                break;
+        }
+
+        // Update the button text with the colored credits
+        buttonText.text = $"{upgrade.upgradeName}\n<color=\"{color}\">{currentCost} Credits</color>";
+    }
+
+
+    private void SetupUpgradeButtonListeners(Button button, BaseTurretUpgradeSO upgrade) {
+        ClearConfirmAndCancelListeners();
+
+        button.onClick.AddListener(() => { ToggleUpgradeInfoUI(upgrade); });
+    }
+
+    private void ClearConfirmAndCancelListeners() {
+        confirmUpgradeButton.onClick.RemoveAllListeners();
+        cancelUpgradeButton.onClick.RemoveAllListeners();
+    }
+
+    private void ToggleUpgradeInfoUI(BaseTurretUpgradeSO upgrade) {
+        ClearConfirmAndCancelListeners();
+        DisplayUpgradeInfo(upgrade);
+        turretUpgradeInfoUI.SetActive(true);
+
+        confirmUpgradeButton.onClick.AddListener(() => {
+            BuildManager.Instance.UpgradeTurret(lastSelectedTurret, upgrade);
+            turretUpgradeInfoUI.SetActive(false); // Hide upgrade info after confirming
+        });
+        cancelUpgradeButton.onClick.AddListener(() => { turretUpgradeInfoUI.SetActive(false); });
+    }
+
+    private void DisplayUpgradeInfo(BaseTurretUpgradeSO upgrade) {
+        turretUpgradeInfoTitleText.text = $"Upgrade {upgrade.upgradeName}?";
+        int applicationCount = GetApplicationCount(upgrade);
+        int currentCost = upgrade.GetCurrentCost(applicationCount);
+
+        if (upgrade.isMultiplier) {
+            float diminishingReturnValue = CalculateMultiplierDiminishingReturn(upgrade, applicationCount);
+            SetUpgradeDescription(upgrade, diminishingReturnValue, true);
+        } else {
+            float bonusValue = CalculateFlatBonus(upgrade, applicationCount);
+            SetUpgradeDescription(upgrade, bonusValue, false);
+        }
+    }
+
+    private void SetUpgradeDescription(BaseTurretUpgradeSO upgrade, float value, bool isMultiplier) {
+        string operatorSymbol = isMultiplier ? "*" : "+";
+        string valueColor = isMultiplier ? "yellow" : "green";
+        string finalValueColor = isMultiplier ? "green" : "green"; // Adjust colors if needed
+
+        switch (upgrade.UpgradeType) {
+            case UpgradeTypes.DAMAGE:
+                turretUpgradeInfoDescriptionText.text = $"Damage: {lastSelectedTurret.Damage} {operatorSymbol} <color=\"{valueColor}\">{value:F2}</color>" +
+                                                        (isMultiplier ? $" = <color=\"{finalValueColor}\">{lastSelectedTurret.Damage * value:F2}</color>" : "");
+                break;
+            case UpgradeTypes.FIRE_RATE:
+                turretUpgradeInfoDescriptionText.text = $"Fire Rate: {lastSelectedTurret.FireRate} {operatorSymbol} <color=\"{valueColor}\">{value:F2}</color>" +
+                                                        (isMultiplier ? $" = <color=\"{finalValueColor}\">{lastSelectedTurret.FireRate * value:F2}</color>" : "");
+                break;
+            case UpgradeTypes.PRECISION:
+                turretUpgradeInfoDescriptionText.text = $"Rotation Speed: {lastSelectedTurret.RotationSpeed} {operatorSymbol} <color=\"{valueColor}\">{value:F2}</color>" +
+                                                        (isMultiplier ? $" = <color=\"{finalValueColor}\">{lastSelectedTurret.RotationSpeed * value:F2}</color>" : "") +
+                                                        $"\nProjectile Speed: {lastSelectedTurret.ProjectileSpeed} {operatorSymbol} <color=\"{valueColor}\">{(isMultiplier ? value / 2 : value):F2}</color>" +
+                                                        (isMultiplier ? $" = <color=\"{finalValueColor}\">{lastSelectedTurret.ProjectileSpeed * (value / 2):F2}</color>" : "");
+                break;
+            case UpgradeTypes.RANGE:
+                turretUpgradeInfoDescriptionText.text = $"Range: {lastSelectedTurret.Range} {operatorSymbol} <color=\"{valueColor}\">{value:F2}</color>" +
+                                                        (isMultiplier ? $" = <color=\"{finalValueColor}\">{lastSelectedTurret.Range * value:F2}</color>" : "");
+                break;
+            default:
+                Debug.LogWarning("Invalid upgrade type");
+                break;
+        }
+    }
+
+
+    private int GetApplicationCount(BaseTurretUpgradeSO upgrade) {
+        return lastSelectedTurret.ActiveUpgrades.ContainsKey(upgrade)
+            ? lastSelectedTurret.ActiveUpgrades[upgrade]
+            : 0;
+    }
+
+    private bool CanAffordUpgrade(BaseTurretUpgradeSO upgrade) {
+        int applicationCount = GetApplicationCount(upgrade);
+        int currentCost = upgrade.GetCurrentCost(applicationCount);
+        return GameManager.Instance.CanAfford(currentCost);
+    }
+
+    private bool IsMaxedOutUpgrades() {
+        return lastSelectedTurret.CurrentTotalUpgrades >= lastSelectedTurret.MaxActiveUpgrades;
+    }
+
+    private void ShowMaxedOutMessage() {
+        pickAnUpgradeText.text = "Maxed out!";
+        pickAnUpgradeText.color = new Color(pickAnUpgradeText.color.r, pickAnUpgradeText.color.g, pickAnUpgradeText.color.b, 0.05f);
+    }
+
+    private void ShowPickUpgradeMessage() {
+        pickAnUpgradeText.text = "Pick an upgrade!";
+        pickAnUpgradeText.color = new Color(pickAnUpgradeText.color.r, pickAnUpgradeText.color.g, pickAnUpgradeText.color.b, 0.5f);
+    }
+
+    private float CalculateMultiplierDiminishingReturn(BaseTurretUpgradeSO upgrade, int applicationCount) {
+        float baseMultiplier = upgrade.GetBaseValue();
+        float effectScalingFactor = upgrade.effectScalingFactor;
+        return upgrade.CalculateDiminishingReturn(baseMultiplier, applicationCount + 1, effectScalingFactor);
+    }
+
+    private float CalculateFlatBonus(BaseTurretUpgradeSO upgrade, int applicationCount) {
+        float baseFlatBonus = upgrade.GetBaseValue(); // Assuming this method gives the base flat bonus value
+        float flatBonusScalingFactor = upgrade.flatBonusScalingFactor;
+        return upgrade.CalculateFlatBonus(baseFlatBonus, applicationCount + 1, flatBonusScalingFactor);
+    }
+
 
     private void UpdateUpgradePips(Turret turret) {
         ClearUpgradePips();
 
         int totalPips = 0;
-    
+
         // Iterate through each upgrade in the dictionary
         foreach (var upgradeEntry in turret.ActiveUpgrades) {
             BaseTurretUpgradeSO upgrade = upgradeEntry.Key;
@@ -315,7 +403,7 @@ public class BuildUI : MonoBehaviour {
             totalPips++;
         }
     }
-    
+
     private void ClearUpgradeButtons() {
         foreach (Transform child in upgradeButtonContainer.transform) {
             if (child == upgradeButtonTemplate.transform)
@@ -323,7 +411,7 @@ public class BuildUI : MonoBehaviour {
             Destroy(child.gameObject);
         }
     }
-    
+
     private void ClearUpgradePips() {
         foreach (Transform child in upgradeCounterContainerUI.transform) {
             if (child == upgradeCounterPipTemplate.transform)

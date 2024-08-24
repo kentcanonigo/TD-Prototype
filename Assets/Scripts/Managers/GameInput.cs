@@ -9,13 +9,13 @@ public class GameInput : MonoBehaviour {
 
     private CinemachineConfiner2D cinemachineConfiner2D;
     private CinemachineCamera cinemachineCamera;
-    public PlayerInputActions playerInputActions;
+    private PlayerInputActions playerInputActions;
 
     [SerializeField] private BoxCollider2D cameraBounds;
     [SerializeField] private float cameraMoveSpeed = 5f;
     [SerializeField] private float mouseDragMoveSpeed = 20f;
-    
-    private bool wasMousePressedOverUI = false;
+
+    private bool wasMousePressedOverUI;
     private Vector3 lastMousePosition;
 
     private void Awake() {
@@ -37,12 +37,13 @@ public class GameInput : MonoBehaviour {
     }
 
     private void Update() {
-        // Handle keyboard input for camera movement
-        HandleKeyboardCameraMovement();
-
         // Handle mouse drag input for camera movement
         HandleMouseDragCameraMovement();
+        
+        // Handle keyboard input for camera movement
+        HandleKeyboardCameraMovement();
     }
+
 
     private void HandleKeyboardCameraMovement() {
         Vector2 inputVector = GetKeyboardInputVectorNormalized();
@@ -82,51 +83,54 @@ public class GameInput : MonoBehaviour {
         return inputVector;
     }
 
-    private void HandleMouseDragCameraMovement() {
-        if (Mouse.current.leftButton.wasPressedThisFrame) {
-            // Check if the pointer was over a UI element when the mouse button was pressed
-            wasMousePressedOverUI = UtilsClass.IsPointerOverUI();
-            // Store the last mouse position when the left mouse button is pressed
-            lastMousePosition = Input.mousePosition;
-        }
-
-        if (Mouse.current.leftButton.isPressed && !wasMousePressedOverUI) {
-            // Calculate the mouse movement delta
-            Vector3 mouseDelta = lastMousePosition - Input.mousePosition;
-            lastMousePosition = Input.mousePosition;
-
-            // Move the camera based on the mouse delta
-            float dragSensitivity = 10f;
-            Vector3 moveDir = new Vector3(mouseDelta.x, mouseDelta.y, 0f) * (dragSensitivity * mouseDragMoveSpeed * Time.deltaTime);
-
-            // Adjust the movement direction to be compatible with the world space
-            moveDir = Camera.main.ScreenToWorldPoint(moveDir) - Camera.main.ScreenToWorldPoint(Vector3.zero);
-            moveDir.z = 0f;
-
-            // Get the current confiner bounds
-            Bounds confinerBounds = GetConfinerBounds();
-
-            // Calculate the camera's current bounds based on its position
-            Bounds cameraBounds = GetCameraBounds();
-
-            // Check and adjust the movement based on confiner bounds
-            if (cameraBounds.min.x < confinerBounds.min.x && moveDir.x < 0) {
-                moveDir.x = 0; // Stop leftward movement
-            }
-            if (cameraBounds.max.x > confinerBounds.max.x && moveDir.x > 0) {
-                moveDir.x = 0; // Stop rightward movement
-            }
-            if (cameraBounds.min.y < confinerBounds.min.y && moveDir.y < 0) {
-                moveDir.y = 0; // Stop downward movement
-            }
-            if (cameraBounds.max.y > confinerBounds.max.y && moveDir.y > 0) {
-                moveDir.y = 0; // Stop upward movement
-            }
-
-            // Apply the adjusted movement
-            transform.position += moveDir;
-        }
+private void HandleMouseDragCameraMovement() {
+    if (Mouse.current.leftButton.wasPressedThisFrame) {
+        // Check if the pointer was over a UI element when the mouse button was pressed
+        wasMousePressedOverUI = UtilsClass.IsPointerOverUI();
+        // Store the last mouse position when the left mouse button is pressed
+        lastMousePosition = Input.mousePosition;
     }
+
+    if (Mouse.current.leftButton.isPressed && !wasMousePressedOverUI) {
+        // Calculate the mouse movement delta
+        Vector3 mouseDelta = lastMousePosition - Input.mousePosition;
+
+        lastMousePosition = Input.mousePosition;
+
+        // Move the camera based on the mouse delta
+        float dragSensitivity = 10f;
+        Vector3 moveDir = new Vector3(mouseDelta.x, mouseDelta.y, 0f) * (dragSensitivity * mouseDragMoveSpeed * Time.deltaTime);
+
+        // Adjust the movement direction to be compatible with the world space
+        moveDir = Camera.main.ScreenToWorldPoint(moveDir) - Camera.main.ScreenToWorldPoint(Vector3.zero);
+        moveDir.z = 0f;
+
+        // Get the current confiner bounds
+        Bounds confinerBounds = GetConfinerBounds();
+
+        // Calculate the camera's current bounds based on its position
+        Bounds cameraBounds = GetCameraBounds();
+
+        // Check and adjust the movement based on confiner bounds
+        if (cameraBounds.min.x < confinerBounds.min.x && moveDir.x < 0) {
+            moveDir.x = 0; // Stop leftward movement
+        }
+        if (cameraBounds.max.x > confinerBounds.max.x && moveDir.x > 0) {
+            moveDir.x = 0; // Stop rightward movement
+        }
+        if (cameraBounds.min.y < confinerBounds.min.y && moveDir.y < 0) {
+            moveDir.y = 0; // Stop downward movement
+        }
+        if (cameraBounds.max.y > confinerBounds.max.y && moveDir.y > 0) {
+            moveDir.y = 0; // Stop upward movement
+        }
+
+        // Apply the adjusted movement
+        transform.position += moveDir;
+    }
+}
+
+
 
     private Bounds GetConfinerBounds() {
         if (cinemachineConfiner2D.BoundingShape2D) {

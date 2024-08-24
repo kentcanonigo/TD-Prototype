@@ -5,6 +5,8 @@ using UnityEngine;
 public class PrecisionTurretUpgradeSO : BaseTurretUpgradeSO {
     public float precisionValue;
     
+    public override string UpgradeType => UpgradeTypes.PRECISION;
+    
     [ShowInInspector, ReadOnly, LabelWidth(250), BoxGroup("Multiplier Scaling")]
     public string ProjectileSpeedFor1stApplication => FormatUpgradeValue(CalculateUpgradeValue(1) / 2);
 
@@ -33,11 +35,11 @@ public class PrecisionTurretUpgradeSO : BaseTurretUpgradeSO {
     public override void ApplyUpgrade(Turret turret, int applicationCount) {
         float adjustedValue = CalculateUpgradeValue(applicationCount);
         if (isMultiplier) {
-            Debug.Log($"RangeUpgradeSO ApplyUpgrade - baseMultiplier: {precisionValue}, applicationCount: {applicationCount}, adjustedMultiplier: {adjustedValue}");
+            //Debug.Log($"RangeUpgradeSO ApplyUpgrade - baseMultiplier: {precisionValue}, applicationCount: {applicationCount}, adjustedMultiplier: {adjustedValue}");
             turret.RotationSpeed *= adjustedValue;
             turret.ProjectileSpeed *= adjustedValue / 2;
         } else {
-            Debug.Log($"RangeUpgradeSO ApplyUpgrade - baseBonus: {precisionValue}, applicationCount: {applicationCount}, adjustedBonus: {adjustedValue}");
+            //Debug.Log($"RangeUpgradeSO ApplyUpgrade - baseBonus: {precisionValue}, applicationCount: {applicationCount}, adjustedBonus: {adjustedValue}");
             turret.RotationSpeed += adjustedValue;
             turret.ProjectileSpeed += adjustedValue / 2;
         }

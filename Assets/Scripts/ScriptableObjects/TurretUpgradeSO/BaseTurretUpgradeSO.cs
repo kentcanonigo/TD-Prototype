@@ -6,6 +6,7 @@ public abstract class BaseTurretUpgradeSO : ScriptableObject {
     [Space]
     public string upgradeName;
     public string upgradeDescription;
+    public abstract string UpgradeType { get; }
     public Sprite upgradeSprite;
     public Color upgradeColor;
     [Space]

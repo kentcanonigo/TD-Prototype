@@ -23,6 +23,7 @@ public class GameManagerUI : MonoBehaviour {
     [SerializeField] private Button spawnEnemyButton;
     [SerializeField] private Button addCreditsButton;
     [SerializeField] private Button subtractCreditsButton;
+    [SerializeField] private Button removeUpgradeButton;
     [SerializeField] private TextMeshProUGUI gameStateText;
     private static readonly int IsOpen = Animator.StringToHash("isOpen");
 
@@ -57,6 +58,10 @@ public class GameManagerUI : MonoBehaviour {
         
         toggleDebugMenuButton.onClick.AddListener((() => {
             debugMenuAnimator.SetBool(IsOpen, !debugMenuAnimator.GetBool(IsOpen));
+        }));
+        
+        removeUpgradeButton.onClick.AddListener((() => {
+            BuildManager.Instance.RemoveSelectedTurretUpgrade();
         }));
 
         toggleMapEditModeButton.onValueChanged.AddListener((value => {

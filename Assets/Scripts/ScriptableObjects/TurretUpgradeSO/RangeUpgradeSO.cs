@@ -3,14 +3,16 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "RangeUpgradeSO", menuName = "Turret Upgrades/New Range Upgrade")]
 public class RangeUpgradeSO : BaseTurretUpgradeSO {
     public float rangeValue;
+    
+    public override string UpgradeType => UpgradeTypes.RANGE;
 
     public override void ApplyUpgrade(Turret turret, int applicationCount) {
         float adjustedValue = CalculateUpgradeValue(applicationCount);
         if (isMultiplier) {
-            Debug.Log($"RangeUpgradeSO ApplyUpgrade - baseMultiplier: {rangeValue}, applicationCount: {applicationCount}, adjustedMultiplier: {adjustedValue}");
+            //Debug.Log($"RangeUpgradeSO ApplyUpgrade - baseMultiplier: {rangeValue}, applicationCount: {applicationCount}, adjustedMultiplier: {adjustedValue}");
             turret.Range *= adjustedValue;
         } else {
-            Debug.Log($"RangeUpgradeSO ApplyUpgrade - baseBonus: {rangeValue}, applicationCount: {applicationCount}, adjustedBonus: {adjustedValue}");
+            //Debug.Log($"RangeUpgradeSO ApplyUpgrade - baseBonus: {rangeValue}, applicationCount: {applicationCount}, adjustedBonus: {adjustedValue}");
             turret.Range += adjustedValue;
         }
     }

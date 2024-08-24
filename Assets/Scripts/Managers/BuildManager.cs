@@ -83,7 +83,6 @@ public class BuildManager : MonoBehaviour {
 
         if (lastSelectedGridObject.GetNodeType() == GridMapObject.NodeType.BuiltModule) {
             ConfirmRemoveModule();
-            GameManager.Instance.AddModuleCount(1);
         } else if (lastSelectedGridObject.IsBuildable && GameManager.Instance.CurrentModules > 0) {
             if (GridManager.Instance.TryUpdatePathForVortexList(lastSelectedGridObject)) {
                 ConfirmBuildModule(lastSelectedGridObject);
@@ -114,6 +113,10 @@ public class BuildManager : MonoBehaviour {
             Debug.LogWarning("Can only sell in build phase");
             return;
         }
+        
+        if (lastSelectedGridObject.GetBuiltTurret() != null) {
+            Debug.LogWarning("Cannot sell a module with a turret on it.");
+        }
 
         if (lastSelectedGridObject.GetNodeType() == GridMapObject.NodeType.BuiltModule) {
             ConfirmRemoveModule();
@@ -126,6 +129,7 @@ public class BuildManager : MonoBehaviour {
     
     private void ConfirmRemoveModule() {
         lastSelectedGridObject.SetNodeType(GridMapObject.NodeType.None);
+        GameManager.Instance.AddModuleCount(1);
         GridManager.Instance.UpdatePathForVortexList();
     }
 
@@ -223,5 +227,12 @@ public class BuildManager : MonoBehaviour {
         if (lastSelectedGridObject != null) {
             GridSelection.Instance.TriggerSelectGridCell(lastSelectedGridObject.x, lastSelectedGridObject.y);
         }
+    }
+
+    public void RemoveSelectedTurretUpgrade() {
+        if (lastSelectedGridObject == null)
+            return;
+        lastSelectedGridObject.GetBuiltTurret().RemoveMostRecentUpgrade();
+        GridSelection.Instance.TriggerSelectGridCell(lastSelectedGridObject.x, lastSelectedGridObject.y);
     }
 }
